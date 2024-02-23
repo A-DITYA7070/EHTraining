@@ -1,0 +1,163 @@
+Linux commands..
+
+        1. SSH :- It is used to create a secure encrypted connection between two hosts over an inseure network.
+                  It is used to log into a remote machine and execute commands on it..
+                syntax..
+                ssh [options] [username@hostname/ip address] [command]
+                in options diff things can be used.. ex:- -p :- to specify a diff port
+                                                          -i :- to specify a private key file
+                                                          -X for X11 forwarding.
+                user@hostname/ipaddress of the remote server you want to connect to it if username is removed it will default to current 
+                username on local machine
+
+        2. ls  :- It is used to list the files and directories in curr directories
+        3. ls -R :- Lists files in sub-directories as well
+        4. pwd :- (print working directory) it is used to display the current working directory
+        5. cd  :- (change directory) it is used to change the current working directory to directory specified
+        6. touch :- touch team.txt :- touch is used to create new file.. (we can create multiple files atonce) touch linode(1..10) 
+                   it will create 10 linode files atonce
+        7. nano :- nano is a simple and easy-to-use text editor for Unix-like operating systems, including Linux. 
+                   It's often used in the terminal environment for quick editing tasks, configuration files, or composing scripts.
+                   It's particularly popular among beginners due to its straightforward interface and key bindings.
+                    Ctrl + O: Write out (save) the current file.
+                    Ctrl + X: Exit nano. If there are unsaved changes, nano will prompt you to save them before exiting.
+                    Ctrl + G: Get help. This displays a help message with all the available shortcuts.
+                    Ctrl + W: Search for a specific string in the text.
+                    Ctrl + K: Cut (delete) the current line.
+                    Ctrl + U: Paste (uncut) the previously cut line.
+                    Ctrl + C: Show the current cursor position.
+
+        8. echo :- The echo command in Linux is used to display a line of text or a string of characters to the terminal 
+                   or standard output. It's one of the most frequently used commands in shell scripting and is also commonly 
+                   used for debugging purposes.
+        9. vim :-  Vim is a highly configurable and powerful text editor built to make editing more efficient, particularly in 
+                   Unix-like operating systems such as Linux. It's a descendant of the vi editor and shares many of its features 
+                   but with additional functionality and improvements.
+        10. cat :- cat is used for opening a file..
+        11. shred :- used for deleting a file..
+        12. cp :- used to copy a file from one loc to other 
+                  cp [options] source destination
+                  ex :- cp afile.txt newname.txt
+        13. ls -a :- list hidden files as well
+        14. ls -al :- Lists files and directories with detailed information like permissions,size, owner, etc.
+        15. cd or cd ~	:- Navigate to HOME directory
+        16. cd .. :- move one level up
+        17. cd /  :- Move to the root directory
+        18. cat > filename :- creates a filename
+        19. cat filename :- displays a file content
+        20. cat file1 file2 > file3 :- joins two files and stores the output in the third files.
+        21. mv file "new file" :- moves the file to the new location path..
+        22. mv fileName newFileName :- Renames the older filename to new fileName
+        23. sudo :- Allows regular users to run programs with the security privileges of the superuser or root
+        24. rm fileName :- deletes a file
+        25. man :- gives help information about the command..
+        26. mkdir :- to make new directory..
+        27. head :- Displays the first few lines of a file.
+        28. tail :- displays the last few lines of a file
+        29. ln :- creates link between files
+        30. find :- Search for files and directories
+        31. chmod :- Change file permissions
+        32. chown :- changes file ownership 
+        33. chgrp :-  changes group ownership
+        34. unmask :- set default group permissions
+        35. tar :- creates or extract archive file 
+                        -c: Create a new archive.
+                        -x: Extract files from an archive.
+                        -f: Specify the archive file name.
+                        -v: Verbose mode.
+                        -z: Compress the archive with gzip.
+                        -j: Compress the archive with bzip2.
+        
+                    ex :- tar -czvf archive.tar.gz files/ 
+                          creates a compressed tar archive named “archive.tar.gz” containing the files in the “files/” directory.
+        36. gzip :- compress files
+                    -d: Decompress files.
+                    gzip file.txt compresses the file “file.txt” and renames it as “file.txt.gz”.
+        37. ps :- displays the running processes
+        38. ps aux :- shows all running processes with detailed information
+        39. top :- monitors system processes in real time 
+        40. kill :- terminate a process 
+                    displays a dynamic view of system processes and their resource usage.
+        41. pkill :- terminates processes based on their name 
+                     ex:- pkill process_name 
+                          terminates all processes with the specified name.
+        42. grep :- used to search for specific patterns or regular expressions in text files or streams and display matching lines.
+                        -i: Ignore case distinctions while searching.
+                        -v: Invert the match, displaying non-matching lines.
+                        -r or -R: Recursively search directories for matching patterns.
+                        -l: Print only the names of files containing matches.
+                        -n: Display line numbers alongside matching lines.
+                        -w: Match whole words only, rather than partial matches.
+                        -c: Count the number of matching lines instead of displaying them.
+                        -e: Specify multiple patterns to search for.
+                        -A: Display lines after the matching line.
+                        -B: Display lines before the matching line.
+                        -C: Display lines both before and after the matching line.
+                    
+                    Ex :-       grep -i “hello” file.txt
+                                grep -v “error” file.txt
+                                grep -r “pattern” directory/
+                                grep -l “keyword” file.txt
+                                grep -n “pattern” file.txt
+
+        43. pgrep :-	List processes based on their name.
+        44. uname :-	Print system information.
+        45. uname -a :- dipslays all system information
+                        ex :- uname -a	Print system information.
+        46. whoami :-	Display current username.
+        47. df	   :-   Show disk space usage.
+        48. df -h  :-   displays disk space usage in a human-readable format.
+        49. du	   :-   Estimate file and directory sizes.
+                        -h: Human-readable sizes.
+                        -s: Display total size only.
+                        du -sh directory/  :- provides the total size of the specified directory.
+        50. free   :-	Display memory usage information.
+        51. uptime :-	Show system uptime.
+        52. lscpu  :-	Display CPU information.
+        53. lspci  :-	List PCI devices.
+        54. lsusb  :-	List USB devices.
+        55. ifconfig :-	Display network interface information.
+        56. ping     :-	Send ICMP echo requests to a host.
+        57. netstat  :- Display network connections and statistics.
+                        netstat -tuln :- shows all listening TCP and UDP connections.
+        58. ss	    :-  Display network socket information.
+        59. ssh	    :-  Securely connect to a remote server.	
+                        ssh user@hostname 
+                        initiates an SSH connection to the specified hostname
+        60. scp	    :-  Securely copy files between hosts.
+        61. wget    :-  Download files from the web.
+        62. curl    :-  Transfer data to or from a server
+                        curl http://example.com :- retrieves the content of a webpage from the specified URL.
+        63. cmd < file	:- Input of cmd is taken from file.
+        64. cmd > file	:- Standard output (stdout) of cmd is redirected to file.
+        65. cmd 2> file	:- Error output (stderr) of cmd is redirected to file.
+        66. cmd 2>&1	:- stderr is redirected to the same place as stdout.
+        67. cmd1 <(cmd2) :- Output of cmd2 is used as the input file for cmd1.
+        68. cmd > /dev/null :-  Discards the stdout of cmd by sending it to the null device.
+        69. cmd &> file	 :-  Every output of cmd is redirected to file.
+        70. cmd 1>&2	:- stdout is redirected to the same place as stderr.
+        71. cmd >> file	:- Appends the stdout of cmd to file.
+        72. export VARIABLE_NAME=value :- Sets the value of an environment variable.
+        73. echo $VARIABLE_NAME	:- Displays the value of a specific environment variable.
+        74. env	 :- Lists all environment variables currently set in the system.
+        75. unset VARIABLE_NAME :- Unsets or removes an environment variable.
+        76. export -p	:- Shows a list of all currently exported environment variables.
+        77. env VAR1=value COMMAND  :- Sets the value of an environment variable for a specific command.
+        78. printenv   :- Displays the values of all environment variables.
+        79. who	 :- Show who is currently logged in.
+        80. sudo adduser username :- Create a new user account on the system with the specified username.
+        81. finger  :-	Display information about all the users currently logged into the system, including their usernames,
+                        login time, and terminal.
+        82. sudo deluser USER GROUPNAME	:- Remove the specified user from the specified group.
+        83. last :-  Show the recent login history of users.
+        84. finger username :- Provide information about the specified user, including their username, real name, terminal,
+                                idle time, and login time.
+        85. sudo userdel -r username :- Delete the specified user account from the system, including their home directory and 
+                                        associated files. The -r option ensures the removal of the user’s files.
+        86. su – username :- Switch to another user account with the user’s environment.
+        87. sudo usermod -a -G GROUPNAME USERNAME  :- Add an existing user to the specified group. The user is added to the 
+                                                      group without removing them from their current groups.
+                
+                                                             Lec 1.
+        
+        GNU - (NU) Not unix :-  it is an operating system that is free s/w 

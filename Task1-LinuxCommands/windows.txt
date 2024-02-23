@@ -1,0 +1,47 @@
+                           
+
+1. driverquery – Lists All Installed Drivers
+2. powershell start cmd -v runAs – Run the Command Prompt as an Administrator
+3. chdir or cd – Changes the Current Working Directory to the Specified Directory
+4. systeminfo – Shows Your PC's Details
+5. set – Shows your PC’s Environment Variables
+6. prompt – Changes the Default Text Shown before Entering Commands
+7. clip – Copies an Item to the Clipboard
+8. assoc – Lists Programs and the Extensions They are Associated With
+9. title – Changes the Command Prompt Window Title Using the Format title window-title-name
+10. fc – Compares Two Similar Files
+11. cipher – Wipes Free Space and Encrypts Data
+12. netstat -an – Shows Open Ports, their IP Addresses and States
+13. ping – Shows a Website IP Address, Lets you Know How Long it Takes to Transmit Data and a Get Response
+14. color – Changes the Text Color of the Command Prompt
+15. for /f "skip=9 tokens=1,2 delims=:" %i in ('netsh wlan show profiles') do @echo %j | findstr -i -v echo | netsh wlan show profiles %j key=clear – Shows All Wi-Fi Passwords
+16. ipconfig – Shows Information about PC IP Addresses and Connections
+17. sfc – System File Checker
+          This command scans your computer for corrupt files and repairs them. 
+          The extension of the command you can use to run a scan is /scannow.
+18. powercfg – Controls Configurable Power Settings
+               You can use this command with its several extensions to show information about the power state of your PC.
+19. dir – Lists Items in a Directory
+20. del – Deletes a File
+26. attrib +h +s +r folder_name – Hides a Folder
+27. start website-address – Logs on to a Website from the Command Line
+28. tree – Shows the Tree of the Current Directory or Specified Drive
+29. ver – Shows the Version of the OS
+30. tasklist – Shows Open Programs
+31. taskkill – Terminates a Running Task
+32. date – Shows and Changes the Current Date
+33. time – Shows and Changes the Current Time
+34. vol – Shows the Serial Number and Label Info of the Current Drive
+35. dism – Runs the Deployment Image Service Management Tool
+36. echo – Shows Custom Messages or Messages from a Script or File
+           You can also use the echo command to create a file with this syntax echo file-content > filename.extension.
+37. mkdir – Creates a Folder
+38. rmdir – Deletes a Folder
+39. more – Shows More Information or the Content of a File
+40. move – Moves a File or Folder to a Specified Folder
+41. ren – Renames a File with the Syntax ren filename.extension new-name.extension
+42. cls – Clears the Command Line
+          In case you enter several commands and the command line gets clogged up,
+          you can use cls to clear all entries and their outputs.
+43. exit – Closes the Command Line
+44. shutdown – Shuts down, Restarts, Hibernates, Sleeps the Computer

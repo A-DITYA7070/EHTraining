@@ -1,0 +1,206 @@
+Http :- 
+    
+    HTTP (Hypertext Transfer Protocol) is a stateless protocol, which means that it does not retain information about previous 
+    interactions between a client (such as a web browser) and a server. Each request from the client to the server is treated as 
+    an independent transaction, and the server does not maintain any memory of previous requests.
+    Here's why HTTP is considered stateless:  
+    No Memory of Previous Requests: The server does not retain any information about previous requests made by the client. 
+                                    Each request is processed independently, without any knowledge of the requests that came 
+                                    before it.
+
+    No Client Context: The server does not maintain any information about the state of the client, 
+                       such as session data or user preferences. This means that each request from the client must 
+                       contain all the necessary information for the server to process it.
+
+    No Dependency on Previous Responses: The response to a request is sent back to the client independently of any previous responses. 
+                                         The server does not rely on the client's previous requests or responses to generate a response 
+                                         to the current request.
+
+While HTTP itself is stateless, web applications often require maintaining some form of state for tasks such as user authentication, 
+session management, and tracking user activity. To address this, various techniques such as cookies, sessions, and tokens are used 
+to manage state on top of the stateless HTTP protocol. These techniques allow web applications to remember user information and 
+maintain a sense of continuity across multiple requests and responses.
+A cookie, also known as an HTTP cookie, web cookie, or browser cookie, is a small piece of data stored on the user's computer 
+by the web browser while browsing a website. Cookies were designed to be a reliable mechanism for websites to remember stateful 
+information (such as items added in the shopping cart in an online store) or to record the user's browsing activity 
+(including clicking particular buttons, logging in, or recording which pages were visited in the past). 
+They can also be used to remember arbitrary pieces of information that the user previously entered into form fields such as names, 
+addresses, passwords, and credit card numbers.
+
+                                      HTTP methods.....
+
+GET  :-    The GET method requests a representation of the specified resource. Requests using GET should only retrieve data.
+HEAD :-    The HEAD method asks for a response identical to a GET request, but without the response body.
+POST :-    The POST method submits an entity to the specified resource, often causing a change in state or side effects on the server.
+PUT  :-    The PUT method replaces all current representations of the target resource with the request payload.
+DELETE :-  The DELETE method deletes the specified resource.
+CONNECT :- The CONNECT method establishes a tunnel to the server identified by the target resource.
+OPTIONS :- The OPTIONS method describes the communication options for the target resource.
+TRACE  :-  The TRACE method performs a message loop-back test along the path to the target resource.
+PATCH  :-  The PATCH method applies partial modifications to a resource.
+
+                                     HTTP - Req Header.....
+
+Request Headers :- Contain more information about the resource to be fetched, or about the client requesting the resource.
+
+A request header is an HTTP header that can be used in an HTTP request to provide information about the request context, 
+so that the server can tailor the response. For example, the Accept-* headers indicate the allowed and preferred formats of 
+the response. Other headers can be used to supply authentication credentials (e.g. Authorization), to control caching, or to 
+get information about the user agent or referrer, etc.
+
+Req Header ex..
+
+GET /home.html HTTP/1.1
+Host: developer.mozilla.org
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:50.0) Gecko/20100101 Firefox/50.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Referer: https://developer.mozilla.org/testpage.html
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+If-Modified-Since: Mon, 18 Jul 2016 02:36:04 GMT
+If-None-Match: "c561c68d0ba92bbeb8b0fff2a9199f722e3a621a"
+Cache-Control: max-age=0
+
+
+                                                      Res Header :- 
+
+A response header is an HTTP header that can be used in an HTTP response and that doesn't relate to the content of the message. 
+Response headers, like Age, Location or Server are used to give a more detailed context of the response.
+Not all headers appearing in a response are categorized as response headers by the specification. 
+For example, the Content-Type header is a representation header indicating the original type of data in the body of the response message (prior to the encoding in the Content-Encoding representation header being applied). However, "conversationally" all headers are usually referred to as response headers in a response message.
+
+Res Header ex .
+
+200 OK
+Access-Control-Allow-Origin: *
+Connection: Keep-Alive
+Content-Encoding: gzip
+Content-Type: text/html; charset=utf-8
+Date: Mon, 18 Jul 2016 16:06:00 GMT
+Etag: "c561c68d0ba92bbeb8b0f612a9199f722e3a621a"
+Keep-Alive: timeout=5, max=997
+Last-Modified: Mon, 18 Jul 2016 02:36:04 GMT
+Server: Apache
+Set-Cookie: mykey=myvalue; expires=Mon, 17-Jul-2017 16:06:00 GMT; Max-Age=31449600; Path=/; secure
+Transfer-Encoding: chunked
+Vary: Cookie, Accept-Encoding
+X-Backend-Server: developer2.webapp.scl3.mozilla.com
+X-Cache-Info: not cacheable; meta data too large
+X-kuma-revision: 1085259
+x-frame-options: DENY
+
+
+                                                COOKIES
+
+
+When a user visits a website that uses cookies for the first time, the website sends the user a cookie containing a unique identifier. 
+The user's browser stores the cookie on their hard drive. When the user visits the website again, the browser sends the cookie back to 
+the website. The website can then use the cookie to identify the user and retrieve any associated information, such as the items in 
+their shopping cart.
+
+
+Cookies can be used for a variety of purposes, including:
+Authentication: Cookies can be used to authenticate users and keep them logged in to a website.
+Personalization: Cookies can be used to personalize the content and experience of a website for each user.
+Tracking: Cookies can be used to track users' browsing activity across multiple websites.
+Advertising: Cookies can be used to target advertising to users based on their interests.
+Cookies can be either session cookies or persistent cookies. Session cookies are deleted when the user closes their browser. 
+Persistent cookies are stored on the user's computer until they expire or are deleted by the user.
+There are a number of concerns about the privacy implications of cookies. Cookies can be used to track users' 
+browsing activity across multiple websites, which can be used to build up a detailed profile of the user's interests. 
+This information can then be used to target advertising to the user or to sell the information to third-party companies.
+Users can control how cookies are used on their computer by changing their browser settings. Most browsers allow users to 
+block all cookies, block third-party cookies, or allow all cookies. Users can also delete cookies that have already been 
+stored on their computer.
+Here are some of the benefits of using cookies:
+Cookies can make websites more user-friendly by remembering the user's preferences and keeping them logged in.
+Cookies can help websites to track their traffic and improve their performance.
+Cookies can be used to target advertising to users based on their interests.
+Here are some of the drawbacks of using cookies:
+Cookies can be used to track users' browsing activity across multiple websites, which can be a privacy concern.
+Cookies can be used to collect personal information about users without their consent.
+Cookies can be used to spread malware.
+Overall, cookies are a useful tool that can be used to improve the user experience on websites. However, 
+it is important to be aware of the privacy implications of cookies and to take steps to protect your privacy.
+
+
+                                                        NEED OF COOKIES 
+
+Cookies are essential components of web technology that enable websites to store and retrieve information on a user's browser or device. They serve several crucial purposes in modern web development:
+Session Management: Cookies are commonly used to manage user sessions. When a user logs into a website, 
+a session cookie is often created to keep track of the user's authentication status. This allows the user to navigate between 
+pages on the site without needing to re-authenticate on each request.
+
+Personalization and Customization: Cookies enable websites to remember user preferences and settings. 
+                                    For example, a website may use cookies to remember a user's language preference, 
+                                    theme choice, or shopping cart contents. This personalization enhances the user experience 
+                                    by tailoring the website to individual users.
+
+Tracking and Analytics: Cookies are often used for tracking user behavior and gathering analytics data. 
+                        Websites can use cookies to track users' navigation paths, measure website usage statistics, 
+                        and analyze user interactions. This data is valuable for understanding user behavior, 
+                        optimizing website performance, and targeting advertisements.
+
+Targeted Advertising: Cookies are frequently utilized for targeted advertising purposes. 
+                      Advertisers can use cookies to track users across different websites and build 
+                      profiles based on their browsing history and interests. This enables advertisers to 
+                      deliver personalized ads to users, increasing the relevance and effectiveness of advertisements.
+
+E-commerce and Shopping: Cookies play a significant role in e-commerce applications by enabling features such as shopping cart 
+                         persistence, product recommendations, and personalized shopping experiences. Cookies can store information 
+                         about the items a user has added to their shopping cart, their browsing history, and their preferences, 
+                         making the shopping experience more convenient and efficient.
+
+
+Overall, cookies are indispensable tools for enhancing the functionality, usability, and personalization of websites and 
+web applications. While they have raised concerns regarding privacy and security, proper implementation and management practices 
+can mitigate these risks and ensure a positive user experience.
+
+                                        COOKIE_ATTRIBUTES
+
+Name and Value: Every cookie has a name-value pair associated with it. The name is a string that identifies the cookie, 
+and the value is the data stored within the cookie.
+
+Domain: The domain attribute specifies the domain for which the cookie is valid. By default, cookies 
+are only sent to the domain that set them, but you can specify a broader domain to include subdomains as well.
+
+Path: The path attribute specifies the URL path for which the cookie is valid. If the path is set to "/", 
+the cookie is valid for the entire domain. Otherwise, it's only valid for the specified path and its subdirectories.
+
+Expires/Max-Age: The expires attribute specifies the date and time when the cookie expires. After this date, 
+the browser will no longer send the cookie to the server. Alternatively, you can use the max-age attribute to specify the cookie's lifespan in seconds from the time it's set.
+
+Secure: The secure attribute indicates that the cookie should only be sent over HTTPS connections. 
+It ensures that the cookie data is encrypted during transmission, providing additional security.
+
+HttpOnly: The HttpOnly attribute prevents client-side scripts (e.g., JavaScript) from accessing the cookie. 
+This helps mitigate certain types of cross-site scripting (XSS) attacks by preventing malicious scripts from 
+stealing sensitive cookie data.
+
+SameSite: The SameSite attribute controls when cookies are sent in cross-origin requests. It can be set to 
+"Strict" (cookies are only sent in first-party context) or "Lax" (cookies are sent in first-party context and in 
+some cross-origin requests initiated by top-level navigations).
+                               
+                                   COOKIE VS Session
+
+Cookies and sessions are both mechanisms used to maintain state in web applications, but they differ in their implementation and usage:
+
+Cookies:
+
+Storage: Cookies are small pieces of data stored on the client-side (in the user's browser) as text files. They are sent to the server with every HTTP request, including requests for images, CSS files, and JavaScript files, associated with the same domain that set the cookie.
+Persistence: Cookies can have an expiration date, after which they are automatically deleted by the browser. Alternatively, they can be session cookies, which are deleted when the browser session ends (i.e., when the user closes the browser).
+Size Limit: Cookies have a relatively small size limit, typically around 4 KB per cookie.
+Security: Cookies can be manipulated by users, and their data can be exposed if not properly secured. They are susceptible to cross-site scripting (XSS) and cross-site request forgery (CSRF) attacks if not used securely.
+Sessions:
+
+Storage: Sessions store data on the server-side. When a user visits a website, the server generates a unique session ID, which is then stored as a cookie on the client-side. The session data is typically stored in a server-side database or memory store (e.g., Redis).
+Persistence: Session data persists on the server until it expires or until the user logs out or the session is invalidated.
+Size Limit: Sessions can store larger amounts of data compared to cookies because the data is stored on the server-side.
+Security: Session data is generally more secure than cookies because it is stored on the server-side and is not directly accessible or modifiable by users. However, sessions are still vulnerable to session hijacking and session fixation attacks if not properly implemented and secured.
+In summary, cookies are small pieces of data stored on the client-side, while sessions store data on the server-side. Cookies are suitable for storing small amounts of data that need to persist across multiple requests, while sessions are used to maintain user-specific data and state across multiple requests in a more secure manner.
+
+
+
+

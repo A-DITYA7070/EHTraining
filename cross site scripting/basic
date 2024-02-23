@@ -1,0 +1,72 @@
+                                                     
+                                                     CSP (content security policy)
+
+(CSP) is an added layer of security that helps to detect and mitigate certain types of attacks, including 
+Cross-Site Scripting (XSS) and data injection attacks.
+
+In addition to restricting the domains from which content can be loaded, the server can specify which protocols are allowed to be used; for example (and ideally, from a security standpoint), a server can specify that all content must be loaded using HTTPS. A complete data transmission security strategy includes not only enforcing HTTPS for data transfer, but also marking all cookies with the secure attribute and providing automatic redirects from HTTP pages to their HTTPS counterparts. Sites may also use the Strict-Transport-Security HTTP header to ensure that browsers connect to them only over an encrypted channel.
+                                                     
+                                                     HSTS (http strict transport security)
+
+HTTP Strict Transport Security (HSTS) is a web security policy that ensures browsers connect to websites over HTTPS. HSTS was finalized in 2012 by the IETF in RFC 6797. 
+HSTS protects users and websites from attacks such as protocol downgrade and cookie hijacking. HSTS does this by:
+Informing browsers that a site should only be accessed using HTTPS
+Automatically converting any future attempts to access the site using HTTP to HTTPS
+Removing the need to redirect users from http:// to https:// URLs
+
+                                                      SOP (Same origin policy)
+
+https://mydomain.com:8000
+https://mydomain.com/test:8000
+both are of same origin because protocol,domain and port is same..
+
+Problem :- When we have different tabs open then sop prevents from accessing tab from another tab..
+           we don't want different websites to access cookies of different websites from our browser..
+
+
+ It governs what script on one origin is allowed to do .. 
+ The same-origin policy is a critical security mechanism that restricts how a document or script loaded by one origin can 
+ interact with a resource from another origin.
+
+It helps isolate potentially malicious documents, reducing possible attack vectors. For example, it prevents a malicious website on the Internet from running JS in a browser to read data from a third-party webmail service (which the user is signed into) or a company intranet (which is protected from direct access by the attacker by not having a public IP address) and relaying that data to the attacker.
+
+       URL :-     http://store.company.com/dir/page.html:         
+                    
+                 URL	                                         Outcome	                                  Reason
+
+http://store.company.com/dir2/other.html	                   Same origin                            	Only the path differs
+http://store.company.com/dir/inner/another.html	               Same origin	                            Only the path differs
+https://store.company.com/page.html	                             Failure	                             Different protocol
+http://store.company.com:81/dir/page.html	                     Failure	              Different port (http:// is port 80 by default)
+http://news.company.com/dir/page.html	                         Failure	                                Different host
+
+   
+    Inherited origins :- 
+Scripts executed from pages with an about:blank or javascript: URL inherit the origin of the document containing that URL, since these types of URLs do not contain information about an origin server.
+
+For example, about:blank is often used as a URL of new, empty popup windows into which the parent script writes content
+(e.g. via the Window.open() mechanism). If this popup also contains JavaScript, that script would inherit the same origin as 
+the script that created it.
+data: URLs get a new, empty, security context.
+
+File origins :- 
+Modern browsers usually treat the origin of files loaded using the file:/// schema as opaque origins. What this means is that 
+if a file includes other files from the same folder (say), they are not assumed to come from the same origin, and may trigger CORS errors.
+
+                                                CORS (cross origin resourse sharing..)
+
+Need :- since sop prevents two different origin to share resources but in real world two diff origins need to share resources lets say 
+if we are working on microservice artitecture where apis are hosted on diff domain db is hosted on diff domain, and also frontend is 
+hosted on diff domain but as an application all these needs to share resource among themselves but SOP(same origin policy) will not
+allow to do so ... Hence here comes the cors..
+
+SO if cors are not there we would never see such advance applications that uses microservice artitecture and scales very fast than the
+traditional applications...
+
+microservices have loosely coupled applications which are deployed on diff diff servers hence we need cors..
+
+because after implementing cors app can share resources from diff origins,subdomains,diff ports etc.. hence we need cors
+
+access-control-allow-origin:*;
+access-control-allow-method:post;
+

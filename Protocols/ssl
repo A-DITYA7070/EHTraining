@@ -1,0 +1,74 @@
+                                                            SSL
+
+TLS (Transport Layer Security) formerly known as ssl (secure socket layer) is a protocol used by applications to communicate securely
+over a network preventing tampering with and eavesdropping on email, web browsing and other protocols. SSl is client and server protocol
+that uses cryptographic protocol to provide security while communicating over a network.
+
+When client and server communicates using SSL it ensures no third party can eavesdrop or tamper with the data / message...
+All modern browsers support the TLS protocol, requiring the server to provide a valid digital certificate confirming its identity in order to establish a secure connection. It is possible for both the client and server to mutually authenticate each other, if both parties provide their own individual digital certificates.
+
+
+                                           How SSL Protocol estaiblishes connection...
+
+The client sends a request for a secure session to the server.
+The client receives the server's X.
+The client authenticates the server using a list of known certificate authorities.
+The client generates a random symmetric key and encrypts it using the server's public key.
+The server computes a value and encrypts it using its private key.
+The encrypted value is called a digital signature.
+The client decrypts the encrypted value using the server's public key and compares the value to its own computed value.
+The server responds with the same information as the client, and sends the server's certificate back to the client as well.
+The client verifies that the certificate is valid, and also verifies that the server is authentic and not an impersonator conducting a man-in-the-middle attack.
+After the TLS handshake, both sides use the same session keys for encryption.
+Once this handshake is done, the client key exchange takes place.
+The client sensor shares a secret key to be used in the following conversation.
+The client sends a finished message which is encrypted with a sacred key indicating the client part with Hank ship is complete.
+The server responds to the client with a finished message which is encrypted with the secret key indicating the server part of a handshake is complete
+
+
+                                                              Authentication
+
+During server authentication, a connection is only established if the client trusts the server based on the information presented by the server to the client in its certificate.
+During client authentication (if activated) the client sends its certificate information to the server. A connection is then only established if the client trusts the server and the server trusts the client, based on the information exchanged in both certificates.
+
+SSL uses digital signatures and digital certificates for establishing a trusted relationship between a sender and a receiver of information sent over a network connection.
+
+                                        Digital signature
+
+A digital signature is a unique, mathematically computed, signature that demonstrates the authenticity of a transmission.
+
+                                        Digital certificate
+
+A digital certificate allows unique identification. It is essentially an electronic ID card, issued by a trusted third party known as a certificate authority. Digital certificates form part of the ISO authentication framework, also known as the X.509 protocol. This framework provides for authentication across networks. A digital certificate serves two purposes: it establishes the owner's identity and it makes the owner's public key available.
+
+                              A digital certificate contains the following information:
+
+public key of the person being certified
+name and address of the person being certified, also known as the Distinguished Name (DN)
+digital signature of the certificate authority
+issue date
+expiry date
+If you send your digital certificate, containing your public key, to someone else, your private key prevents that person from misusing your digital certificate and posing as you.
+
+A digital certificate alone is not proof of an identity; it allows verification of the owner's identity, by providing the public key needed to check the owner's digital signature. Therefore, the digital certificate owner must protect the private key that belongs with the public key in the digital certificate. If the private key is stolen, anyone could pose as the legitimate owner of the digital certificate.
+
+Certificate authority (CA)
+A digital certificate is issued by a CA and has an expiry date. When requesting a digital certificate, you supply your distinguished name. The digitally signed certificate includes your distinguished name and the distinguished name of the CA. This allows verification of the CA.
+
+To communicate securely, the receiver must trust the CA that issued the certificate that the sender is using. Therefore, when a sender signs a message, the receiver must have the corresponding CA's signer certificate and public key designated as a trusted root key. Your Web browser has a default list of signer certificates for trusted CAs. If you want to trust certificates from another CA, you must receive a certificate from that CA and designate it as a trusted root key.
+
+Key ring
+A key ring is a file that contains the digital certificates, public keys, private keys, and trusted root keys used by a network communications security protocol such as SSL. Each certificate consists of a public key and a private key. A root certificate contains a trusted root key.
+
+SSL requires access to key rings for the establishment of secure connections. The key rings used by the Java™ Secure Socket Extension (JSSE) implementation of SSL are known as KeyStores.
+
+For information on how to create key rings, see Configuring SSL.
+   
+                                                        
+                                                VPN (virtual private network)
+
+
+
+                                                
+ 
+
