@@ -216,6 +216,4 @@ Size Limit: Sessions can store larger amounts of data compared to cookies becaus
 Security: Session data is generally more secure than cookies because it is stored on the server-side and is not directly accessible or modifiable by users. However, sessions are still vulnerable to session hijacking and session fixation attacks if not properly implemented and secured.
 In summary, cookies are small pieces of data stored on the client-side, while sessions store data on the server-side. Cookies are suitable for storing small amounts of data that need to persist across multiple requests, while sessions are used to maintain user-specific data and state across multiple requests in a more secure manner.
 
-
-
-
+httponly attributes means they can not be accessed by client side scripts... 
