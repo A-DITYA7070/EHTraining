@@ -124,7 +124,8 @@ Identity tokens are often issued alongside access tokens in authentication proto
 Examples include ID tokens in OpenID Connect, which are JWTs containing user identity claims.
 
 API Tokens:
-API tokens are credentials used to authenticate and authorize access to APIs (Application Programming Interfaces) or web services.                    API tokens are often used in API authentication schemes to identify and authenticate clients making requests to APIs.
+API tokens are credentials used to authenticate and authorize access to APIs (Application Programming Interfaces) or web services.                    
+API tokens are often used in API authentication schemes to identify and authenticate clients making requests to APIs.
 API tokens can be long-lived or short-lived and may be issued to individual users, applications, or services.
                     
 Cryptographic Tokens:
@@ -137,7 +138,13 @@ Examples include hardware security keys, smart cards, USB tokens, and security t
 These are just a few examples of the various types of tokens used in computer science, cryptography, and security. Tokens play a crucial rolein authentication, authorization, secure communication, and identity management, and understanding their different types and functions is essential for building secure and robust systems and applications.
 
 
+OAuth 2.0: If you’ve ever signed up to a new application and agreed to let it automatically source new contacts via Facebook or your phone contacts, then you’ve likely used OAuth 2.0. This standard provides secure delegated access. That means an application can take actions or access resources from a server on behalf of the user, without them having to share their credentials. It does this by allowing the identity provider (IdP) to issue tokens to third-party applications with the user’s approval.
 
+OpenID Connect: If you’ve used your Google to sign in to applications like YouTube, or Facebook to log into an online shopping cart, then you’re familiar with this authentication option. OpenID Connect is an open standard that organizations use to authenticate users. IdPs use this so that users can sign in to the IdP, and then access other websites and apps without having to log in or share their sign-in information. 
+
+SAML: You’ve more likely experienced SAML authentication in action in the work environment. For example, it enables you to log into your corporate intranet or IdP and then access numerous additional services, such as Salesforce, Box, or Workday, without having to re-enter your credentials. SAML is an XML-based standard for exchanging authentication and authorization data between IdPs and service providers to verify the user’s identity and permissions, then grant or deny their access to services.
+
+Enterprises rely on web frameworks and protocols like OAuth 2.0, OpenID, and SAML to bring structure and security to federated identity. Knowing when to use each is a key step towards protecting your organization’s data from the ground up.
 
 
 
