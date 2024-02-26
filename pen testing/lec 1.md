@@ -50,4 +50,27 @@ Diff types of files in hosting...
 4. CNAME (Canonical Name) :- An alias that points to another domain or subdomain but never an IP address 
                             Alias record mapping FQDN TO FQDN multiple hosts to a single location This record is also good for when
                             you want to change an IP address over Time as it allows to make change without affecting user bookmarks.
-5. 
+5. SOA (start of authority) :- Stores information about the domains and is used to direct how a DNS Zone propagates to secondary name
+                               servers.
+6. NS (Name server) :- Specifies which name servers are authorative for a domain or subdomains (these records should not be pointed to)
+                       a cname
+7. MX (mail exchange) :- Uses mail server to map where to deliver email for a domain (should point to a mail server name and not to an 
+                         ip address).
+8. TXT(text) :- Allows administration to add limited human and machine readable notes and can be used for things such as email 
+                validation,site and ownership verification,framework,policies etc. doesnot require special formating.
+9.  SRV (service) :- Allows services such as instant messaging and VoIP to be directed to a separate host and port location.
+10. SPF (sender policy framework) :- Helps prevent email spoofing and limits spammers.
+11. PTR (Pointer) :- A reverse of A and AAAA records which maps ip addresses to domain names these records requires domain authority
+                     and can't exist in the same zone as other DNS record types (put in reverse zone).
+
+
+
+                                     COMMON REQ HEADERS.....
+                        
+HOST :- some web servers host multiple websites so by providing the host headers you can tell it which one you require,otherwise you 
+        will just recieve the default website for the server.
+User-Agent :- This is your browser software and version number, telling the web server your browser software helps it format the    
+            website properly for your browser and some elements of HTML ,js and css are only available in certain browsers.
+Content-Length :- When sending data to server such as in  form ,the content length tells the web server how much data to except in 
+                   the web req , in this way server can ensure that is any data is missing.
+Accept/Encoding :-  Tell wen server 
