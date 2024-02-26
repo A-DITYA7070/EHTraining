@@ -2,17 +2,17 @@
 
                                                                     Authentication
                                                                     
-                    Authentication is the process of verifying the identity of a user or system attempting to access a resource, such as a computer system, network, or online service. In other words, it is the mechanism by which a system confirms that an entity (a user, a device, or another system) is who or what it claims to be.
+Authentication is the process of verifying the identity of a user or system attempting to access a resource, such as a computer system, network, or online service. In other words, it is the mechanism by which a system confirms that an entity (a user, a device, or another system) is who or what it claims to be.
 
-                    Authentication is crucial for ensuring the security and integrity of systems and data. It helps prevent unauthorized access and protects sensitive information from being accessed by malicious actors. Authentication typically involves one or more of the following factors:
+Authentication is crucial for ensuring the security and integrity of systems and data. It helps prevent unauthorized access and protects sensitive information from being accessed by malicious actors. Authentication typically involves one or more of the following factors:
 
-                        Knowledge Factor: Something the user knows, such as a password, PIN, or security question answer. This is the most common form of authentication and is widely used in various systems and applications.
+Knowledge Factor: Something the user knows, such as a password, PIN, or security question answer. This is the most common form of authentication and is widely used in various systems and applications.
 
-                        Possession Factor: Something the user has, such as a physical token (e.g., smart card, USB key) or a mobile device that generates one-time passwords (OTP). Possession-based authentication adds an extra layer of security because even if someone obtains the user's password, they would still need the physical token or device to complete the authentication process.
+Possession Factor: Something the user has, such as a physical token (e.g., smart card, USB key) or a mobile device that generates one-time passwords (OTP). Possession-based authentication adds an extra layer of security because even if someone obtains the user's password, they would still need the physical token or device to complete the authentication process.
 
-                        Biometric Factor: Something unique to the user's physical characteristics, such as fingerprints, iris scans, facial recognition, or voice recognition. Biometric authentication provides strong security and is increasingly used in modern devices and systems.
+Biometric Factor: Something unique to the user's physical characteristics, such as fingerprints, iris scans, facial recognition, or voice recognition. Biometric authentication provides strong security and is increasingly used in modern devices and systems.
 
-                        Location Factor: Where the user is accessing the system from, based on factors such as IP address, GPS coordinates, or proximity to known locations. Location-based authentication helps detect and prevent unauthorized access attempts from unfamiliar or suspicious locations.
+Location Factor: Where the user is accessing the system from, based on factors such as IP address, GPS coordinates, or proximity to known locations. Location-based authentication helps detect and prevent unauthorized access attempts from unfamiliar or suspicious locations.
 
                     Authentication can be performed through various methods and protocols, depending on the specific requirements and security policies of the system:
 
