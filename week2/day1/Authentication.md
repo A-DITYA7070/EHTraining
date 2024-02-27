@@ -142,7 +142,7 @@ Connection Termination:
 Once the client has finished its LDAP operations, it may choose to terminate the LDAP connection gracefully.
 LDAP is designed to be a lightweight, efficient protocol for accessing directory services, making it suitable for a wide range of applications and environments. It provides standardized mechanisms for querying and modifying directory data, facilitating interoperability and integration across different systems and platforms. Additionally, LDAP supports various security features, such as authentication and encryption, to ensure the confidentiality and integrity of directory communications.
 
-LDAP runs on port 
+LDAP runs on port 389 for plain text and 636 for encrypted text...
 
 IT supports following operations :- 
 
