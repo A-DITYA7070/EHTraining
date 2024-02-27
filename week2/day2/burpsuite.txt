@@ -1,0 +1,21 @@
+Proxy server :- A proxy server acts as a gateway between users and internet. It can be set up as a firewall or web filter, acting as a layer of cyber security that
+prevents cyber attacks from entering a private networks.It also protects computer from malwares and other threats.
+=> It improves privacy,security and performance.
+Tunneling :- Tunneling is a cryptographic network protocol that has multiple uses in networking:
+Packet movement
+Tunneling can move packets from one network to another by wrapping a packet inside another packet. This is called encapsulation.
+Port redirection
+Tunneling can redirect network traffic from one port to another. This allows secure access to network traffic and services across 
+firewalls and from outside the network.
+Data transmission
+Tunneling can transmit data across a public network, but the data is intended for use only within a private network.
+Remote access
+Tunneling can enable remote access users to connect to a variety of network resources through a public data network.
+Encrypted data transfer
+Tunneling can transfer encrypted data over the network
+
+Tunneling is a way to move packets from one network to another. Tunneling works via encapsulation: wrapping a packet inside another packet.
+It is a protocol that allows for the secure envirmoment of data from one network to another.
+A technique of internetworking called tunneling is used when src and destination networks of some type are to he connected through a network of diff type.'
+EX :- an ethernet to be connected to another ethernet through wan.
+IT works by encapsulating packets :- wrapping packets inside packets.
