@@ -20,3 +20,7 @@ It is a protocol that allows for the secure envirmoment of data from one network
 A technique of internetworking called tunneling is used when src and destination networks of some type are to he connected through a network of diff type.'
 EX :- an ethernet to be connected to another ethernet through wan.
 IT works by encapsulating packets :- wrapping packets inside packets.
+
+TARGET :- The Target tool enables you to define which targets are in scope for your current work. It also contains the site map and 
+Crawl paths tab, which show you detailed information about your target applications. You can use the information about your 
+target application's content and functionality to drive the workflow for your penetration testing.
