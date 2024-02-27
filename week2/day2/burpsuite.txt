@@ -1,4 +1,5 @@
-Proxy server :- A proxy server acts as a gateway between users and internet. It can be set up as a firewall or web filter, acting as a layer of cyber security that
+Proxy server :- A proxy server acts as a gateway between users and internet. It can be set up as a firewall or web filter, 
+acting as a layer of cyber security that
 prevents cyber attacks from entering a private networks.It also protects computer from malwares and other threats.
 => It improves privacy,security and performance.
 Tunneling :- Tunneling is a cryptographic network protocol that has multiple uses in networking:
