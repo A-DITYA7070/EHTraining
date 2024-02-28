@@ -196,3 +196,34 @@ Using complex algorithms, such as machine leaning, data mining, genetic programm
 XMLHttpRequest (XHR) objects are used to interact with servers. You can retrieve data from a URL without having to do a full page refresh. 
 This enables a Web page to update just part of a page without disrupting what the user is doing.
 
+                                                  LINK INJECTION :---
+
+Hyperlink injection vulnerability, also known as “Open Redirect,” occurs when an attacker manipulates the parameters of a
+hyperlink to redirect users to a malicious website without their knowledge or consent. This vulnerability emerges due to 
+improper validation of user input in web applications, allowing attackers to inject their own URLs into legitimate links.
+
+Risks Associated with Hyperlink Injection Vulnerability:
+Phishing Attacks: Attackers can exploit hyperlink injection to craft URLs that appear to be from trusted sources but lead 
+users to malicious websites designed to steal sensitive information like usernames, passwords, and credit card details.
+Malware Distribution: Malicious links can lead to websites that distribute malware, infecting users’ devices with viruses, 
+ransomware, or other malicious software.
+Trust Erosion: If users repeatedly encounter deceptive links on a website, they may lose trust in the platform,
+damaging its reputation and credibility.
+
+Prevention Measures:
+Input Validation: Implement strict input validation and filtering mechanisms to ensure that user-provided data, including URLs, 
+is properly sanitized before being used in creating hyperlinks.
+Whitelisting: Maintain a whitelist of trusted domains to which your website should redirect. Any attempt to redirect to a domain 
+outside this list should trigger an alert or be blocked.
+Encode URLs: Encode URLs to prevent attackers from injecting malicious characters that can manipulate the hyperlink’s behavior.
+Educate Users: Train your users to recognize signs of phishing attempts, such as unusual URLs or inconsistent branding on the redirected page.
+Implement Security Headers: Utilize security headers like “X-Frame-Options” and “Content Security Policy” to mitigate the risks associated 
+with hyperlink injection.
+
+
+IFRAME INJECTION ::::::---------------------
+
+Iframe injection is a technique where an attacker injects an iframe element into a web page to request resources from other domains. 
+When a user accesses the web page containing the iframe element, the user’s browser sends a request to the specified URL. 
+If the web application is vulnerable to SSRF, the attacker can control the URL and direct the request to an internal server or a 
+vulnerable external system.
