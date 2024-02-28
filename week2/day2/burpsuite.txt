@@ -24,3 +24,57 @@ IT works by encapsulating packets :- wrapping packets inside packets.
 TARGET :- The Target tool enables you to define which targets are in scope for your current work. It also contains the site map and 
 Crawl paths tab, which show you detailed information about your target applications. You can use the information about your 
 target application's content and functionality to drive the workflow for your penetration testing.
+
+
+Intruder :- Burp Intruder is a powerful tool for performing highly customizable, automated attacks against websites. It enables you to configure attacks 
+that send the same request over and over again, inserting different payloads into predefined positions each time.
+
+IT can be used to :-
+
+Fuzz for input-based vulnerabilities.
+Perform brute-force attacks.
+Enumerate valid identifiers and other inputs.
+Harvest useful data.
+
+INTRUDER ATTACK TYPES :-
+1). SNIPER :- This attack uses single set of payload, one and more payload positions, it places each payload into the 1st position then each payload
+             on second position and so on.
+2). Battering Ram :- This uses a single set of payload it iterates through payloads and places the same payloads into all of the defined
+                     payload postion at once.
+3). pitchfork :- This attack uses multiple payload sets there is diff payload set for each defined positions(maximum up to 20) this attack
+                 iterates through all payloads sets simultaneously so it uses the ist payload from each set and then second payload from each 
+                 set and so on.
+4). clustur bomb :- It uses multiple payload sets there is diff payload set for each defined position(up to max of 20) this attack iterates through
+                    each payload set in turn so that all permutation of payload combination are tested.
+
+REPEATER :-
+Burp Repeater is a tool that enables you to modify and send an HTTP or WebSocket message over and over. 
+It can be used to Send a request with varying parameter values to test for input-based.
+
+TARGET :- The Target tool enables you to define which targets are in scope for your current work. It also contains the site map and 
+Crawl paths tab, which show you detailed information about your target applications. You can use the information about your target application's content and 
+functionality to drive the workflow for your penetration testing.
+
+SEQUENCER :- 
+Burp Sequencer enables you to analyze the quality of randomness in a sample of tokens. You can use Sequencer to test any tokens that are intended to be unpredictable, such as:
+
+Session tokens.
+Anti-CSRF tokens.
+Password reset tokens.
+Sequencer runs multiple randomness tests against a sample of tokens, then compiles the results to give you an indication of the quality of 
+randomness in the sample.
+
+DECODER :- Burp Decoder enables you to transform data using common encoding and decoding formats. You can use Decoder to: Manually decode data. 
+Automatically identify and decode recognizable encoding formats, such as URL-encoding
+
+COMPARER :- Burp Comparer enables you to compare any two items of data. You can use Comparer to quickly and easily identify subtle differences
+between requests or responses. For example: To compare responses to failed logins that use valid and invalid usernames, for username enumeration.
+
+LOGGER :- Burp Logger records all the HTTP traffic that Burp Suite generates in real-time. You can use Logger to: Study the requests sent by 
+          any of Burp's tools or extensions. See the requests sent by Burp Scanner in real-time.
+
+ORGANISER :- Burp Organizer is a tool that enables you to store and annotate copies of HTTP messages that you want to come back to later. 
+Use Burp Organizer to better organize your penetration testing workflow, for example to:
+Store messages that you want to investigate later.
+Save messages that you've already identified as interesting.
+Save messages that you want to add to a report later.
