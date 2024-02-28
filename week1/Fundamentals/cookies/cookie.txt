@@ -183,14 +183,23 @@ stealing sensitive cookie data.
 SameSite: The SameSite attribute controls when cookies are sent in cross-origin requests. It can be set to 
 "Strict" (cookies are only sent in first-party context) or "Lax" (cookies are sent in first-party context and in 
 some cross-origin requests initiated by top-level navigations).
-The SameSite cookie attribute is a flag that can be included when setting cookies via HTTP response headers. It is used to mitigate certain types of cross-site request forgery (CSRF) and cross-site scripting (XSS) attacks by controlling whether cookies should be sent along with cross-site requests.
+The SameSite cookie attribute is a flag that can be included when setting cookies via HTTP response headers. 
+It is used to mitigate certain types of cross-site request forgery (CSRF) and cross-site scripting (XSS) attacks by 
+controlling whether cookies should be sent along with cross-site requests.
 
 There are three possible values for the SameSite attribute:
 
-Strict: With this value, cookies are only sent in a first-party context. This means that the cookie will only be sent along with requests originating from the same site that set the cookie. Cross-site requests, such as those initiated by links from other sites, won't include the cookie.
-Lax: Cookies will be sent along with cross-site requests if they are "safe." Safe cross-site requests are defined as top-level navigation using a safe HTTP method (GET, HEAD, OPTIONS), or when making POST requests with certain content types that do not risk user data exposure (such as application/x-www-form-urlencoded or multipart/form-data). This is a more relaxed setting compared to Strict.
-None: Cookies will be sent along with all cross-site requests. This is typically used for features that require cookie sharing across sites, such as third-party authentication.
-If the SameSite attribute is not set, it defaults to None, which can expose the user to certain security risks. It's important for web developers to set the SameSite attribute appropriately based on their application's security requirements.
+Strict: With this value, cookies are only sent in a first-party context. This means that the cookie will only be 
+sent along with requests originating from the same site that set the cookie. Cross-site requests, such as those initiated by links 
+from other sites, won't include the cookie.
+Lax: Cookies will be sent along with cross-site requests if they are "safe." Safe cross-site requests are defined as top-level 
+navigation using a safe HTTP method (GET, HEAD, OPTIONS), or when making POST requests with certain content types 
+that do not risk user data exposure (such as application/x-www-form-urlencoded or multipart/form-data). 
+This is a more relaxed setting compared to Strict.
+None: Cookies will be sent along with all cross-site requests. This is typically used for features that require cookie sharing across sites, 
+such as third-party authentication.
+If the SameSite attribute is not set, it defaults to None, which can expose the user to certain security risks. 
+It's important for web developers to set the SameSite attribute appropriately based on their application's security requirements.
 
 Here's an example of setting a cookie with the SameSite attribute in a HTTP response header:
 Set-Cookie: key=value; SameSite=Lax; Secure
