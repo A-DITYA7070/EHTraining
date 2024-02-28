@@ -114,3 +114,75 @@ b)   HTML TAG ATTRIBUTES :-
                 you to execute JavaScript code directly in the context of a URL.
                 For example: <a href=”javascript:alert(document.domain)”>
 
+ c)    XSS INTO JAVASCRIPT :- 
+                When xss context is js within the response many attack scenarios can occur...
+
+                                                            << ATTACK SCENARIOS >>
+        i) Terminating the existing script :- 
+            In the simplest case, it is possible to simply close the script tag that is enclosing the existing JavaScript, 
+            and introduce some new HTML tags that will trigger execution of JavaScript. For example, if the XSS context is as follows:
+
+            ex :- let the server is returning a script in respone like
+                  <script> 
+                        // code ....
+                        var input="contollable data"
+                  </script>
+            solution :- in this case we can exploit it but closing the script and using our own payload.
+                        like :- </script><img src=1 onerror alert(document.domain) >
+
+            How this gets executed ...
+            we closed the script tag which was being sent as response and inserted our own payload img which 
+            on execution can lead to redirecting the victim to our server..
+            
+         ii) Breaking out of javascript string :- 
+             In cases where xss content is inside a quoted string literal it is often possible to break out of string 
+             and execute js directly.
+             ex :- some ways to break out of string are..
+                   '-alert(document.domain)-'
+                   ‘;alert(document.domain)//
+
+              Some web applications attempt to prevent input from breaking out of the JavaScript string by escaping any 
+              single quote characters with a backslash. A backslash before a character tells the JavaScript parser that 
+              the character should be interpreted literally, and not as a special character such as a string terminator. 
+              In this situation, applications often make the mistake of failing to escape the backslash character itself. 
+              This means that an attacker can use their own backslash character to neutralize the backslash that is added 
+              by the application.
+              For example, suppose that the input:
+              ‘;alert(document.domain)//
+              gets converted to:
+              \’;alert(document.domain)//
+              
+              You can now use the alternative payload:
+              \’;alert(document.domain)//
+              which gets converted to:
+              \\’;alert(document.domain)//
+              Here, the first backslash means that the second backslash is interpreted literally, and not as a special character. 
+              This means that the quote is now interpreted as a string terminator, and so the attack succeeds.
+              Some websites make XSS more difficult by restricting which characters you are allowed to use. 
+              This can be on the website level or by deploying a WAF that prevents your requests from ever reaching the website. 
+              In these situations, you need to experiment with other ways of calling functions which bypass these security measures. 
+              One way of doing this is to use the throw statement with an exception handler. This enables you to pass arguments to a 
+              function without using parentheses. The following code assigns the alert() function to the global exception handler and 
+              the throw statement passes the 1 to the exception handler (in this case alert). The end result is that the alert() function 
+              is called with 1 as an argument.
+
+              onerror=alert;throw 1
+           
+        iii)  Making use of HTML encoding..
+              when xss context is existing js within a quoted tag attribute such as an event handler, it is possible to make use of 
+              HTML-encoding to work around some input filters.
+
+              When the browser has parsed out the HTML tags and attributes within a response, it will perform HTML-decoding of tag 
+              attribute values before they are processed any further. If the server-side application blocks or sanitizes certain characters 
+              that are needed for a successful XSS exploit, you can often bypass the input validation by HTML-encoding those characters.
+              For example, if the XSS context is as follows:
+              <a href=”#” onclick=”… var input=’controllable data here’; …”>
+              and the application blocks or escapes single quote characters, you can use the following payload to break out of the 
+              JavaScript string and execute your own script:
+            
+              &apos;-alert(document.domain)-&apos;
+
+              The &apos; sequence is an HTML entity representing an apostrophe or single quote. Because the browser HTML-decodes the value 
+              of the onclick attribute before the JavaScript is interpreted, the entities are decoded as quotes, which become string delimiters, 
+              and so the attack succeeds.
+  
