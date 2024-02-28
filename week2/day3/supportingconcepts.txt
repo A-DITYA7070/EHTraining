@@ -56,3 +56,50 @@ Test The Attack In a Browser — Finally, if you succeed in finding a payload th
 the attack to a real browser (by pasting the URL into the address bar, or by modifying the request in Burp Proxy’s intercept view, 
 and see if the injected JavaScript is indeed executed. Often, it is best to execute some simple JavaScript like alert(document.domain) 
 which will trigger a visible popup within the browser if the attack succeeds.
+
+
+
+=====>>>>>  Exploitation of Reflected XSS Vulnerabilities
+
+~ Reflected XSS bugs can be exploited to steal cookies, capture passwords and perform CSRF as shown below:
+
+Ø Exploiting Reflected XSS to steal cookies.
+
+~ Stealing cookies is a traditional way to exploit XSS. Most web applications use cookies for session handling. You can exploit cross-site scripting vulnerabilities to send the victim’s cookies to your own domain, then manually inject the cookies into your browser and impersonate the victim.
+
+~ This approach is limited to:
+
+a. Victim might not be logged in.
+
+b. Many applications hide cookies from their JavaScript using the HttpOnly flag.
+
+c. Sessions might be locked to additional factors like the user’s IP address.
+
+d. Session might time-out before you’re able to hijack it.
+
+Ø Exploiting Reflected XSS to capture passwords
+
+~ These days, many users have password managers that auto-fill their passwords. You can take advantage of this by creating a password input, 
+reading out the auto-filled password, and sending it to your own domain. This technique avoids most of the problems associated with stealing 
+cookies, and can even gain access to every other account where the victim has reused the same password.
+
+~ The primary disadvantage of this technique is that it only works on users who have a password manager that performs password auto-fill. 
+(Of course, if a user doesn’t have a password saved you can still attempt to obtain their password through an on-site phishing attack, but 
+it’s not quite the same.)
+
+Ø Exploiting Reflected XSS to perform CSRF
+
+Anything a legitimate user can do on a web site, you can probably do too with XSS. Depending on the site you’re targeting, 
+you might be able to make a victim send a message, accept a friend request, commit a backdoor to a source code repository, or transfer some Bitcoin.
+Some websites allow logged-in users to change their email address without re-entering their password. 
+If you’ve found an XSS vulnerability, you can make it trigger this functionality to change the victim’s email 
+address to one that you control, and then trigger a password reset to gain access to the account.
+10. Mitigation of Reflected XSS vulnerabilities
+First and foremost, from the user’s point-of-view, vigilance is the best way to avoid XSS scripting. Specifically, 
+this means not clicking on suspicious links which may contain malicious code. Suspicious links include those found in:
+a)Emails from unknown senders
+b)A website’s comments section
+c)Social media feed of unknown users
+Another measure is taken by the website operator to prevent potential abuse to their users by:
+d)Usage of (WAFs) Web Application Firewalls.
+e)Sanitization of data input.
