@@ -79,7 +79,8 @@ The HTTP X-XSS-Protection header is available in common browsers such as Interne
 filtering suspicious information to stop reflected XSS attacks. When the header identifies XSS, it prevents the page from 
 loading without sanitizing inputs within the page.  
 Reliance on the X-XSS-Protection header may give rise to more client-side security risks. You should use it with discretion. 
-You should set the header to X-XSS-Protection: 0, disabling the XSS Auditor and preventing it from adopting the default response activity of the browser. 
+You should set the header to X-XSS-Protection: 0, disabling the XSS Auditor and preventing it from adopting the default response activity 
+of the browser. 
 
                                                             REFELECTED XSS SCENARIOS :-
 
@@ -331,4 +332,12 @@ xiv) This payload creates a new iframe element and sets its src property to a Ja
      var iframe = document.createElement("iframe"); iframe.src = "javascript:alert(document.cookie)"; 
      document.body.appendChild(iframe);
      </script>
+
+                                                   <===  STORED XSS ===>
+
+Stored XSS generally occurs when user input is stored on the target server, such as in a database, 
+in a message forum, visitor log, comment field, etc. And then a victim is able to retrieve the stored data 
+from the web application without that data being made safe to render in the browser. (owasp.org)
+
+It is also called 2nd order xss vulnerability because req goes to server 2 times.
 
