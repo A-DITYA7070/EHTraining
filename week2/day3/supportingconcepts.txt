@@ -9,3 +9,16 @@
   The onerror event is particularly useful for gracefully handling situations where external resources may fail to load, providing fallbacks, 
   logging errors, or informing users about the issue. It helps improve the user experience by giving developers the ability to respond to 
   errors in a controlled manner.
+
+
+HOW TO PREVENT COOKIE STEALING :-
+1) set-cookie attribute to httpOnly :- this attribute means that cookie and other information stored can not be accessed by client
+                                       side scripts.
+2) sameSite :- this attribute controls when cookies are sent in cross-origin requests. It is often useful when website is interacting
+               with 3rd party domain/websites.
+               sameSite attributes (strict,lax,none)
+               a) strict :- strict means cookie will only be sent along with req originating from same src/origin
+               b) lax :- cookies will be sent to 3rd party only if they are safe, safe means they are using Http POST
+                         option methods where user data is not get exposed
+                         this is often useful when dealing with 3rd party authentication
+               c) none :- cookies will be sent along with all cross site req (this is vulnerable) we should report this case.
