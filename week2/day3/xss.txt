@@ -24,13 +24,85 @@ the attacker's script is executed in their browser, and their cookies are sent t
 
 TYPES OF XSS :-
 
-Stored XSS: In this attack, the malicious script is stored on the vulnerable website and served to every user who visits the affected page. 
-Stored XSS attacks can have a widespread impact, affecting all users who visit the affected page.
+REFLECTED XSS :- Reflected xss vulnerability arises when application recieves input as a http req and includes that data within the 
+immediate response in unsafe way.
 
-Reflected XSS: In this type of attack, the malicious script is not stored on the vulnerable website but is instead injected into the page by 
-the attacker and reflected in the user's browser. Reflected XSS attacks are typically less severe than stored XSS attacks, as they only 
-affect the user who the attacker specifically targeted.
+ex:- let vulnerable web page has search function that recieves user supplied search term in a url parameter as following:-
+https://target.com/search?term=phone
+this return a res :- <p> you searched for : phone </phone>
+let the web app does not sanitises data then attacker can attack like :-
+https://target.com/search?term=<script>alert(document.cookie) </script> </p>
+At such a point, if another application user requests the attacker’s URL, then the script supplied by the attacker will execute in the 
+victim user’s browser, in the context of their session with the application.
 
-DOM-based XSS: This type of XSS attack occurs when a vulnerability exists in client-side code, such as JavaScript, rather than in the 
-server-side code that generates the page. In DOM-based XSS attacks, the browser executes the malicious script rather than the server.
+=> reflected xss is also called 1-order xss because its req goes to the server once, and as response to that req attacker 
+  can include malicious payload in response, which after execution in victims browser can lead to xss attack.
 
+impact :- 
+1) Perform any kind of action that user can perform, if user is admin it can lead to compromise of whole website.
+2) view,update,delete any kind of data that user is able to do.
+3) Stealing of sensative information of user .
+4) session hijacking etc.
+
+                                                                    <==== Reflected XSS Prevention ===>>
+
+Here are a few steps you can take to prevent reflected XSS in your web applications.
+a) Sanitizing Inputs
+You can sanitize reflected and stored cross-site scripting via the server-side, and there are several ways of carrying this out. 
+Denylisting characters that you decide are unsafe won’t work in the long term because malicious users could bypass it.  
+Here is how you can use allow-listing to determine what is permitted: 
+Utilize a security encoding library for encoding user input and all parameters. If you want to insert user/parameters 
+input data into the HTML body, use an HTML escape before the user-supplied string.
+Encode all characters that may influence the execution context, whether it shows the start of an event, CSS style, 
+script, using a function such as htmlentities().
+Escape attributes if you want to insert user/parameter input details into the HTML common attributes. 
+Do not employ event handles or attributes such as style, href, or src.
+Add quotes to your attributes, and in general, escape every non-alphanumeric character.
+Use JavaScript escaping for dynamically created JS code, where you need to insert user/parameters data input into script tags or event handlers. 
+The safest place to put data is within any quoted value. Anywhere else, it will be difficult to sanitize since switching context is simple. 
+
+b) Use HTTPOnly Cookie Flag
+It is hard to secure against all XSS flaws in your application. To minimize the impact of XSS vulnerabilities, utilize the HTTPOnly 
+flag-providing the browser supports it. This flag guarantees that cookies cannot be attained via client side scripts, stopping XSS attacks.  
+Use the HTTPOnly flag on session cookies, and all custom cookies are not being accessed by your JavaScript code. 
+You enable the flag in .NET applications default. However, it must be activated manually in different languages.   
+
+c) Implement Content Security Policy
+Content Security Policy (CSP) is a strategy that helps mitigate the effect of XSS vulnerabilities. 
+This browser-side approach allows you to create lists outlining access permissions to client-side resources, 
+including CSS and JavaScript. CSP uses an HTTP header to tell the browser to execute resources from the stated sources. 
+For example, the following command instructs the site browser to load all resources from an identified source:
+Content-Security-Policy: default-src: 'self'; script-src: 'self' static.domain.tld
+
+d) X-XSS-Protection Header
+The HTTP X-XSS-Protection header is available in common browsers such as Internet Explorer and Google Chrome, 
+filtering suspicious information to stop reflected XSS attacks. When the header identifies XSS, it prevents the page from 
+loading without sanitizing inputs within the page.  
+Reliance on the X-XSS-Protection header may give rise to more client-side security risks. You should use it with discretion. 
+You should set the header to X-XSS-Protection: 0, disabling the XSS Auditor and preventing it from adopting the default response activity of the browser. 
+
+                                                            REFELECTED XSS SCENARIOS :-
+
+a)   XSS BETWEEN HTML TAGS :- 
+    Here one needs to introduce some new HTML tags designed to trigger execution of JavaScript when XSS 
+    context is text between HTML tags as shown below:
+    ex:- 1) <script>alert(document.cookie)</script>
+         2) <img src=1 onerror=alert(1)>
+
+     IF nothing is encoded in the response to a req made by victim we can insert scripts into that and in that case 
+     the script will execute an we can manage to steal cookie or sensative information.
+
+b)   HTML TAG ATTRIBUTES :- 
+       case i) when can occur :- in fields such as input let if angle brackets are not encoded or blocked in such case we
+                       can close the brackets of attributes and embeed our script into that as the response.
+                      ex :- <input type="text" value="name" />
+                            let angle brackets are not encoded
+                            so we can test by injecting the payload
+                           "><script>alert(document.domain)</script 
+                           so this " close the value field and script is executed in the victims browser leading to attack.
+       case ii) what if angle brackets are encoded/blocked..
+                in this case our script will not execute so in this case we can use event handler to plan our attack..
+                 ex :- “autofocus onfocus=alert(document.domain) x=”
+                        this will execute and attack is executed..
+                          
+        
