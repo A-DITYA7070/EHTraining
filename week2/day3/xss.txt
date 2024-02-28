@@ -10,7 +10,8 @@ Cross-Site Scripting (XSS) is a type of security vulnerability that occurs when 
 viewed by other users. This malicious code can be used to steal sensitive information, such as login credentials or sensitive data, or to perform 
 actions on behalf of the user, such as posting a malicious message or making unauthorized purchases.
 
-XSS is a way for attackers to inject malicious scripts into websites that other users view, which can lead to the compromise of sensitive information or the unauthorized manipulation of data.
+XSS is a way for attackers to inject malicious scripts into websites that other users view, which can lead to the compromise of sensitive 
+information or the unauthorized manipulation of data.
 
 EX :-
 An attacker finds a vulnerable web page that allows user-supplied data to be displayed on the page without proper sanitization.
