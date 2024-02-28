@@ -65,7 +65,9 @@ which will trigger a visible popup within the browser if the attack succeeds.
 
 Ø Exploiting Reflected XSS to steal cookies.
 
-~ Stealing cookies is a traditional way to exploit XSS. Most web applications use cookies for session handling. You can exploit cross-site scripting vulnerabilities to send the victim’s cookies to your own domain, then manually inject the cookies into your browser and impersonate the victim.
+~ Stealing cookies is a traditional way to exploit XSS. Most web applications use cookies for session handling. You can exploit 
+cross-site scripting vulnerabilities to send the victim’s cookies to your own domain, then manually inject the cookies into 
+your browser and impersonate the victim.
 
 ~ This approach is limited to:
 
