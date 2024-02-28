@@ -98,11 +98,19 @@ b)   HTML TAG ATTRIBUTES :-
                       ex :- <input type="text" value="name" />
                             let angle brackets are not encoded
                             so we can test by injecting the payload
-                           "><script>alert(document.domain)</script 
+                           "><script>alert(document.domain)</script>
                            so this " close the value field and script is executed in the victims browser leading to attack.
        case ii) what if angle brackets are encoded/blocked..
                 in this case our script will not execute so in this case we can use event handler to plan our attack..
                  ex :- “autofocus onfocus=alert(document.domain) x=”
                         this will execute and attack is executed..
+                  NOTE :- The above payload creates an onfocus event that will execute JavaScript when the element receives the focus, 
+                          and also adds the autofocus attribute to try to trigger the onfocus event automatically without any user interaction. 
+                          Finally, it adds x=" to gracefully repair the following markup.
                           
-        
+     case iii) If xss context is into the href attribute 
+               sometime we have link so we can check for javascript pseudo protocol to execute our script.
+                The JavaScript pseudo-protocol, often seen as javascript: followed by some JavaScript code, is a feature that allows 
+                you to execute JavaScript code directly in the context of a URL.
+                For example: <a href=”javascript:alert(document.domain)”>
+
