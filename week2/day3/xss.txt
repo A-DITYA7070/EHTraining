@@ -1,1 +1,33 @@
 
+WHAT IS XSS ?
+Cross-site scripting (also known as XSS) is a web security vulnerability that allows an attacker to compromise the interactions that users have 
+with a vulnerable application. It allows an attacker to circumvent the same origin policy, which is designed to segregate different websites from each other.
+Cross-site scripting vulnerabilities normally allow an attacker to masquerade as a victim user, to carry out any actions that the user is able to perform, and to access any of the user's data. If the victim user has privileged access within the application, then the attacker might be able to gain full control over all of the application's functionality and data.
+
+Cross-Site Scripting (XSS) is a type of security vulnerability that occurs when an attacker can inject malicious code into a web page 
+viewed by other users. This malicious code can be used to steal sensitive information, such as login credentials or sensitive data, or to perform 
+actions on behalf of the user, such as posting a malicious message or making unauthorized purchases.
+
+XSS is a way for attackers to inject malicious scripts into websites that other users view, which can lead to the compromise of sensitive information or the unauthorized manipulation of data.
+
+EX :-
+An attacker finds a vulnerable web page that allows user-supplied data to be displayed on the page without proper sanitization.
+The attacker crafts a malicious script and injects it into the vulnerable page by entering it as a comment or through a form field.
+When other users visit the page, the malicious script is executed in their browser, allowing the attacker to steal sensitive information 
+such as user credentials or to perform actions on behalf of the affected user.
+For example, a website has a search feature that displays search results based on user-supplied keywords. An attacker could craft a malicious 
+script that steals the user's cookies and sends them to a server controlled by the attacker. When other users search for something on the site, 
+the attacker's script is executed in their browser, and their cookies are sent to the attacker's server.
+
+TYPES OF XSS :-
+
+Stored XSS: In this attack, the malicious script is stored on the vulnerable website and served to every user who visits the affected page. 
+Stored XSS attacks can have a widespread impact, affecting all users who visit the affected page.
+
+Reflected XSS: In this type of attack, the malicious script is not stored on the vulnerable website but is instead injected into the page by 
+the attacker and reflected in the user's browser. Reflected XSS attacks are typically less severe than stored XSS attacks, as they only 
+affect the user who the attacker specifically targeted.
+
+DOM-based XSS: This type of XSS attack occurs when a vulnerability exists in client-side code, such as JavaScript, rather than in the 
+server-side code that generates the page. In DOM-based XSS attacks, the browser executes the malicious script rather than the server.
+
