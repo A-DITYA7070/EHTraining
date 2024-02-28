@@ -1,1 +1,5 @@
 
+                                                        < ==== CSRF ==== > 
+
+csrf also known as xsrf,sea surf or session riding is an attack vector that tricks a web browser into executing an unwanted action 
+in an application to which a user is logged in.
