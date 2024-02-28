@@ -1,1 +1,11 @@
-
+1) onerror event :- 
+  The onerror event is an event handler attribute in HTML and JavaScript that is triggered when an error occurs during the 
+  loading of an external resource, such as an image, script, or stylesheet. This event provides a way to handle errors gracefully 
+   within your web application.
+  The onerror event handler can be attached to various HTML elements that load external resources, such as <img>, 
+  <script>, <link>, etc. When an error occurs while loading the specified resource, the function assigned to the onerror
+  attribute is executed.
+  <img src="image.jpg" onerror="alert('Failed to load image!');">
+  The onerror event is particularly useful for gracefully handling situations where external resources may fail to load, providing fallbacks, 
+  logging errors, or informing users about the issue. It helps improve the user experience by giving developers the ability to respond to 
+  errors in a controlled manner.
