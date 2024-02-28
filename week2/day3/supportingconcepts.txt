@@ -159,8 +159,40 @@ Security testing is an important aspect of overall web application security. Sec
 
 Here are some steps to follow to ensure security testing:
 
-Conduct regular security scans: Regular security scans of your web application can help you identify potential vulnerabilities, including XSS. There are several commercial and open-source security scanning tools available that can be used to automate the process.
-Perform penetration testing: Penetration testing is a simulated attack on your web application to identify vulnerabilities. A professional security testing company can conduct a penetration test for you or use an open-source tool like OWASP ZAP to perform the test yourself.
-Manually test your application: Testing your web application can help you identify vulnerabilities that automated security scans may not detect. This can include testing for XSS by attempting to inject malicious payloads into your web application.
-Test during development: It is much easier and cost-effective to find and fix vulnerabilities during the development process rather than after the application has been deployed. Incorporate security testing into your development process to ensure vulnerabilities are found and fixed early.
-Regularly review your security testing results: Regularly reviewing your security testing results can help you track progress and identify areas that need improvement. This can help you to continually improve your overall security posture and reduce the risk of XSS attacks.
+Conduct regular security scans: Regular security scans of your web application can help you identify potential vulnerabilities, including XSS. 
+There are several commercial and open-source security scanning tools available that can be used to automate the process.
+Perform penetration testing: Penetration testing is a simulated attack on your web application to identify vulnerabilities. 
+A professional security testing company can conduct a penetration test for you or use an open-source tool like OWASP ZAP to perform the test yourself.
+Manually test your application: Testing your web application can help you identify vulnerabilities that automated security scans may not detect. 
+This can include testing for XSS by attempting to inject malicious payloads into your web application.
+Test during development: It is much easier and cost-effective to find and fix vulnerabilities during the development process 
+rather than after the application has been deployed. Incorporate security testing into your development process to ensure vulnerabilities are 
+found and fixed early.
+Regularly review your security testing results: Regularly reviewing your security testing results can help you track progress 
+and identify areas that need improvement. This can help you to continually improve your overall security posture and reduce the 
+risk of XSS attacks.
+
+
+===> SITE DFACEMENT :-  Website defacement is a type of vandalism that involves altering a website's visual appearance or content without permission. 
+                        It's similar to electronic graffiti and is often carried out by hacktivists.
+
+Defacement can include:
+i)   Replacing content with malicious messages
+ii)  Adding disturbing images
+iii) Using offensive phrases
+iv)  Replacing the website with malware or a website of the attacker's own
+
+Defacement attacks can damage a website's brand and reputation, even after the attacker's message has been removed. For example,
+if a website is defaced, customers may feel that their personal information is no longer secure. This can lead to a loss of trust, 
+which is difficult to regain. 
+
+Some techniques for website defacement detection include:
+Checksum comparison
+Diff comparison
+DOM tree analysis
+Using complex algorithms, such as machine leaning, data mining, genetic programming and page screenshot analysis 
+
+
+XMLHttpRequest (XHR) objects are used to interact with servers. You can retrieve data from a URL without having to do a full page refresh. 
+This enables a Web page to update just part of a page without disrupting what the user is doing.
+
