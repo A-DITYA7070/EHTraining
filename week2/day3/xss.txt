@@ -44,7 +44,7 @@ impact :-
 3) Stealing of sensative information of user .
 4) session hijacking etc.
 
-                                                                    <==== Reflected XSS Prevention ===>>
+                                    <==== Reflected XSS Prevention ===>>
 
 Here are a few steps you can take to prevent reflected XSS in your web applications.
 a) Sanitizing Inputs
@@ -82,7 +82,7 @@ Reliance on the X-XSS-Protection header may give rise to more client-side securi
 You should set the header to X-XSS-Protection: 0, disabling the XSS Auditor and preventing it from adopting the default response activity 
 of the browser. 
 
-                                                            REFELECTED XSS SCENARIOS :-
+                                                REFELECTED XSS SCENARIOS :-
 
 a)   XSS BETWEEN HTML TAGS :- 
     Here one needs to introduce some new HTML tags designed to trigger execution of JavaScript when XSS 
@@ -237,8 +237,11 @@ b)   HTML TAG ATTRIBUTES :-
               ways of executing alert() without triggering AngularJS's window detection:
 
               [1].map(alert)
+           
+         vi)  DOM XSS in AngularJS expression with angle brackets and double quotes HTML-encoded
+              {{$on.constructor('alert(1)')()}}
 
-                                                         DOM BASED XSS  :-----
+                                                    DOM BASED XSS  :-----
 
     DOM-based XSS (Document Object Model-based Cross-Site Scripting) is a type of XSS attack where the payload is executed as a result of modifying 
     the Document Object Model (DOM) environment in the victim's browser. Unlike Reflected XSS and Stored XSS, which involve injecting malicious 
