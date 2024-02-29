@@ -63,13 +63,18 @@ If-Modified-Since: Mon, 18 Jul 2016 02:36:04 GMT
 If-None-Match: "c561c68d0ba92bbeb8b0fff2a9199f722e3a621a"
 Cache-Control: max-age=0
 
+The Connection general header controls whether the network connection stays open after the current transaction finishes. 
+If the value sent is keep-alive , the connection is persistent and not closed, allowing for subsequent requests to the same server to be done.
 
                                                       Res Header :- 
 
 A response header is an HTTP header that can be used in an HTTP response and that doesn't relate to the content of the message. 
 Response headers, like Age, Location or Server are used to give a more detailed context of the response.
 Not all headers appearing in a response are categorized as response headers by the specification. 
-For example, the Content-Type header is a representation header indicating the original type of data in the body of the response message (prior to the encoding in the Content-Encoding representation header being applied). However, "conversationally" all headers are usually referred to as response headers in a response message.
+For example, the Content-Type header is a representation header indicating the original type of data in the body of the response 
+message (prior to the encoding in the Content-Encoding representation header being applied). However, "conversationally"
+all headers are usually referred to as response headers in a response message.
+
 
 Res Header ex .
 
@@ -90,6 +95,64 @@ X-Backend-Server: developer2.webapp.scl3.mozilla.com
 X-Cache-Info: not cacheable; meta data too large
 X-kuma-revision: 1085259
 x-frame-options: DENY
+
+What is cache-control?
+Cache-control is an HTTP header that dictates browser caching behavior. In a nutshell, when someone visits a website,
+their browser will save certain resources, such as images and website data, in a store called the cache. When that user revisits 
+the same website, cache-control sets the rules which determine whether that user will have those resources loaded from their local 
+cache, or whether the browser will have to send a request to the server for fresh resources. 
+
+As explained above, browser caching is when a web browser saves website resources so it doesn’t have to fetch them again from a server. 
+For example, a background image on a website might be saved locally in cache so that when a user visits that page for the second time, 
+the image will load from the user’s local files and the page will load much faster.
+
+Browsers will only store these resources for a specified period of time, known as the time to live (TTL). If a user requests a cached 
+resource after the TTL has expired, the browser will have to reach out to the server again and download a fresh copy of the resource. 
+How do browsers and web servers know the TTL for each resource? This is where HTTP headers come into play.
+
+
+What is in a cache-control header?
+Headers consist of key-value pairs which are separated by a colon. For cache-control, the ‘key’, or the part to the left of the colon, 
+is always ‘cache-control’. The ‘value’ is what’s found on the right of the colon, and there can be one or several comma-separated values
+for cache control.
+These values are called directives, and they dictate who can cache a resource as well as how long those resources can be cached before 
+they must be updated. Below we go through some of the most common cache-control directives:
+
+cache-control: private
+A response with a ‘private’ directive can only be cached by the client and never by an intermediary agent, such as a CDN or a proxy. 
+These are often resources containing private data, such as a website displaying a user’s personal information.
+A cachcache-control: public
+Conversely, the ‘public’ directive means the resource can be stored by any cache.e-control header can appear in both HTTP 
+requests and responses.
+
+cache-control: no-store
+A response with a ‘no-store’ directive cannot be cached anywhere, ever. This means that every time a user requests this data, 
+a request must be sent to the origin server for a fresh copy. This directive is typically reserved for resources that contain 
+extremely sensitive data, such as bank account information.
+
+cache-control: no-cache
+This directive means that cached versions of the requested resource cannot be used without first checking to see if there is an 
+updated version. This is typically done using an ETag.
+
+An ETag is another HTTP header which contains a token unique to the version of the resource at the time it was requested. 
+This token is changed on the origin server whenever the resource is updated.
+
+When a user returns to a page with a ‘no-cache’ resource, the client will always have to connect to the origin server and 
+compare the ETag on the cached resource with one on the server. If the ETags are identical, the cached resource will be 
+provided to the user. If not, this means that the resource has been updated and the client will need to download a fresh 
+version to provide to the user. This process ensures that the user is always getting the most up-to-date version of that 
+resource without requiring unnecessary downloads.
+
+cache-control: max-age
+This directive dictates the time to live, in other words how many seconds a resource can be served from cache after it's been 
+downloaded. For example, if the max age is set to 1800, this means that for 1,800 seconds (30 minutes) after the resource was 
+first requested from the server, the user will be served a cached version of that resource on subsequent requests. If the user 
+requests the resource again after that 30 minutes has expired, the client will have to request a fresh copy from the origin server.
+
+cache-control: s-maxage
+The ‘s-maxage’ directive is specifically for shared caches such as CDNs, and it dictates how long those shared caches can keep 
+serving up the resource from cache. This directive overrides the ‘max-age’ directive for individual clients.
+
 
 
                                                 COOKIES
@@ -128,7 +191,8 @@ it is important to be aware of the privacy implications of cookies and to take s
 
                                                         NEED OF COOKIES 
 
-Cookies are essential components of web technology that enable websites to store and retrieve information on a user's browser or device. They serve several crucial purposes in modern web development:
+Cookies are essential components of web technology that enable websites to store and retrieve information on a user's 
+browser or device. They serve several crucial purposes in modern web development:
 Session Management: Cookies are commonly used to manage user sessions. When a user logs into a website, 
 a session cookie is often created to keep track of the user's authentication status. This allows the user to navigate between 
 pages on the site without needing to re-authenticate on each request.
@@ -213,16 +277,110 @@ Cookies and sessions are both mechanisms used to maintain state in web applicati
 
 Cookies:
 
-Storage: Cookies are small pieces of data stored on the client-side (in the user's browser) as text files. They are sent to the server with every HTTP request, including requests for images, CSS files, and JavaScript files, associated with the same domain that set the cookie.
-Persistence: Cookies can have an expiration date, after which they are automatically deleted by the browser. Alternatively, they can be session cookies, which are deleted when the browser session ends (i.e., when the user closes the browser).
+Storage: Cookies are small pieces of data stored on the client-side (in the user's browser) as text files. They are sent to the server 
+with every HTTP request, including requests for images, CSS files, and JavaScript files, associated with the same domain that set the cookie.
+Persistence: Cookies can have an expiration date, after which they are automatically deleted by the browser. Alternatively, they can 
+be session cookies, which are deleted when the browser session ends (i.e., when the user closes the browser).
 Size Limit: Cookies have a relatively small size limit, typically around 4 KB per cookie.
-Security: Cookies can be manipulated by users, and their data can be exposed if not properly secured. They are susceptible to cross-site scripting (XSS) and cross-site request forgery (CSRF) attacks if not used securely.
+Security: Cookies can be manipulated by users, and their data can be exposed if not properly secured. They are susceptible to 
+cross-site scripting (XSS) and cross-site request forgery (CSRF) attacks if not used securely.
 Sessions:
 
-Storage: Sessions store data on the server-side. When a user visits a website, the server generates a unique session ID, which is then stored as a cookie on the client-side. The session data is typically stored in a server-side database or memory store (e.g., Redis).
+Storage: Sessions store data on the server-side. When a user visits a website, the server generates a unique session ID, which 
+is then stored as a cookie on the client-side. The session data is typically stored in a server-side database or memory store (e.g., Redis).
 Persistence: Session data persists on the server until it expires or until the user logs out or the session is invalidated.
 Size Limit: Sessions can store larger amounts of data compared to cookies because the data is stored on the server-side.
-Security: Session data is generally more secure than cookies because it is stored on the server-side and is not directly accessible or modifiable by users. However, sessions are still vulnerable to session hijacking and session fixation attacks if not properly implemented and secured.
-In summary, cookies are small pieces of data stored on the client-side, while sessions store data on the server-side. Cookies are suitable for storing small amounts of data that need to persist across multiple requests, while sessions are used to maintain user-specific data and state across multiple requests in a more secure manner.
+Security: Session data is generally more secure than cookies because it is stored on the server-side and is not directly accessible 
+or modifiable by users. However, sessions are still vulnerable to session hijacking and session fixation attacks if not properly 
+implemented and secured.
+In summary, cookies are small pieces of data stored on the client-side, while sessions store data on the server-side. Cookies are suitable 
+for storing small amounts of data that need to persist across multiple requests, while sessions are used to maintain user-specific data 
+and state across multiple requests in a more secure manner.
 
 httponly attributes means they can not be accessed by client side scripts... 
+
+COOKIES ARE GENERALLY stored in the browser, website stores a corresponding file (with the same id tag) to the one they set in your browser
+and in this file they can track and keep info on your movements within the site and any info you give while visiting the site..
+
+TYPES OF COOKIES :-
+1) Session Cookies :-
+Imagine trying to shop on Amazon if you couldn’t fill your cart until you were ready to check out. You’d have to remember 
+all the items you wanted to buy as you browse the site.
+Without session cookies, that situation would be a reality.
+It’s easiest to think of session cookies as a website’s short-term memory. They let sites recognise you as you move from page
+to page within their domain. Without the session cookies, you’d be treated as a new visitor every time you clicked on a new internal link.
+They do not collect any information about your computer, and they contain no personally identifiable information that can link a 
+session to a particular user.
+Session cookies are temporary; when you close your browser, your computer will automatically delete them all.
+
+2) FIRST PARTY COOKIES :- 
+Also known as persistent cookies, permanent cookies, and stored cookies, first-party cookies are akin to a website’s long-term memory. 
+They help sites to remember your information and settings when you revisit them in the future.
+
+Without these cookies, sites would not be able to remember your preferences such as menu settings, themes, language selection, and 
+internal bookmarks between sessions. With first-party cookies, you can make those selections on your first visit and they will be 
+consistent until the cookie expires.
+
+Most persistent cookies expire after one or two years. If you do not visit the site within the expiration time frame, your browser will 
+delete the cookie. You can also remove them manually.
+
+First-party cookies also play an important role in user authentication. If you were to disable them, you would need to re-enter your login 
+credentials every time you visited a page.
+
+On the downside, companies can use persistent cookies to track you. Unlike session cookies, they do record information about your browsing 
+habits for the entire time that they are active.
+
+3) THIRD PARTY COOKIES :-
+Third-party cookies are the bad guys. They are the reason that cookies have such a bad reputation among internet users.
+Let’s take a step back. In the case of first-party cookies, a cookie’s domain will match the domain of the site you’re visiting. 
+A third-party cookie originates from a different domain.
+Because it is not coming from the site you’re looking at, a third-party cookie is not providing any of the benefits of session 
+cookies and first-party cookies that we just discussed.
+Instead, it has one sole focus – to track you. The tracking can take many forms; the cookies can learn about your browsing 
+history, online behavior, demographics, spending habits, and more.
+Because of their ability to track, third-party cookies have become a favorite of advertising networks in a bid to drive 
+up their sales and page views.
+
+4) SECURE COOKIES :-
+The three types of cookies we’ve covered so far are the most well-known and the most common. But there are a few others 
+you need to be aware of.
+The first is a secure cookie. It can only be transmitted over an encrypted connection. Typically, that means HTTPS.
+As long as the cookies “Secure” attribute is active, the user agent will not transmit the cookie over an unencrypted channel. 
+Without the Secure flag, the cookie is sent in clear text and can be intercepted by unauthorized third-parties.
+However, even with the Secure flag, developers should not use a cookie to store sensitive information. In practice, the flag 
+only protects a cookie’s confidentiality. A network attacker could overwrite secure cookies from an insecure connection. This is 
+especially true if a site has both an HTTP and HTTPS version
+
+5) HTTP-only Cookies
+Secure cookies are often also HTTP-only cookies. The two flags work in tandem to help to reduce a cookie’s vulnerability to 
+a cross-site scripting (XSS) attack.
+In an XSS attack, a hacker injects malicious code into trusted websites. A browser cannot tell that the script should not be trusted. 
+Therefore, the script can access the browser’s data about the infected site, including cookies.
+A secure cookie cannot be accessed by scripting languages (like JavaScript), thus protecting it against such attacks.
+
+6) FLASH COOKIE :-
+A Flash cookie is the most common type of supercookie. In case you’re not aware, a supercookie performs many of the same functions 
+as a regular cookie, but they are more difficult to find and delete.
+In the case of Flash cookies, developers use the Flash plugin to hide cookies from your browser’s native cookie management tools.
+Flash cookies are available to all browsers (so using one browser for your credit card and one for downloading torrents would have
+negligible security benefits). They can hold 100KB of data compared to an HTTP cookies’ mere 4KBb.
+
+7) ZOOMBIE COOKIE :-
+A zombie cookie is closely tied to a Flash cookie. A zombie cookie can instantly recreate itself if someone deletes it. 
+The recreation is possible thanks to backups stored outside a browser’s regular cookie storage folder – often as a Flash Local 
+Shared Object or as HTML5 Web Storage.
+The recreation relies on Quantcast technology. Because Flash cookie stores a unique user ID in Adobe Flash player’s storage bin,
+Quantcast can reapply it to a new HTTP cookie if the old one is removed.
+
+COOKIE - SCAN 
+
+CookieScan does all of this for you. It takes the worry away about not being compliant with the cookie laws, 
+it collects consent and records it in case you are ever challenged. Once the code is embedded into your site’s header, 
+CookieScan will regularly scan your site and identify all the cookies used. It will create your cookie policy or cookie 
+notice for you and keep it up to date.
+You can select the colour theme of the pop-up of the banner to match the colour theme of your website. You can select the type 
+of banner you want to use, either a modal center placed pop-up or a banner placed at the bottom of the screen.
+This will be displayed in any country that has a cookie law. In any country that does not have a cookie law, we will display an 
+information-only banner to let the site visitor know cookies are being used and give them the option to look at the list of cookies 
+on the site. Consent is not asked for, the continued use of the website is the implied consent needed.
+
