@@ -46,7 +46,10 @@ A digital signature is a unique, mathematically computed, signature that demonst
 
                                         Digital certificate
 
-A digital certificate allows unique identification. It is essentially an electronic ID card, issued by a trusted third party known as a certificate authority. Digital certificates form part of the ISO authentication framework, also known as the X.509 protocol. This framework provides for authentication across networks. A digital certificate serves two purposes: it establishes the owner's identity and it makes the owner's public key available.
+A digital certificate allows unique identification. It is essentially an electronic ID card, issued by a trusted third party known as a
+certificate authority. Digital certificates form part of the ISO authentication framework, also known as the X.509 protocol. This framework 
+provides for authentication across networks. A digital certificate serves two purposes: it establishes the owner's identity and it makes the 
+owner's public key available.
 
                               A digital certificate contains the following information:
 
