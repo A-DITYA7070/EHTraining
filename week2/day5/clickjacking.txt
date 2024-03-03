@@ -104,7 +104,8 @@ background: #F00;
 <div style="height: 30px;width: 50px;left: 60%;bottom: 40px;background: #F5F;" class="xss">3.Click me</div>
 <iframe sandbox="allow-modals allow-popups allow-forms allow-same-origin allow-scripts" style="opacity:0.3
 "src="https://adityaswebsite.com"></iframe>
-<div id="payload" draggable="true" ondragstart="event.dataTransfer.setData('text/plain', 'attacker@gmail.com')"><h3>2.DRAG ME TO THE RED BOX</h3></div>
+<div id="payload" draggable="true" ondragstart="event.dataTransfer.setData('text/plain', 'attacker@gmail.com')"><h3>2.
+DRAG ME TO THE RED BOX</h3></div>
 </body>
 </html>
 
@@ -178,8 +179,8 @@ date, as these updates often include security fixes that can help protect agains
 Regular testing: Regularly testing websites and applications for vulnerabilities can help identify and fix potential clickjacking 
 vulnerabilities before they can be exploited. This can be done through manual testing or using automated tools.
 
-It’s also important for users to be cautious when clicking on buttons or links online, especially if they are unfamiliar with the website or 
-if the website seems suspicious. Users should be wary of clicking on buttons or links that appear as part of a trusted website or application, 
-as they may actually be part of a clickjacking attack.
+It’s also important for users to be cautious when clicking on buttons or links online, especially if they are unfamiliar with the 
+website or if the website seems suspicious. Users should be wary of clicking on buttons or links that appear as part of a trusted 
+website or application,as they may actually be part of a clickjacking attack.
 
 
