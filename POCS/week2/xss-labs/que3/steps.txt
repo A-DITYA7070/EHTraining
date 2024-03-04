@@ -1,0 +1,26 @@
+        
+         
+                                      3. DOM XSS in document.write sink using source location.search
+
+steps :- 
+       1) In the input field first i searched for aditya in input field (source) and it reflected back in an <h1> tag
+       2) but it also reflected and it get embedded in the url (sink)
+       3) hence we can close the text and insert our own <img > tag which onerror will alert 
+       4) so after using the payload ("><img src=1 onerror=alert(1) >)
+       5) we can see that the lab is solved .
+
+Reason :- 
+       The payload gets executed because there is a dom based xss vulnerability and after searching any thing the text is 
+       getting embedded into url and hence we can execute our js script and our payload is
+       <img src=1 onerror=alert(1) > which also gets embedded in which src=1 which is an error and we are 
+       inserting a js event onerror which alerts hence the script gets executed
+    
+
+Remediation :- 
+            i) Sanitize data: Sanitize all untrusted data, including client-side scripts. This means encoding user input so that browsers can't interpret it as code.
+            ii) Use the right output method: Use a safe sink, like innerText or textContent, instead of innerHtml.
+            iii) Avoid dynamic writing: Don't dynamically write data from an untrusted source into HTML documents.
+            iv)  Use security controls: Set security controls if needed.
+            v)   Use a web application firewall (WAF): A WAF can help identify and block XSS attacks.
+            vi)   Use vulnerability scanning tools: Use vulnerability scanning tools to help prevent XSS attacks.
+            vii)  Use penetration testing tools: Use penetration testing tools to help prevent XSS attacks.

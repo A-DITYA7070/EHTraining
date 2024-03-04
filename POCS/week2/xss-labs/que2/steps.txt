@@ -1,0 +1,27 @@
+                       
+                                   2. Lab: Stored XSS into HTML context with nothing encoded..
+
+steps :- 
+       1) its a stored xss hence we will look for any area to store our malicious scripts after scrolling we can see that 
+          comments is the area which we can target and store our scripts.
+       2) After that i tried to comment and sent the req using burp in which there are 4 input areas 
+          i) name
+          ii)comments
+          iii)email
+          iv)website
+        3) we can see that after comment its getting posted at the comment section and after clicking it we are being redirected to
+        the website we are entering in the burp response we can se 302 redirect response as well
+        4) so this is the area we can target
+        5) hence after entering payload http://adi.com<script>alert(document.domain)</script> and url encoding (:,//,<,>)
+          and sending req 
+        6) we can see that the lab is solved..
+
+reason :- 
+      It worked because input is not sanatised and we can store the payload in the database and when any user clicks the link 
+      the script is returned back to the users browser and browser js engine runs the script.
+
+Remediation :- 
+         i) sanatise the angle brackets before taking input from the user 
+         ii) never trust user input and be very carefull when you are storing data in db after takin i/p 
+         iii) always have validation at server side and sanatise data before storing into db..
+

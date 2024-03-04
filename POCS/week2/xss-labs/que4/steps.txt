@@ -1,0 +1,30 @@
+                      DOM XSS in innerHTML sink using source location.search
+
+
+steps :- 
+
+       1) after searching for "aditya" we can see that the function doSearchQuery changes the HTML contents of a div element, 
+          using data from location.search. using innerHTML
+       2) hence we need to craft our payload so that when our script will get inerserted in the html in place of div element
+          it should execute our script
+       3) hence we can use the payload <img src=1 onerror=alert(1) > which will get inserted at the place of div and since its an
+          error the onerror event will get triggered and our work will be done 
+
+how it worked :- 
+       we can see that whatever we are entering there is a variable named query which is storing our input 
+       and it is checking that 
+       like we searched for "aditya"
+       then query is storing aditya 
+       i.e var query = "aditya"
+       and it is checking that if there is query a func named doSearchQuery() is getting called
+       i.e if(query){
+         doSearchQuery();
+       }
+       now lets understand the func 
+       function doSearchQuery(query){
+           document.getElementById('search').innerHTML=query;
+       }
+       it is taking query i.e (aditya in this case) as parameter and inserting it as html in search field 
+       now we can understand that when our payload <img src=1 onerror=alert(1)> is sent as parameter it is 
+       stored in query and is inserted as html in search field and its got executed..
+       

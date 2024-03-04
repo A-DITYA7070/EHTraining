@@ -1,0 +1,20 @@
+                              
+                              1. Lab: Reflected XSS into HTML context with nothing encoded..
+        
+STEPS :-
+
+1. HERE we can see there is one input field hence we can first search and see where the result is Reflected back..
+2. We can see that after searching for 'aditya' in the input field it is Reflected back in <h1> </h1> 
+3. Now we move further to test whether we can bypass </h1> or not so let's try this.
+4. after executing the payload :- </h1><script>alert(document.domain)</script>
+5. we can see that we are able to alert the cookie 
+
+
+why it worked....
+
+reason :- since after first search we can see that the search text is directly getting embedded into <h1> </h1> (h1 tag)
+          and reflecting back to the user so in the response we just need to insert a script and browser compiler will execute it.
+
+Remediation :- 
+            1) we can use html encoding.
+            2) sanatise input  (angle brackets)  
