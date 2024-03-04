@@ -1,1 +1,47 @@
 
+1)Sanitizing at the templating layer
+
+The most common place to sanitize is at the templating layer, and most templating languages have built in support for this. In EJS, 
+you use <%= name %>by default because it sanitizes by encoding any html tags, so any <script> tag will show up as &lt;script&gt; in 
+the html and <script> tag on the webpage. This means it’ll be rendered and not executed. You are safe. In my attack example above I 
+used <%- name instead of <%= name. <%- in EJS will render raw html that won’t be sanitized, and should thus be avoided with user input.
+
+2)Sanitizing at the storage layer
+
+If you are saving any values to a database (like URL names, or user names, or emails) that will be displayed to the user, this 
+is a prime location for an HTML injection attack. If I can store <script>[maliciousCode]</script> as my display name for a social 
+site, then anybody else who sees my name could potentially run my code in their browser and I can steal their credentials. 
+Sanitizing before you save any values from user input is a must.
+
+3)Sanitizing at the url param layer
+
+This is my least favorite option, but you could add some middleware that sanitizes all the route parameters like so:
+
+ex:- use any library for url input santisation ...(validator.js)
+
+
+:::----  what to do if inputs are sanitised....
+
+1) Determine which characters and epressions are sanitised explicitly..
+2)If it appears impossible to perform an attack without using characters that are being sanitized, you need to test 
+the effectiveness of the sanitizing filter to establish whether any bypasses exist.Some string manipulation APIs contain methods to replace 
+only the first instance of a matched expression, and these are sometimes easily confused with methods that replace all instances.So, 
+if <script> is being stripped from your input, you should try the following to check whether all instances are being removed:<script><script>alert(1)</script> 
+Methodology_XSS_Filters_Sanitization_3In this situation you should also check whether the sanitization is being performed recursively:<scr<script>ipt>alert(1)</script>
+
+
+
+==>  This cheat sheet demonstrates that input filtering is an incomplete defense for XSS by supplying testers with a series of XSS attacks that can bypass certain 
+XSS defensive filters.
+
+
+
+
+
+
+
+
+
+
+
+
