@@ -1,1 +1,4 @@
+1) .........................................................xss filterbypass technique........................................................
 
+xss filters :- xss filters are security mechanism implemented by web applications to detect and block potentially 
+malicious scripts.
