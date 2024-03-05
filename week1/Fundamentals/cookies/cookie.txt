@@ -39,6 +39,9 @@ OPTIONS :- The OPTIONS method describes the communication options for the target
 TRACE  :-  The TRACE method performs a message loop-back test along the path to the target resource.
 PATCH  :-  The PATCH method applies partial modifications to a resource.
 
+NOTE => A loopback test is a diagnostic procedure used to test the functionality and transmission capabilities of a network device, system, 
+        or communication line
+
                                      HTTP - Req Header.....
 
 Request Headers :- Contain more information about the resource to be fetched, or about the client requesting the resource.
@@ -64,7 +67,8 @@ If-None-Match: "c561c68d0ba92bbeb8b0fff2a9199f722e3a621a"
 Cache-Control: max-age=0
 
 The Connection general header controls whether the network connection stays open after the current transaction finishes. 
-If the value sent is keep-alive , the connection is persistent and not closed, allowing for subsequent requests to the same server to be done.
+If the value sent is keep-alive , the connection is persistent and not closed, allowing for subsequent requests 
+to the same server to be done.
 
                                                       Res Header :- 
 
@@ -110,6 +114,11 @@ Browsers will only store these resources for a specified period of time, known a
 resource after the TTL has expired, the browser will have to reach out to the server again and download a fresh copy of the resource. 
 How do browsers and web servers know the TTL for each resource? This is where HTTP headers come into play.
 
+Cache-Control is an HTTP header that can be used in both request and response headers. It is used to control how browsers and 
+other intermediaries cache resources.
+When used in a request header, Cache-Control can be used to specify that the client does not want to receive a cached response, 
+or that it is willing to accept a stale response. When used in a response header, Cache-Control can be used to specify how long 
+the client should cache the response, or whether it should cache the response at all.
 
 What is in a cache-control header?
 Headers consist of key-value pairs which are separated by a colon. For cache-control, the ‘key’, or the part to the left of the colon, 
