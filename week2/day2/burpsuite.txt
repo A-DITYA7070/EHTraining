@@ -17,7 +17,8 @@ Tunneling can transfer encrypted data over the network
 
 Tunneling is a way to move packets from one network to another. Tunneling works via encapsulation: wrapping a packet inside another packet.
 It is a protocol that allows for the secure envirmoment of data from one network to another.
-A technique of internetworking called tunneling is used when src and destination networks of some type are to he connected through a network of diff type.'
+A technique of internetworking called tunneling is used when src and destination networks of some type are to he connected through 
+a network of diff type.'
 EX :- an ethernet to be connected to another ethernet through wan.
 IT works by encapsulating packets :- wrapping packets inside packets.
 
@@ -26,7 +27,8 @@ Crawl paths tab, which show you detailed information about your target applicati
 target application's content and functionality to drive the workflow for your penetration testing.
 
 
-Intruder :- Burp Intruder is a powerful tool for performing highly customizable, automated attacks against websites. It enables you to configure attacks 
+Intruder :- Burp Intruder is a powerful tool for performing highly customizable, automated attacks against websites. 
+It enables you to configure attacks 
 that send the same request over and over again, inserting different payloads into predefined positions each time.
 
 IT can be used to :-
@@ -52,7 +54,8 @@ Burp Repeater is a tool that enables you to modify and send an HTTP or WebSocket
 It can be used to Send a request with varying parameter values to test for input-based.
 
 TARGET :- The Target tool enables you to define which targets are in scope for your current work. It also contains the site map and 
-Crawl paths tab, which show you detailed information about your target applications. You can use the information about your target application's content and 
+Crawl paths tab, which show you detailed information about your target applications. You can use the information about your target 
+applications's content and 
 functionality to drive the workflow for your penetration testing.
 
 SEQUENCER :- 
