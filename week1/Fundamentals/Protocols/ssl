@@ -82,9 +82,31 @@ SSL requires access to key rings for the establishment of secure connections. Th
 implementation of SSL are known as KeyStores.
 
 For information on how to create key rings, see Configuring SSL.
-   
+
+
+1. Client Hello
+Information that the server needs to communicate with the client using SSL. This includes the SSL version number, 
+cipher settings, session-specific data.
+
+2. Server Hello
+Information that the server needs to communicate with the client using SSL. This includes the SSL version number, cipher settings, 
+session-specific data.
+
+3. Authentication and Pre-Master Secret
+The client authenticates the server certificate. (e.g. Common Name / Date / Issuer) Client (depending on the cipher) creates 
+the pre-master secret for the session, Encrypts with the server’s public key and sends the encrypted pre-master secret to the server.
+
+4. Decryption and Master Secret
+The server uses its private key to decrypt the pre-master secret. Both Server and Client perform steps to generate the master
+secret with the agreed cipher.
+
+5. Encryption with Session Key
+Both client and server exchange messages to inform that future messages will be encrypted.
+
+After SSL handshake, both client and server communicate over a secure channel using symmetric encryption.
                                                         
-                                                VPN (virtual private network)
+                                               
+                                                             VPN (virtual private network)
 
 
 
