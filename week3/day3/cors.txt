@@ -1,0 +1,84 @@
+
+              CORS(cross origin resource sharing)
+
+SOP (same origin policy) :- It is a rule that is enforced by browsers to control access to data between web applications
+this is implemented by all browsers..
+
+This does not prevent writing between web app it prevents reading between web apps
+Access is determined based on origin
+
+=> origin is defined by the scheme (protocol),hostname (domain) and port of the url used to access it.
+
+CORS :- it is a mech that uses HTTP headers to define origins that the browser permit loading resources
+cors make use of two http headers :-
+i) Access-Control-Allow-Origin
+ii) Access-Control-Allow-Credentials
+
+i) Access-Control-Allow-Origin :- It is a response header that indicates whether the response can be shared with the 
+                                  requesting code from the given origin
+
+it can be a) *
+          b) <origin>(allows to whitelist single origin)<<due to this dynamic generation comes into picture)
+          c) null
+=> access-control-allow-origin header only allows to access public pages in the application
+
+Access-Control-Allow-Credentials :- It is a response header that allows cookies (or other user cred) to be 
+                                    included in the cross-origin req
+
+Note :- if the server is configured with the wildcard ("*") as the value of Access-Control-Allow-Origin 
+header, then the use of cred is not allowed
+
+CORS VULNERABALITIES :-
+
+cors vulnerabalities arise from cors config issues
+=> arise from restrictions on available options to set the Access-Control-Allow-Origin header
+
+cors vulnerabalities arise from the flaws in the way that dynamic generation is implemented...
+=> server-generated Access-Control-Allow-Origin header from client-specified Origin header
+=> Errors Parsing Origin headers
+   Granting access to all the domains that end with specific string 
+   EX :- bank.com
+   Bypass :- maliciousbank.com
+=> Granting access to all domains that begins with specific string 
+   ex:- bank.com
+   bypass:- bank.com.malicious.com
+=> whitelisted null origin value
+
+IMPACT OF CORS VULNERABALITY :-
+i) confidentiality -> it can be None/Partial(low)/High
+ii) Integrity -> usually either partial or high
+iii) Availability -> can be None / Partial (Low) / High
+=> Remote code execution on the server..
+
+HOW TO FIND CORS VULNERABALITY :::::----
+
+Depends on the perspective of testing 
+a) Black box  b) white box
+a) Black box testing
+i) MAP the application ..
+ii) test the application for dynamic generation 
+   does it reflect the user-supplied ACAO header ?
+   does it only validate on the start/end of a specific string ?
+   does it allow the null origin 
+   does it restrict the protocol
+   does it allow credentials
+=> once you find the cors vulnerability review the app functionality to determine how you can prove impact
+
+b) white box testing :::----
+i) identify the framework/technologies that is being used by the app
+ii) find out how the specific technology allows for cors configruation
+iii) Review code to identify any misconfigruations in cors rules
+
+How to exploit the cors vulnerabalities...
+i) if app allows for credentials
+=> server generated user supplied origin 
+=> validates on the start/end of a specific string
+ii) Accepts the null origin
+iii) if the application does not allow for credentials
+=> what security impact does that have on the app?
+
+preventing cors :-
+i) proper config of cors
+ii) only allow trusted sites (whitelist)
+iii) avoid whitelisting null
+iv) avoid wildcard in internal networks
