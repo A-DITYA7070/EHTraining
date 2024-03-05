@@ -1,0 +1,7 @@
+                            
+1. LAB #1 . CSRF VULNERABALITY WITH NO DEFENSES :--
+
+vulnerable parameter :- email change functionality :--
+Goal := exploit the csrf vulnerability and change the email address 
+
+creds :- wiener:peter

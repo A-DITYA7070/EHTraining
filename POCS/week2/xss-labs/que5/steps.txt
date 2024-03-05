@@ -8,7 +8,7 @@ steps :-
             after clicking the back button.
             It uses the jQuery library's $ selector function to find an anchor element, and changes 
             its href attribute using data from location.search. 
-    iv) hence we need to insert a js code that will get executed
+    iv) hence we need to insert a js code that will get executed 
     v) hence payload javascript:alert(1) works here in the return path and as a result i solved the lab..
 
-    
+
