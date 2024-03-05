@@ -1,0 +1,14 @@
+   
+
+                  LAB #3 :- CORS vulnerability with trusted insecure protocols
+
+TARGET :- exploit the cors misconfig to retrive administrator api key
+
+ANALYSIS :-
+i) change the origin header to an arbitary value => failed 
+ii) change the origin header to the null value  => failed 
+iii) change the origin header to one that ends with the origin of the site :- failed
+iv) change the origin header to one that begins with the origin of the site..==> worked 
+
+Hence there is a vulnerability ..
+

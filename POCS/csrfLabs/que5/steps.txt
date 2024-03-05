@@ -1,0 +1,31 @@
+     
+                          5.Lab: CSRF where token is tied to non-session cookie
+
+
+In order to perform csrf there must be :-
+i) A relevant action
+ii) Cookie-based session handling
+iii) No unpredictable req params.. 
+
+
+
+Testing csrf token :- 
+1) Remove the csrf token and see if the app accepts it.. (yes hence its vulnerable )
+2) test req method from post  to get
+3) see if csrf token is tied to users session or not
+4) 
+    Testing CSRF tokens and CSRF COOKIES :- 
+      1) check if csrf token is tied to csrf cookie
+        -submit an invalid csrf token
+        -submit a valid csrf token from another user 
+      2) Submit a valid csrf token and cookie from another user 
+
+      csrf token :-
+      csrf cookie :- 
+
+In order to exploit this vulnerability we need to perform 2 things 
+1) inject a csrf cookie in the user's session (HTTP header injection)
+2) send a csrf attack to the victim with a known csrf token
+
+
+

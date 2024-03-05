@@ -1,0 +1,14 @@
+LAB #2 :- CSRF WHere token validation depends on req method 
+
+vulnerable parameter = email change functionality
+
+Goal = exploit csrf to change email address 
+
+In order to make csrf attack possible :- 
+i) A relevant action : satisfied 
+ii) Cookie based session management : satisfied 
+iii) No upredictable req parameters : req method can be changed to get which does not require csrf token 
+                                      and hence we can change the email too..
+
+TESTING CSRF TOKENS :-
+1. Change the req method from post to get 

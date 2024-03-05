@@ -1,0 +1,19 @@
+                  
+                                       Lab: CSRF where token is not tied to user session
+
+
+
+In order to perform csrf there must be :-
+i) A relevant action
+ii) Cookie-based session handling
+iii) No unpredictable req params.. (csrf token is not mandatory) 
+
+Testing csrf token :- 
+1) Remove the csrf token and see if the app accepts it.. (yes hence its vulnerable )
+2) test req method from post  to get
+3) see if csrf token is tied to users session or not :- in this case csrf token is not tied to user's session 
+
+what does it mean 
+Some applications do not validate that the token belongs to the same session as the user who is making the request. 
+Instead, the application maintains a global pool of tokens that it has issued and accepts any token that 
+appears in this pool.

