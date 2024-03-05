@@ -1,1 +1,75 @@
 
+CSRF :- 
+it is an attack in which the attacker causes the victim user to carry out an action unintentionally while the user is 
+authenticated.
+
+working :-
+pre condition :- the victim should be logged in to website..
+1) attacker sends a malicious link to the victim to change his email
+2) victim has already the session cookie stored for the website..
+3) the victim clicks the link and since he has the access session cookie the email will be changed.
+4) since the email has changed the attacker can compromise the account by changing the password..
+
+for csrf attack to be possible three conditions are required must be satisfied :-
+i) A relevant action
+2) cookie based session handling
+3) No unpredictable req parameters.
+
+IMPACT OF CSRF :-
+Depends upon the functionality in the app that is being exploited
+a) confidentiality :- IT can be  none (low)/High
+b) Integrity :- Usually either partial or high
+c) Avalability :- Can be None/Partial(low)/High
+Remote code execution on server..
+
+HOW TO test csrf :- 
+
+1) Black box :-
+a) map the application :- 
+   Review all the key functionality in the app
+b) identify all application functions that satisfy the following three conditions:-
+   i) A relevant action
+  ii) Cookie based session handling
+ iii) No unpredictable req parameters
+c) create a PoC script to exploit csrf
+   i) GET request: <img> tag with src attribute set to vulnerable url
+  ii) POST request: form with hidden fields for all the required params and the target set to vulnerable url
+
+2) White Box testing perspective :- 
+i) identify the framework that is being used by the application.
+ii) find out how these frameworks defends against csrf attacks..
+iii) Review the code to ensure that the built in defences have not been disabled.
+iv) review all sensative functionality to ensure that the csrf defense has been applied
+
+HOW TO EXPLOIT CSRF VULNERABALITY :---
+i) GET SCENARIO :-
+    If the dev has not correctly implemented post req lets say dev has implemented post req to change email 
+    in this case we can easily exploit the application ..
+    EX :- GET https://bank.com/email/change?email=test@test.ca HTTP/1.1
+    Exploit :- 
+      <html>
+       <body>
+         <h1>hello</h1>
+        <img src="https://bank.com/email/change?email=attacker@gmail.com.ca" width="0" height="0" border="0" >
+       </body>
+      </html>
+
+ii) 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
