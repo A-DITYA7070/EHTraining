@@ -1,0 +1,178 @@
+
+Sqli :- 
+
+It's a vulnerabaity that consists of an attacker interfering with the sql queries that an app makes to a db.
+
+Impact of sqli :-
+Confidentiality :- sqli can be used to view sensative user info such as app username and password..
+Integrity :- can be used to alter data in the db
+Availability :- it can be used to delete data from the db
+=> remote code execution on the os..
+
+TYPES OF SQLI :-
+i) IN-BAND (CLASSIC) :- a) Error
+                        b) Union
+ii) Inferential (Blind) :- a) Boolean
+                           b) Time
+iii) Out-of-band 
+
+=> In Band :- it occurs when the attacker uses the same communication channel to both launch the attack and gather the result 
+              of the attack .
+              (Retrieved data is passed directly in the app web page)
+      it is easier to exploit than other sqli,because we can see the result of the queries we injected
+      types of in-band sqli :-
+      i) Error-based sqli
+      ii) Union-based sqli
+      => Error-based sqli := It is an inband sqli technique that forces the db to generate an error, giving the
+                             attacker info upon which to refine their injection
+                             EX:- i/p : www.random.com/app.php?id='
+                                  o/p : You have an error in your Sql syntax, check the manual that corresponds to your 
+                                        MySQL server version...
+      => Union-based sqli :- it is an inband sqli tech that levarages the Union sql operator to combine the results of two queries 
+                             into a single result set.
+                             Ex : ip:- www.random.com/app.php?id=' Union Select username,password from users..
+
+=> Inferential (Blind sqli):- sqli vulnerabality where there is no actual transfer of data via the web app
+                          => just as dangerous as in-band sqli
+                          => Attacker able to reconstruct the info by sending particular req and observing the resulting 
+                             behavior of db server
+                          => takes longer to exploit than the in-band sqli
+         types of inferential sqli 
+         i) Boolean-Based sqli
+         ii) Time-based sqli
+
+        => Boolean based sqli :- it is a blind sqli tech that uses boolean conditions to return a diff res depending upon
+                                 whether the query returns true or false result
+                            EX :- www.random.com/app.php?id=1
+                            BAckend query :- select title from product where id=1
+                            payload #1 (false)
+                            www.random.com/app.php?id=1 and 1=2
+                            BAckend query :- select title from product where id=1 and 1=2
+                            payload #2 (true)
+                            www.random.com/app.php?id=1 and 1=1
+                            Backend query :- select title from product where id=1 and 1=1
+                            HOW THIS WILL WORK :---
+             let there is users table which has user (administrator) and password stored
+             let passord is qwerty
+             payload :-
+                      www.random.com/app.php?id=1 and substring((select password from users where username='administrator'),1,1)='s'
+              BAckend query :- 
+                      select title from product where id=1 and substring((select password from users where username='administrator'),1,1)='s'
+                      => Nothing will return on the page ..
+              let new payload 
+              payload :- 
+                      www.random.com/app.php?id=1 and substring((select password from users where username='administrator'),1,1)='q';
+                      => in this case title will be returned 
+              hence attacker will know that the first place of the password is q and after looping at all the other places 
+              if title is returned then attacker will know the password and he can compromise the account.
+
+       => it takes more time and more skills to exploit than in band 
+
+   => Time based sqli :- it is a blind sqli tech that relies on the db pausing for a specified amount of time then returning the results
+                         indicating a successfull query execution..
+
+                      Example :- if the first character of administrator pass is an 'a' wait for 10 sec 
+                                  -> res takes 10 second -> first letter is 'a'
+                                  -> res doesnot takes 10 sec -> first letter is not 'a'
+
+3) Out of band sqli (OAST) :- vulnerabality that consists of triggering an out-of-band network connection to a sys that you control
+                       it is used if all other techniques does not works.
+                      => not common
+                      => variety of protocols can be used (ex:-DNS,HTTP)
+
+
+
+HOW TO FIND SQLI VULNERABILITIES :-
+i) Black box testing
+ii) white box testing
+
+i) Black box testing.. (little to no info about sys) mimics external attacker
+ii) white box :- complete info + source code..
+
+===> Black box testing :-
+i) Map the application 
+     => check how app works 
+     => list all the i/p vectors
+     => check what can be attack parameters
+     => list all the domains,subdomains and directories
+     => understand the whole workflow
+ii) Fuzz the app
+    => submit sql-specific character such as 'or",and look for errors or other anamolies
+       errors are very important because they tells us how the backend works.
+    => submit boolean conditions such as OR 1=1 and OR 1=2, and look for differences in the app responses.
+    => submit payloads designed to trigger time delays when executed within a sql query and look for differences in the time
+      taken to respond..
+    => submit OAST payloads designed to trigger an out of band network interaction when executed within an sql query and monitor for
+       any resulting interactions
+
+===> white box testing >>>
+ => enable web server logging
+ => enable db logging
+ => Map the app
+    -> visible functionality in the app
+    -> regex search on all instances in the code that talk to the db
+ => code review 
+   -> follow the code path for all input vectors.
+ => test any potential sqli vulnerabilities
+
+HOW TO EXPLOIT sqli vulnerabalities ::------
+i) error based sqli :- 
+   => submit sql specific characters such as ' or", and look for errors or other anamolies
+   => different characters can give you different errors 
+ii) union based sqli :--
+   =>  there are two rules for combining the result sets of two queries by using UNION:-
+       -> The number and the order of the columns must be same in all queries 
+       -> the data types must be compatible
+   EXPLOITATION:-
+      -> figure out the number of columns that the query is making
+      -> figure the data types of the columns (mainly interested in string data)
+      -> use the union operators to output info from the db 
+        -> Determining the no of columns required in an sql injection union attack using order by clause :-
+           select title,cost from product where id=1 order by 1
+        => incremently inject a series of order by clauses until u get an error or observe a diff behaviour in the app
+        => finding columns with a useful data types in an sqli union attack
+           probe each column to test whether it can hold string data by submitting a series of union select payloads
+           that place a string value into each column in turn 
+iii) Boolen based :-
+     -> submit a boolean condition that evaluates to false and note the response
+     -> submit a boolean condition that evaluates to true and note the resonse
+     -> write a prog that uses conditional statements to ask the db a series of true/false ques and monitor res.
+iv) Time based :-
+     -> submit a payload that pauses the app for a specified period of time
+     -> write a prog that uses conditional statements to ask the db a series of true/false que and
+        monitor response time
+v) out of band..
+    -> submit OAST payloads designed to trigger an out-of-band net interaction when executed within an sql query,
+       and monitor for any resulting interactions
+
+automated exploitation tools :- 
+ i) sqlmap
+ ii) burp suite
+iii) arachni
+ iv) w3af
+  v) wapiti
+ vi) acunetix
+
+REMEDIATIONS :-
+i) Primary defences :- 
+    -> use of prepared statements (parametrized queries)
+           => the construction of the sql statement is performed in two steps :--
+              i) the app specifies the query's structure with placeholders for each user input
+              ii) the app specifies the content of each placeholder
+    -> use of stored procedure (partial)
+            => a stored procedure is a batch of statements grouped together and stored in the db
+            => not always safe from sql injection, still need to be called in a parametrized way
+    -> whitelist input validation (partial)
+            => defining what values are authorised everything else is considered unauthorised 
+            => useful for values that cannot be specified as parameter placeholders, such as the table name
+    -> escaping all user supplied input (partial)
+            => should be only used as a last resort 
+
+ii) additional defences
+   -> enforce least privileage
+           => the app should use the lowest possible level of privileges when accessing the db
+           => any unnecessary defult functionality in the db should be removed or disabled 
+   -> perform whitelist input validation as a secondary defense
+   -> Ensure CIS benchmark for the db in use is applied.. 
+   -> All vendors-issued security patches should be applied in a timely fashion 
+
