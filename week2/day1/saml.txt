@@ -1,1 +1,43 @@
+SAML (security assertion markup language) :--
+It is an XML-based open-standard for transferring identity data between two parties: an identity provider (IdP) and a service provider (SP).
 
+Identity Provider — Performs authentication and passes the user's identity and authorization level to the service provider.
+Service Provider — Trusts the identity provider and authorizes the given user to access the requested resource.
+
+he identity provider would be the IdP that Wizova uses, Auth0. The service provider would be Salesforce
+
+The Wizova employee signs into the Wizova dashboard with Auth0. They click on the Salesforce icon, and 
+Salesforce recognizes that the user wants to log in via SAML. Salesforce sends the employee back to Auth0 
+with a SAML Request that asks Auth0 to authenticate the user. Since the employee has already authenticated 
+with Auth0, Auth0 verifies the session and sends the user back to Salesforce with a SAML Response. Salesforce 
+checks this response, and if it looks good, the employee is granted access!
+
+Benefits of SAML Authentication
+Improved User Experience — Users only need to sign in one time to access multiple service providers. 
+This allows for a faster authentication process and less expectation of the user to remember multiple 
+login credentials for every application. In the example above, that user could have clicked on any of the 
+other icons in their dashboard and been promptly logged in without ever having to enter more credentials!
+
+Increased Security — SAML provides a single point of authentication, which happens at a secure identity provider. 
+Then, SAML transfers the identity information to the service providers. This form of authentication ensures that 
+credentials are only sent to the IdP directly.
+
+Loose Coupling of Directories — SAML doesn't require user information to be maintained and synchronized between directories.
+
+Reduced Costs for Service Providers — With SAML, you don't have to maintain account information across multiple services. 
+The identity provider bears this burden.
+
+workflow ::::----
+
+The user tries to log in to Zagadat from a browser.
+Zagadat responds by generating a SAML request.
+Typical SAML Authentication request
+
+The browser redirects the user to an SSO URL, Auth0
+Auth0 parses the SAML request and authenticates the user. This could be with username and password or even social login. 
+If the user is already authenticated on Auth0, this step will be skipped. Once the user is authenticated, 
+Auth0 generates a SAML response.
+Auth0 returns the encoded SAML response to the browser.
+The browser sends the SAML response to Zagadat for verification.
+If the verification is successful, the user will be logged in to Zagadat and granted access to the resources 
+that they are authorized to view/modify.
