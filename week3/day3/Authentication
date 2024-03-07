@@ -1,0 +1,18 @@
+Authentication :- 
+It identifies the user and confirms that they are who they say they are..
+TYPES:-
+i) HTML FORM-based authentication
+ii) Multi-factor mech
+iii) windows integrated auth using NTLM or kerbereos
+iv) remote authentication
+
+=> Auth vulnerabalities arises from insecure implementation of the auth mech in an app
+
+Weak pass requirements :-
+Having no or minimal control over the quality of passwords that user's choose.
+=> very short or blank
+=> common dictionary words or names
+=> pass is same as the username
+=> use of default pass
+=> missing or inadequate mfa
+
