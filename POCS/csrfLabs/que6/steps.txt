@@ -26,4 +26,8 @@ In order to exploit this vulnerability we need to perform 2 things
 1) inject a csrf cookie in the user's session (HTTP header injection)
 2) send a csrf attack to the victim with a known csrf token
 
-IF THE token is duplicated in cookie
+IF THE token is duplicated in cookie 
+
+csrfcookie:- uxjeqT7lVdPQkDrGtAttjARBfGSNkHOM
+
+value =      uxjeqT7lVdPQkDrGtAttjARBfGSNkHOM
