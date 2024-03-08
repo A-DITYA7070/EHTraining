@@ -1,1 +1,3 @@
 
+SSL (secure socket layer) is a protocol devloped by netscape in 90's for enhanced web security,TLS(transport layer security)
+developed by ietf (internet engineering task force) as an improvement of ssl 
