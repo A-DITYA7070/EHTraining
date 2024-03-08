@@ -1,3 +1,199 @@
 
 SSL (secure socket layer) is a protocol devloped by netscape in 90's for enhanced web security,TLS(transport layer security)
-developed by ietf (internet engineering task force) as an improvement of ssl 
+developed by ietf (internet engineering task force) as an improvement of ssl.
+SSL allows web clients and server to :-
+i) verify each other's identity.
+ii) encrypt msg they send to each other
+iii) ensure the integrity of message they send to each other
+It works through a combination of symmetric and asymmetric encryption using cryptographic keys tied to an SSL certificate.
+
+What is an SSL certificate?
+An SSL certificate is a digital document tied to a specific subject, such as a server hosted on a web domain. Its contents consists of:
+a)Who the SSL certificate is issued to (aka the subject).
+b)The expiration date of the SSL certificate
+c)The SSL certificate’s public key, which will be used for encryption.
+d)The digital signature of the certificate authority who issued the certificate.
+
+The SSL protocol uses SSL certificates to
+a)Verify the authenticity of the server.
+b)Encrypt messages sent between client and server.
+c)Check the integrity of the messages sent between client and server.
+
+Where do SSL certificates come from?
+Except for self-signed certificates, SSL certificates are signed and issued by certificate authorities, 
+third party corporations who verify the identity of organizations in exchange for the certificate.
+
+As noted above, there are self-signed certificates, which are not issued by certificate authorities. 
+These are typically used for development purposes by web application developers.
+
+The three largest certificate authorities, ranked by certificates issued, are Symantec, GoDaddy, and Comodo. 
+These three organizations issued more than 75% of all SSL certificates, but there are hundreds of other certificate authorities.
+
+What are self-signed SSL certificates? What other types of SSL certificates are there?
+Self-signed certificates are not used for authentication since they aren’t issued by a certificate authority. 
+But they can still be used for encryption. These certificates will trigger the browser is raise a warning for the user. 
+Self-signed certificates are typically used by web development teams as a cheap solution to setting up SSL-enabled web 
+servers for testing/development.
+
+Domain Validated. These account for 70% of all certificates. They are the cheapest certificates with the lowest level 
+security as they only verify that the domain associated with the certificate is registered and owned by the person who 
+requested the certificate. These do not verify that the person is affiliated with a legitimate company.
+
+Organization Validated. These certificates are more expensive and have a higher level of security than domain validated. 
+organization requesting the certificate needs to prove to the certificate authority that it is a valid company and it registered 
+and owns the domain that the certificate is associated with.
+
+Extended Validation. These certificates are top of the line. These are the most expensive certificates and have the highest 
+level of security. As such, the certificate authority will require the company to go through a rigorous vetting process. For example, 
+all details about the company must be verified by the certificate authority.
+
+
+==> How does the client know an SSL certificate has been issued by a legitimate certificate authority?
+Clients like browsers or smart phones, will come with a list of some certificate authorities and their public keys. However,
+there are hundreds of certificate authorities, so the client can’t store them all. Instead, the client only needs to know a 
+few root certificate authorities.
+
+These root certificate authorities can issue special certificates to intermediate certificate authorities (after vetting them of course), 
+and these intermediate certificate authorities can issue SSL certificates to everyone else.
+
+For example, if a browser receives an SSL certificate that is signed by a root certificate authority, the client can treat the 
+certificate as valid. But if the client receives a certificate that is signed by an intermediate certificate authority that it doesn’t 
+know, that certificate will include the signature of the root certificate authority that issued the certificate to the intermediate 
+certificate authority. The client knows this root certificate authority so it can treat the certificate as valid even though it was 
+not issued by them directly.
+
+So how does the SSL protocol actually work?
+SSL is actually built on top of the TCP layer, so after a TCP connection is established, the client and server engage 
+in what is called the SSL handshake.
+
+
+The client will send the server the following:
+i)   Which version of SSL (there are several) it is running.
+ii)  Which cipher-suites it supports.
+iii) Which compression methods it supports.
+
+
+The server will select the highest version of SSL it supports, the cipher-suites, and compression methods.
+
+The server will offer an SSL certificate to confirm its identity. The server may also request that the client 
+authenticate itself as well. The client will attempt to verify the server’s certificate. After verifying the 
+certificate by referencing the certificate chain against the client’s list of root certificate authorities, 
+the client is now confident on the server’s identity. More importantly, the client is confident about the 
+authenticity of its public key.
+
+
+A random secret key will be generated by the client. The client will then encrypt this random secret key through 
+asymmetric encryption using the server’s public key and send it to the server. Because the server has the corresponding 
+private key, it can decrypt the client’s random secret key.
+
+Both client and server will now have this random secret key. The SSL handshake is over and the two applications can 
+communicate securely by symmetrically encrypting messages with this secret random key.
+
+
+This random secret key is also used by the Message Authentication Code (MAC) algorithm which generates an authenticity token 
+that accompanies each message sent between client and server. This MAC token is used to verify that the message has not 
+been modified. That is, if a hacker modified a message between client and server without knowing the secret random key, 
+she won’t be able to generate the correct MAC token for the message. As such, the server will know the message has been tampered with.
+
+How do we install an SSL certificate on a server?
+Each certificate authority and web server (ie. Apache, Nginx) will have slightly varying instructions, but the general steps are the same.
+
+First install the OpenSSL library (an open source implementation of SSL) on the server that needs to serve up the certificate. 
+Note some versions of OpenSSL have a serious security flaw called the Heartbleed vulnerability (more on this later). The versions are:
+
+OpenSSL 1.0.1–1.0.1f (inclusive) are VULNERABLE
+OpenSSL 1.0.1g is NOT VULNERABLE
+OpenSSL 1.0.0 is NOT VULNERABLE
+OpenSSL 0.9.8 is NOT VULNERABLE
+
+
+After installing a secure version of OpenSSL, use it to create a certificate signing request (CSR). This CSR will generate a .key 
+file which will be the private key associated with the certificate as well as .crs file which will be copied into a certificate 
+authority’s certificate application form.
+
+When the certificate authority approves of the request and returns a certificate .crt file, place it and the private key .key 
+into a directory that looks something like /etc/<web_server>/ssl depending on the web server. There will also be some configuration 
+files that need tweaking. For example, nginx requires the creation of a /etc/nginx/snippets/ssl-certs.conf file and 
+a /etc/nginx/snippets/ssl-params.conf file which will specify which SSL versions and cipher-suites to use, etc. 
+The /etc/nginx/sites-available/default file’s server block will need the declarative:
+
+
+listen 443 ssl http2 default_server; 
+listen [::]:443 ssl http2 default_server; 
+include snippets/ssl-certs.conf; 
+include snippets/ssl-params.conf;
+
+What is SSL Termination?
+High traffic web applications are powered by multiple upstream web servers behind a load balancer. 
+In these cases, the SSL certificate does not need to be installed on every one of the upstream web servers. 
+Instead, it is installed on just the load balancer. This is called SSL termination as the load balancer decrypts 
+incoming requests and encrypts outgoing responses so the upstream web servers don’t have to worry about SSL.
+
+
+***==) What was the SSL Heartbleed Vulnerability?
+An SSL heartbeat is when the client or server sends the other a “keep-alive” message to check if the other party 
+is still listening and still using the same encryption/decryption parameters. By maintaining these session parameters, 
+they don’t have to periodically renegotiate security parameters.
+
+The heartbeat check consists of sending a message along with the number of bytes (up to 64Kb) of that message to the other party. 
+The other party simply echoes the message back.
+
+In some versions of OpenSSL, the heartbeat code had a bug, introduced in 2012, that did not check that the message 
+length is equal to the claimed number of bytes of the message. As a consequence, if an application is running a vulnerable 
+version of OpenSSL, a hacker can send a heartbeat with a message of only 1 byte but claim it was 64kB. The application would 
+send back 64kB minus 1 byte of its memory.
+
+Note that most of the time, the hacker does not get useful information from this; just random useless data from memory. 
+But if a hacker keeps trying enough times, she may get something useful like a password or a cookie.
+
+It’s important to emphasize the heartbeat bug was not due to a flaw in the TLS protocol, but a bug in the OpenSSL library 
+implementation of TLS. This bug was disclosed in 2014 and patched.
+
+
+SSL can be used to secure the file-transfer protocol (FTPS), and the email protocol (SMTPS). The Windows Update application 
+uses SSL to ensure the authenticity of Windows patches. A VPN can be built on top of SSL. SSL can be used to secure connections 
+between MYSQL clients and servers.
+
+But in the most general sense, SSL is built on top of TCP, meaning any TCP/IP based protocol can incorporate SSL into it if needed.
+
+
+What are all the versions of SSL/TLS?
+SSL version 1.0 was developed by Netscape in the early 90s but never released due security issues.
+SSL version 2.0 was released by Netscape in 1995, but still had many security flaws.
+SSL version 3.0 was released by Netscape in 1996, to address the security flaws in version 2.0. This version 
+varied significantly from previous versions. However, as of 2015, SSL 3.0 has been deprecated.
+TLS version 1.0 was released in 1999, and based significantly on SSL version 3.0 with minor security improvements. 
+TLS version 1.0 is essentially SSL version 3.1.
+TLS version 1.1 was released in 2006, with significant changes over 1.0.
+TLS version 1.2 was released in 2008, with significant changes over 1.1.
+As of July 2017, TLS 1.3 is a working draft, and contains significant improvements over 1.2.
+
+
+What cipher-suites are used by SSL?
+For key exchange and authentication algorithms:
+
+Rivest, Shamir, Adleman (RSA)
+Diffie-Hellman (DH)
+Diffie-Hellman Ephemeral (DHE)
+Elliptic-Curve Diffie-Hellman (ECDH)
+Kerberos (KRB5)
+Secure Remote Password Protocol (SRP)
+Pre-shared Key (PSK)
+DSA Digital Signature Algorithm
+ECDSA Elliptic Curve Digital Signature Algorithm
+DSS Digital Signature Standard
+
+For symmetric encryption and MAC algorithms:
+
+3DES Triple Data Encryption Algorithm
+AES Advanced Encryption Standard
+Camelia Block cipher developed by Mitsubishi and NTT
+DES Data Encryption Standard
+Fortezza Security token based cipher
+GOST Block cipher developed in USSR
+IDEA International Data Encryption Algorithm
+RC2 Rivest Cipher 4
+RC4 Rivest Cipher 2
+SEED Block cipher developed by Korean Information Security Agency SHA
+Secure Hash Algorithm
+MD5 Message Digest algorithm 5
