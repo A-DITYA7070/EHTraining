@@ -1,1 +1,177 @@
+what is sql injection :- 
+SQL injection (SQLi) is a web security vulnerability that allows an attacker to interfere with the queries that an application makes to 
+its database.
+It generally allows an attacker to view data that they are not normally able to retrieve. This might include data belonging to other users, 
+or any other data that the application itself is able to access. In many cases, an attacker can modify or delete this data, causing persistent 
+changes to the application’s content or behavior.
+
+SQL MAP ::: ---- 
+SQLMap is a tool used for the automated exploitation of SQL injection vulnerabilities. We can use SQLMap to test websites and 
+databases for vulnerabilities and exploit those vulnerabilities to take over the database. To use SQLMap, we first need to identify 
+a website or database that is vulnerable to SQL injection.
+
+TYPES OF SQLI :-
+1. In Band SQL — has two types ( 1. Error Based and 2. Union Based )
+2. Inferential SQL or Blind SQL —has two types ( 1. Boolean Based and 2. Time-Based)
+3. Out-band SQL
+
+What is In-Band SQL injection?
+In-band SQL injection is a type of SQL injection where the attacker receives the result as a direct response using the same communication channel.
+For example, if the attacker performs the attack manually using a web browser, the result of the attack will be displayed in the same web browser. 
+In-band SQL injection is also called classic SQL injection.
+
+What is Error Based?
+Error-based SQL injection is a subtype of “in-band SQL injection” where the result returned to the attacker is a database error string.
+
+How to Find?
+
+Example of error-based SQL injection:
+
+Let’s say we have the same query as in the example:
+
+SELECT * FROM users WHERE user_id = 'current_user'
+A malicious hacker may provide the following current user value:
+
+1'
+As a result, the query becomes:
+
+SELECT * FROM users WHERE user_id = '1''
+The double single quote at the end of the query causes the database to report an error. If the web server is configured to display errors on screen, 
+the attacker may see a message such as the following:
+
+You have an error in your SQL syntax; check the manual that corresponds to 
+your MySQL server version for the right syntax to use near "' at line 1
+Warning: mysql_fetch_array() expects parameter 1 to be resource, boolean
+given in /hj/var/www/query.php on line 37
+As a result, the attacker immediately sees that the application is using a MySQL database and can focus on MySQL-specific attacks, 
+Depending on the Database type an attacker will inject the payload and he will exploit it.
+
+Note: Enumerate error technique
+True = Valid Query + No error messages
+False = Invalid Query + Error messages
+
+1. In case the Input field is: String
+where Query = SELECT * FROM Table WHERE id = ‘1’;
+if,
+‘ gives False then ‘ ‘ must give a True
+“ gives False then “ “must give a True
+\ gives False then \\ must give a True
+
+2. In case the Input field is: Numeric
+where Query = SELECT * FROM Table WHERE id = 1;
+
+AND 1 True
+AND 0 False
+AND true True
+AND false False
+1-false Returns 1 if vulnerable
+1-true Returns 0 if vulnerable
+1*50 Returns 50 if vulnerable
+1*50 Returns 1 if not vulnerable
+
+3. In case the Input field is: Login
+where Query = SELECT * FROM Table WHERE username = ‘’;
+
+‘ OR ‘1
+‘ OR 1 — -
+“ OR “” = “
+“ OR 1 = 1 — -
+‘=’
+‘LIKE’
+‘=0 — +
+
+==>>  What is Union Based?
+Union-based SQL injection is a subtype of in-band SQL injection where the attacker uses the UNION SQL clause to receive a result 
+that combines legitimate information with sensitive data.
+
+Impact of Union-based SQL :
+Union-based SQL injection is the most dangerous type of SQL injection because it lets the attacker directly obtain almost any information 
+from the database
+
+Target: bWapp Application.
+
+Attack Scenario:
+First, we have to fingerprint the DATABASE so we have to give some special character as Input such as ( ‘ ) then see the response to 
+find out what type of database that application is using then use the payloads.
+Payload : ( ‘ ) — after injecting you can see the application returns the error message that the application is using MySQL database.
+
+Note: Read the Error message that clearly shows the database is “MYSQL”
+
+2. In this Movie checking functionality Background SQL query is:
+
+SELECT * FROM movies WHERE name= ‘Iron Man’;
+
+Note: “ORDER BY” this Clause is used to Find how many columns are there in that Table.
+
+Payload — ‘ ORDER BY 1#
+
+Our Payload will be placed like this:
+
+SELECT * FROM movies WHERE name= ‘ ’ ORDER BY 1#’;
+
+By changing the payload end number like “ 1 2 3 4 ..” we can find out how many columns are there until it returns the error
+
+Example
+
+‘ ORDER BY 1#
+‘ ORDER BY 2#
+‘ ORDER BY 3#
+‘ ORDER BY 4# — In the 4th attempt, I got an error that means there are only “ 3 “ columns in that Table.
+3. See in this application we have tried until 7# still we are not getting the error that means there are 7 columns in that Table.
+5. After Finding the columns, we Going to Identify the “ DATA TYPES “ of the Columns. As we discussed we know the table contains 7 Columns,
+
+Using this following Payload we going to find out Which Column is using “VARCHAR”
+Payload:‘ UNION SELECT ‘a’, null, null, null, null, null, null#
+By changing the “a” one by one to the next columns we can find which is taking the “a” as a Varchar.
+The first Column doesn’t give the “a” in the table so put it next to “null” like the Following:
+After Injecting ‘a’ into the first column
+6. Let’s try the next Payload :
+Payload : ‘ UNION SELECT null, ‘a’, null, null, null, null, null#
+Injected
+Result
+Wow!
+The second column Accepted the “a” which means it’s using the “Varchar” Data type.
+7. Now we going to find the DATABASE version by giving “SUB Query”
+Payload: ‘ UNION SELECT null, (SELECT @@version), null, null, null, null, null#
+You can see it returns the Version in Table:
+8. To find the database name use the below Payload.
+Payload: ‘ UNION SELECT null, (SELECT database()), null, null, null, null, null#
+So like this, an attacker will retrieve the data from the database so this is all about “Union-Based” SQL injection.
+
+
+What is Blind SQL injection ?
+Blind SQL injection is a type of SQL injection where the attacker does not receive an obvious response from the attacked database 
+and instead reconstructs the database structure step-by-step by observing the behavior of the database server and the application. 
+Blind SQL injection is also called inferential SQL injection.
+
+There are two types of blind SQL injections: Boolean-based and time-based.
+
+Impact of Blind SQL:
+
+Performing an attack using blind SQL injections takes much longer than in the case of in-band SQL injections
+but can yield the same results. Based on the behavior of the database server and the application, the attacker may be able to do the following:
+
+Check if other types of SQL injections are possible
+Get information about the structure of the database
+Get data out of the database
+
+
+2. What is time-based blind SQL injection?
+Time-based blind SQL injection is a subtype of blind SQL injection where the attacker observes the behavior of the database server 
+and the application after combining legitimate queries with SQL commands that cause time delays.
+
+===>>> What is out-of-band SQL injection?
+Out-of-band SQL injection (OOB SQLi) is a type of SQL injection where the attacker does not receive a response from the attacked 
+application on the same communication channel but instead is able to cause the application to send data to a remote endpoint that they control.
+
+Out-of-band SQL injection is only possible if the server that you are using has commands that trigger DNS or HTTP requests. However, 
+that is the case with all popular SQL servers.
+
+
+
+
+
+
+
+
 
