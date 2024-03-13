@@ -1,0 +1,14 @@
+
+1) In this lab we want 
+
+=> in backend the query running is ::-
+
+select login_name,login_password from table where id=1;
+select login_name,login_password from table where id=2;
+
+so in the url we only need to pass the ?id=1 field..
+
+
+
+We can break the query by using single quote (fuzzing) and then we can use comments and inject our query to retrive data..
+

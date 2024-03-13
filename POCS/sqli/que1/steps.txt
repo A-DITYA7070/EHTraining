@@ -10,7 +10,7 @@ ANALYSIS :-
 SELECT * from products where category='Pets' and released=1
 
 when we entered '
-in backedn SELECT * from products where category=''' and released=1 (it broked the code and server responded with 500)
+in backend SELECT * from products where category=''' and released=1 (it broked the code and server responded with 500)
 still we dont know whether the app is vulnerable to sqli 
 hence we will try with diff datasets
 SELECT * from products where category=''--' and released=1 (this --' will comment rest of the following code)

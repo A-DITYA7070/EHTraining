@@ -1,0 +1,13 @@
+
+
+==> How to test== >
+
+i) try to break the query 
+  a) put single quote and check if it beaks and what type of error it is throwing 
+  b) put '\' and see how db is behaving
+  c) put aphanumeric and see how db is behaving..
+  d) check for double quotes..
+  e) use order by to check how many columns dev is using..
+
+
+=> select col-1,col-2,col-3 from table where id='our input' our injected code  --+(to comment further query and codes) 

@@ -14,7 +14,7 @@ Inorder to satisfy CSRF attacks to possible:-
 
 1) It's vulnerable to csrf because all the condition for csrf is valid hence we can exploit it
 2) a req to change email is sent to burp 
-3) from there i took the lab-id and endpoint and since the user is logged in to burp its cookie is stored in the browser
+3) from there i took the lab-id and endpoint and since the user is logged in its cookie is stored in the browser
 4) in /csrf-lab1.html i crafted the payload making a req to change the email which has an iframe ele and a hidden i/p ele
 which sets the value of email to our desired email 
 5) after hosting it to my local server when this link http://localhost:4500/hack is opened in the browser the email is updated

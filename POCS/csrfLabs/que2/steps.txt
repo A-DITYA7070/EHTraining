@@ -1,4 +1,4 @@
-LAB #2 :- CSRF WHere token validation depends on req method 
+LAB #2 :- CSRF Where token validation depends on req method 
 
 vulnerable parameter = email change functionality
 

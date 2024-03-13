@@ -1,0 +1,11 @@
+                                                  Lab: Unprotected admin functionality
+
+GOAL :- Access the unpreiveleged account of administrator and delete the user carlos..
+
+step 1) first we will see by moving to different path how the application behaves
+step 2) after entering  /admin 
+          https://0ace0020046be2c382e4cee600fc005b.web-security-academy.net/admin 
+          we can see application say not-found
+step 3) hence we only need to enumerate certain accounts and see whether the app is accepting it or not
+step 4) after entering end point /administrator-panel we can see that we successfully get into administrator account
+step 5) after deleting user carlos we solved the lab..
