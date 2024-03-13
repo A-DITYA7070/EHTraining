@@ -35,7 +35,9 @@ For example, if a non-administrative user can gain access to an admin page where
 is vertical privilege escalation. 
 
 Unprotected functionality
-At its most basic, vertical privilege escalation arises where an application does not enforce any protection for sensitive functionality. For example, administrative functions might be linked from an administrator's welcome page but not from a user's welcome page. However, a user might 
+At its most basic, vertical privilege escalation arises where an application does not enforce any protection for sensitive 
+functionality. For example, administrative functions might be linked from an administrator's welcome page but not from a user's 
+welcome page. However, a user might 
 be able to access the administrative functions by browsing to the relevant admin URL.
 
 For example, a website might host sensitive functionality at the following URL:
@@ -52,6 +54,84 @@ Imagine an application that hosts administrative functions at the following URL:
 https://insecure-website.com/administrator-panel-yb556
 This might not be directly guessable by an attacker. However, the application might still leak the URL to users. The URL might be disclosed 
 in JavaScript that constructs the user interface based on the user's role: 
+
+
+
+Access-control vulnerabalities :::---
+
+Authentication :- it means identifies the user and confirms that they are who they say are.
+Session management :- It identifies which subsequent HTTP requests are being made by each user.
+Access Control :- It determines whether the user is allowed to carry out the action that they are attempting to perform
+
+==> Types of access control ::--
+i) vertical access control :- It is used to restrict access to functions not available for other user in the organisation..
+ii) Horizontal access control :- It enables different users to access similar resources types.
+iii) context dependent access control :- It restricts access to functionality and resources based on the state of the application 
+                                         or the user's interaction with it.
+                                         ex :- if u confirmed the payment u cannot access the shopping cart.
+
+==> Broken Access Control :-- these are the vulnerabalities that arise when users can act outside of their intended permissions. This typically
+                              leads to sensative info disclosure, unauthorised access and modification or destruction of data.
+
+                           ex :- i) regular user is able to perform the functionalities of priviledged users.
+                                ii) regular user is able to access the info/account of other regular users
+                               iii) user is able to ineract with the application (because app is not maintaining state) 
+                                    ex :- user is able to change the shopping cart items even after payment is confirmed.
+
+Types of Broken Access Control :::---
+i) Horizontal Privilege Escalation :- Horizontal privilege escalation occurs when an attacker gains access to resources belonging
+                                      to another user of the same privilege level.
+                          ex :- let alice is logged into an application :-
+                                https://vulnerable-web.com/myaccount?id=123
+                                let an attacker is also logged into the application so what he will do is 
+                                (he will bruteforce the account_id and will change the id to 123)
+                                https://vulnerable-web.com/myaccount?id=123
+                                and thus he can access the account of alice and he can compromise the whole account 
+                          it is vulnerable because the app is relying on client side inputs
+                          ==> this is horizontal privilege escalation 
+
+ii) Vertical privilege Escalation :- it occurs when an attacker gains access to privileged functionality that they are not permitted to access
+                            => let app has diff user roles 
+                            let admin url :- https://vulnerable-web.com/login/home.js?admin=true
+                            so attacker will only need to change the admin from false to true 
+                            and he can thus get access to admin's account... and can compromise the whole app
+
+iii) Access Control Vulnerabalities in Multi-Step Processes :- These types of vulnerabalities occurs when access control rules are implemented
+                              on some of the steps but ignored on others.
+
+
+OTHER ACCESS CONTROL EXAMPLES ::::::-------------------
+=> Bypassing access control checks by modifying parameters in the urls or HTML PAGE.
+=> Accessing the API with missing access controls on the POST,PUT and DELETE methods.
+=> Manipulating metadata, such as replaying or tampering with JSON Web Tokens (JWTs) or a cookie.
+=> Exploiting CORS misconfig that allow API access from unauthorized/untrusted origins.
+=> Force browsing to authenticated pages as an unauthenticated user.
+
+UNAUTHORISED ACCESS TO AN APPLICATION ::--
+a) Confidentiality :- Access to other user's data.
+b) Integrity :- Access to update other user's data.
+c) Availability :- Access to delete users.
+=> can sometimes be chained with other vulnerabalities to gain remote code execution on the host os.
+
+HOW TO FIND ACCESS-CONTROL-VULNERABALITIES :::-
+i) Black Box PenTesting ::-- 
+   a) map the application
+    => identify all instances where the web app appears to be interacting with the underlying os.
+    => Understand how access control is implemented for each privilege level.
+    => Manipulate parameters that are potentially used to make access control decisions in the backend
+    => Automate testing using extensions like Autorize
+
+ii) White Box testing :-
+   => Review the code to identify how access control is implemented in the app
+   => system defaults to open
+   => weak or missing access control checks on functions/resources.
+   => missing access control rules for POST,PUT and DELETE methods at the API level.
+   => Relying solely on client-side input to perform access-control desicions.
+   => Validate potential access control vulnerabalities on a running application
+
+
+
+
 
 
 
