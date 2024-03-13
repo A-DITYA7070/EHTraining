@@ -1,0 +1,5 @@
+"Privilege Escalation 101
+#HPE and VPE
+#IDOR
+#Forced Browsing
+"
