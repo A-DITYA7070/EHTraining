@@ -129,6 +129,13 @@ ii) White Box testing :-
    => Relying solely on client-side input to perform access-control desicions.
    => Validate potential access control vulnerabalities on a running application
 
+HOW TO PREVENT ACCESS CONTROL VULNERABALITIES ::-
+=> Use a security-centric design where access is verified first and ensure all requests go through an access control check.
+=> Except for public resources,deny access by default 
+=> Apply the principle of least privilege throughtout the entire application.
+=> consider using attribute or feature-based access control checks instead of role-based access-control (depends on type of application)
+=> Access control checks should always be performed on server side..
+
 
 
 
