@@ -3,3 +3,68 @@
 #IDOR
 #Forced Browsing
 "
+
+Privilege Escalation is a cyber attack method in which malicious people or attackers try to gain access to a higher level of authority 
+by raising their low level of authority on the target system. This often involves users or processes with limited privileges gaining 
+undesirable greater access to the system. Privilege Escalation attacks can enable attackers to access sensitive data, change system 
+configurations, or perform other malicious activities.
+
+Privilege Escalation Types
+
+i) Horizontal Privilege Escalation: An attacker gains access to the target account by obtaining the credentials of another user with the 
+same authorization level or by stealing a session.
+
+ii) Vertical Privilege Escalation: The attacker tries to reach a higher level of authorization by raising the privileges of a low-authority 
+account. For example, it might try to switch from a user account to an administrator (“root”) account.
+
+iii) Retrieving Credentials: An attacker attempts to access accounts with higher privileges by hijacking passwords stored in a vulnerable 
+application or system.
+
+
+IDOR :--
+IDOR stands for Insecure Direct Object Reference. It's a type of security vulnerability that occurs when an application exposes internal 
+implementation objects, such as files, directories, or database keys, to the user without proper authorization checks.
+
+In simpler terms, IDOR allows attackers to access unauthorized data or resources by manipulating object references in requests. 
+This often happens when the application relies solely on user-supplied input (such as IDs or filenames) to access resources without
+verifying if the user has the proper permissions to access those resources.
+
+For example, let's say a web application allows users to view their own profile information by navigating to a URL like example.com/profile?id=123. 
+If the application doesn't properly validate the user's authorization and simply retrieves the profile associated with the provided ID without 
+checking if the user is actually allowed to view that profile, it could be vulnerable to IDOR. An attacker could manipulate the ID parameter to 
+access other users' profiles.
+
+To prevent IDOR vulnerabilities, developers should implement proper access controls and authorization checks throughout the application to ensure
+that users can only access resources they are authorized to access. This might involve validating user permissions before accessing sensitive data
+or resources and using indirect references or access tokens instead of exposing direct object references. Additionally, input validation and proper
+error handling should be implemented to prevent attackers from exploiting IDOR vulnerabilities.
+
+
+FORCED BROWSING :----- 
+
+Forced browsing, also known as directory traversal or path traversal, is a web application vulnerability that occurs when an attacker is 
+able to access files or directories outside of the web application's root directory. This vulnerability arises due to insufficient input 
+validation or improper access controls implemented by the web application.
+
+In forced browsing attacks, attackers manipulate URLs or input parameters to navigate to directories or access files that are not intended 
+to be accessible to users. This can potentially expose sensitive information such as configuration files, user data, or even executable scripts.
+
+For example, consider a web application that serves user-uploaded files stored in a directory structure like example.com/uploads/user1/file.txt.
+If the application does not properly validate user input, an attacker could craft a malicious request like example.com/uploads/../config/database.txt, 
+which could allow them to access sensitive configuration files outside of the intended directory.
+
+To prevent forced browsing attacks, developers should implement proper access controls and input validation mechanisms. This includes:
+
+Ensuring that all user input is properly sanitized and validated before processing.
+Implementing secure file and directory permissions to restrict access to sensitive resources.
+Using whitelists to define acceptable input and deny requests that attempt to access unauthorized resources.
+Implementing secure coding practices and frameworks that prevent path traversal vulnerabilities.
+Regularly auditing the application for vulnerabilities and applying security patches as needed.
+By following these best practices, developers can reduce the risk of forced browsing attacks and protect sensitive data from unauthorized access.
+
+
+
+
+
+
+
