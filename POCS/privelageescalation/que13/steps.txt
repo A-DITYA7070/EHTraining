@@ -1,0 +1,12 @@
+
+
+
+                                               Lab #13 : Referer-based access control
+
+step 1) login using administrator account
+step 2) change the carlos user to admin and intercept the req
+step 3) login through normal user wiener
+step 4) in the burp we can see that the req is depending upon the Referer header it's not validating the session
+step 5) hence we can use normal users session and change to admin
+step 6) copy the session cookie from normal user and paste it in the repeater and make the req
+step 7) change the id=wiener we can see that lab is solved

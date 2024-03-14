@@ -1,0 +1,16 @@
+
+
+
+                                                  LAB #5 User ID controlled by request parameter
+
+==>                  Target :::----  To exploit HPE(Horizonal privelage escalation) and delete user carlos...
+
+ steps 1) log in using credentials wiener:peter
+ steps 2) see there is api key in the response 
+ steps 3) in the repeater we can see that the /account?user=wiener
+ steps 4) in ?user=wiener change it to carlos 
+ steps 5) in the response we can see that there is an api key
+ steps 6) submit the api key and lab is solved...
+
+
+ 

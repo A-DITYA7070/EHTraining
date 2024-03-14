@@ -1,0 +1,11 @@
+
+
+
+                            LAB #8 ::- User ID controlled by request parameter with password disclosure
+
+steps 1) login to the lab using credentials wiener:peter 
+steps 2) in the response we can see that the password is sent back
+steps 3) intercept the req in the burp and change the id=wiener to id=administration
+steps 4) from the response obtain the password
+steps 5) login using administrator credentials
+steps 6) delete the user carlos and lab is solved..

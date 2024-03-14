@@ -1,0 +1,12 @@
+
+
+
+
+                                       Lab #12: Multi-step process with no access control on one step
+
+step 1) login using administrator and intercept it in burp 
+step 2) make a req to make carlos admin 
+step 3) in confirm part observe how it behaves 
+step 4) login using wiener normal user account
+step 5) take it's cookie and change it from administrator in repeater 
+step 6) make the same request just change the id=carlos to id=wiener we can see wiener is now admin and lab is solved..

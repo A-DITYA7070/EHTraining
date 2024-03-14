@@ -1,0 +1,12 @@
+
+
+
+
+                                                 LAB #9 Insecure direct object references
+
+step 1) login using credentials wiener:peter
+step 2) select the live chat and send a text and go to burp 
+step 3) intercept the response and view transcript
+step 4) change the transcript file name to 1.txt 
+step 5) open the 1.txt we can see that there is a password
+step 6) copy the password and login in carlos user and hence lab is solved..

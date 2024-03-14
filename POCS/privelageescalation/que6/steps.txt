@@ -1,0 +1,14 @@
+
+
+
+                             LAB #6 ::- User ID controlled by request parameter, with unpredictable user IDs
+
+
+STEPS 1) login in to the lab using the credentials wiener:peter
+steps 2) In url see that the id=kjyfghujikkjhbkjlm (some random strings)
+         here website is identifying the user using some GUIDS
+steps 3) hence we need to find this id to exploit carlos
+steps 4) scroll down and see the blogs and find a blog by carlos
+steps 5) after cliking the blog we can see the guids of carlos copy that 
+steps 6) Navigate to account page and in id part paste carlos guids
+steps 7) copy the api key and submit it we can see that the lab is solved...

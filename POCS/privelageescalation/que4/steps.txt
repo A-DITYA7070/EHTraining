@@ -1,0 +1,12 @@
+
+
+
+                                       lab #4 ::-- User role can be modified in user profile
+
+
+step 1) login to the lab using credentials wiener:peter
+step 2) send the email updation req intercept it using burp
+step 3) in burp we can see that req is going in an additional field
+step 4) on that feild add an extra field "userid"=2 and send the req using repeater
+step 5) we can see that the req is accepted and we have got access to admin panel
+step 6) in admin panel delete the user carlos and lab is solved..

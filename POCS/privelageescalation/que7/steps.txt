@@ -1,0 +1,12 @@
+ 
+
+
+                       LAB #7 :::--- User ID controlled by request parameter with data leakage in redirect
+
+
+step 1) login with the credentials wiener:peter
+setp 2) intercept the req and in repeater change the id=wiener to id=carlos
+step 3) in the response it is redirecting but still it is sending sensative info in this case apikey
+step 4) submit this api key and the lab is solved...
+
+

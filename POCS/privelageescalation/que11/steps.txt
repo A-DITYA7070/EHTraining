@@ -1,0 +1,12 @@
+  
+
+
+                                    #11 Lab: Method-based access control can be circumvented
+
+step 1) login using administrator credentials and upgrade carlos user to admin
+step 2) capture the req in burp
+step 3) open incognito mode and login with wiener
+step 4) in burp change the session cookie to wiener's cookie and try to update the account 
+step 5) see the response it responded with unauthorized res 401
+step 6) change the Method from post to get
+step 7) add the username=wiener we can see that weiner is now upgraded to admin and lab is solved..

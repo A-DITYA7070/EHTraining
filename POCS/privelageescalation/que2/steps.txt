@@ -1,0 +1,11 @@
+
+
+                             LAB #2 : Unprotected admin functionality with unpredictable URL
+
+steps 1. Navigate to home page of the LAB 
+      2. intercept this req using burp
+      3. send it to repeater and see the response in the response there is a script which contains script
+         to the admin page
+      4. copy the endpoint and paste it in the LAB
+      5. after navigation we can see the user carlos 
+      6. delete the user and lab is solved..
