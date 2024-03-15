@@ -1,1 +1,7 @@
 
+1) Excessive Session Timeout Duration
+2) Session Not Invalidated After Logout
+3) Session Fixation
+4) Broadly Scoped Session Cookie Domain
+5) Permanent Cookie Contains Sensitive Information
+6) Low Entropy on Session Identifier
