@@ -1,1 +1,49 @@
 
+File upload vulnerabilities refer to security weaknesses in web applications that allow users to upload files to the server. 
+These vulnerabilities can be exploited by attackers to execute malicious code, compromise user data, or gain unauthorized access to the server. 
+There are several types of file upload vulnerabilities, including:
+
+1) Unrestricted File Upload: In this scenario, the web application does not properly validate the file types or content being uploaded, 
+   allowing users to upload any type of file, including executable files such as PHP or JavaScript files. Attackers can upload malicious 
+   files containing code that can be executed on the server.
+
+2) MIME Type Check Bypass: Some web applications check the MIME type (file type) of uploaded files based on the file extension or content headers. 
+   Attackers can bypass this check by altering the file extension or manipulating the content headers to make the server treat a malicious file as a benign one.
+
+3) File Extension Filtering Bypass: Web applications often use file extension checks to determine the type of file being uploaded. Attackers can bypass this check 
+   by renaming malicious files with allowed extensions or by using multiple extensions (e.g., malicious.php.jpg) to trick the application into executing the file.
+
+4) Directory Traversal: In some cases, file upload vulnerabilities can be used to perform directory traversal attacks, allowing attackers to upload files to directories 
+  outside of the intended upload directory. This can lead to unauthorized access to sensitive files or system files.
+
+5) Content-Type Manipulation: Attackers can manipulate the Content-Type header of the HTTP request to trick the server into processing the uploaded file differently.
+   For example, an attacker could set the Content-Type header to "image/jpeg" for a malicious PHP file to bypass validation checks.
+
+6) Overwriting System Files: If the web application allows users to upload files with specific filenames, attackers may attempt to overwrite system files or critical application 
+   files, leading to a system compromise or denial of service.
+
+To mitigate file upload vulnerabilities, developers should implement strict validation checks on file uploads, including validating file types, checking file content, and 
+enforcing proper file permissions. Additionally, it's essential to store uploaded files outside of the web root directory to prevent direct access by users and to regularly 
+update and patch web application frameworks and libraries to address any known vulnerabilities.
+
+
+Security Checklist
+
+=> Are filenames reflected back on the page? If so, are they HTML Entity encoded (XSS via file names)?
+=> Does it accept .zip files? Try a ZipSlip
+=> If it processes an image, check for Image Tragick (CVE-2016-3714)
+=> Can you bypass file type restrictions by changing the content-type value?
+=> Can you bypass file type restrictions by forging valid magic bytes?
+=> Can you upload a file with a less-common extension (such as .phtml)?
+=> Try playing with the filename in the request, a potential vector for traversal or SQL injection.
+=> Check for the acceptance of double extensions on uploaded files.
+=> Test for null-byte injection.
+=> Is the server windows? Try adding a trailing . to bypass extension blacklists, this dot will be removed automatically by the OS.
+=> Can you upload an SVG for XSS?
+=> If supported by the webserver, can you upload .htaccess files?
+=> Does the backend process the image with the PHP GD library?
+=> Is the app vulnerable to the infamous ffmpeg exploit?
+=> Can custom polyglots be developed to bypass specific filters?
+=> Does the app pass the file name to some sort of system function? If so, can you achieve RCE via code injection within the file name?
+=> Does the application run the uploaded file through exiftool? If so, can you get RCE via the djvu exploit?
+=> Can you bypass extension filters by using varied capitalization?
