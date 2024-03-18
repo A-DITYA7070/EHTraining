@@ -258,3 +258,132 @@ AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H
 OR AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H
 	N/A
 Note: CVD default score assumes unauthenticated access with full compromise.
+
+
+FILE UPLOAD TESTING MALWARE :::_---
+
+Even if you can't directly attack the server and can't upload HTML pages, it may still be possible to use the affected server to distribute files to other people. 
+If you can upload a file to a website that users trust, this can be utilized for phishing or distributing malware. The users are more likely to click on a link and 
+download a file if it appears to be from a trusted source.  
+
+    Test Cases
+        Are other users, or unauthenticated users, able to access the file that you have uploaded?
+        Does the web server scan uploaded files for malware?
+            Does the web server scan uploaded PDF files for malware?
+                Limitations to EICAR (Cylance and other non-traditional AV scanners)
+        How to present this in the report
+            Reporting Guidance
+
+Test Cases
+Are other users, or unauthenticated users, able to access the file that you have uploaded?
+Open a new browser window in Incognito mode and try to access the file that you have uploaded without logging in.
+Next, log in as a different user and try this again.
+Does the web server scan uploaded files for malware?
+If:
+    the application accepts executable files, such as .exe, .bat, .com, ELF and other executable or archive formats; and
+    other users can access the files that you uploaded
+
+it can be used to distribute malware. You can try a basic test to see if uploaded files get scanned by an antivirus solution.
+
+EICAR is a standard test file to ensure that an antivirus is working. The only contents of that file should be:
+
+X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*
+
+You can save it with any extension accepted by the application and upload.
+
+You can use the Upload Scanner extension in Burp Suite to upload EICAR files for you. See the [WIP] File Uploads Testing: 
+Tooling page for instructions on how to use it. Note that you still have to manually check if other users can access the uploaded EICAR file, the extension does not do that for you.
+
+If it gets rejected and you have tried bypassing MIME type checks (see Insecure File Uploads Testing Guidance), this is because the antivirus blocked it. 
+All good.
+
+If it passes: see if it is still available on the server after a couple of minutes. It might take the antivirus a moment to react and quarantine the file. 
+If the file is still available after a couple of minutes, that indicates that there is no antivirus scanning of uploaded files in place.
+
+Note that it does not make sense to embed the EICAR file into file types other than archives, as anti-virus solutions are not expected to detect such cases. 
+If the target web page accepts compressed files or archives, see if the necessary compression algorithm or file format is available below, and test using that:
+
+    synopsys_eicar.ar
+    synopsys_eicar.bz2
+    synopsys_eicar.com
+    synopsys_eicar.gz
+    synopsys_eicar.lzip
+    synopsys_eicar.lzma
+    synopsys_eicar.lzop
+    synopsys_eicar.rar
+    synopsys_eicar.rar4
+    synopsys_eicar.tar
+    synopsys_eicar.tar.bz2
+    synopsys_eicar.tar.gz
+    synopsys_eicar.tar.lzip
+    synopsys_eicar.tar.lzma
+    synopsys_eicar.tar.lzop
+    synopsys_eicar.tar.xz
+    synopsys_eicar.zip
+    synopsys_eicar.zstd
+    synopsys_eicar.7z
+
+You can also download all of the files above from this archive: EICAR_samples.zip
+Does the web server scan uploaded PDF files for malware?
+
+    Upload PDF files containing EICAR dropper and see whether any AV will trigger to reject or remove the file on the server before spreading to other users. 
+The aim of this check is not to qualitatively assess the anti-virus, but we only aiming to prove whether or not AV is running and inspecting PDF files.
+        Test file: synopsys_eicar.pdf
+        We no longer report Distribution of PDF Files with Active Content.
+    If the upload is accepted, confirm that another user can download the file and it's not removed by the system after upload.
+    Verify that the downloaded PDF still contains the EICAR dropper, and that an AV products should have picked it up if it was scanned. For example, 
+if we upload the EICAR PDFs in virustotal we see that a large majority will flag it.
+
+Limitations to EICAR (Cylance and other non-traditional AV scanners)
+
+The EICAR test file works by triggering the signature check of AV scanners. Unfortunately this fails when using AV scanners that does not rely on such signatures.
+Currently there are no standard alternatives to EICAR for those ML-based scanners. The only alternative to this is using applications that are recognized as malware 
+because they might be abused as such but are secure in principle. The folks from Cylance also recommend this approach implicitly (source on spiceworks.com).
+
+Obtain client agreement for non-EICAR malware testing
+Unless it was agreed during the scoping process, consult with your TO and CM to check if it's ok to test with alternative files before proceeding with other options outlined below.
+
+One obvious example for this would be netcat which is recognized as unsafe by Cylance:
+
+How to present this in the report
+Steps to reproduce
+    Save the test file (e.g., EICAR) with the necessary extension.
+
+    Calculate the hash of the file:
+    $ sha256sum eicar.exe
+    275a021bbfb6489e54d471899f7db9d1663fc695ec2fe2a2c4538aabf651fd0f *eicar.exe
+
+    Upload this file to the application.
+    Wait a couple of minutes.
+    Download this file from the application as a different user or unauthenticated user.
+    Calculate the hash of the downloaded file.
+    Observe that the file made the round-trip unmodified, indicating lack of antivirus intervention.
+
+
+Reporting Guidance
+Do not include VirusTotal screenshots in reports, as was previously recommended, or reference it as detecting a file. 
+The company's terms of service are sufficiently broad that those uses could be a violation. The service can still be used
+to confirm that public files are malicious, but its results cannot be included in reports.
+Scenario	A user can successfully upload a malicious file (e.g., EICAR test file to simulate malware) that can be downloaded by
+other users, and may thereby spread malware through the system and potentially use it in phishing campaigns.	
+There is evidence of AV scanning file uploads as other EICAR file uploads are blocked, but a user can successfully upload a PDF file 
+with malware (e.g., PDF with EICAR dropper) that can be downloaded by other users, and may thereby spread malware through the system 
+and potentially use it in phishing campaigns.	A user can successfully upload file types that are not required by the application's 
+business purpose, and should have been rejected by server-side validation as a best practice, however there is no evidence of negative
+impact on the system or other users. A user may be able to successfully upload a malicious file (e.g., EICAR test file to simulate malware)
+but there is no evidence that it can be downloaded by other users (at all, or before being removed by AV on the server).
+Reporting guidance	Report as Malware Distribution via File Upload	
+
+Report as Malware Distribution via File Upload with likelihood reduced to Low since successful exploitation would require insecure configuration
+and/or additional user acceptance of security warnings in their PDF reader.
+
+(For CVSS, increase the Attack Complexity to High)
+
+Include a note with the following message (edit as needed):
+
+"The default risk score has been reduced since it was observed that an AV solution blocked the EICAR test file when uploaded directly, and only 
+malicious PDF files containing an EICAR dropper were not blocked." 
+	Not an issue - do not report as a finding.
+
+
+
