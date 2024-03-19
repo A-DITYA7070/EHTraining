@@ -1,1 +1,214 @@
+Client-side Storage
+
+As described in the Architecture of the World Wide Web [AWWW] the Web is essentially stateless. If you make a HTTP GET request on a URL you get back a representation of a resource. You can manipulate that resource on the client, but if you make another GET request you get the same representation 
+of the same resource.
+
+Cookies
+
+This simplifying assumption is actually quite limiting. The server cannot remember if you identified yourself when you want to access protected pages, it cannot remember your user preferences. Cookies were invented by Netscape to solve such problems. They are bits of text stored on the client machine and sent with the HTTP request to the Web site for which they were created. So, for example, if you created a user name to access your bank account this can be stored in a cookie and sent with the access request to the bank.
+
+
+There are two types of cookies [Cookies]:
+
+
+A session cookie, also called a transient cookie, is a cookie that is erased when you end the browser session. The session cookie is stored in temporary memory and is not retained after the browser is closed. Session cookies do not collect information from your computer. They typically store information in the form of a session identification that does not personally identify the user. A persistent cookie, also called a permanent cookie, or a stored cookie, is a cookie that is stored on your hard drive until it expires (persistent cookies are set with expiration dates) or until you delete the cookie. Persistent cookies are used to collect identifying information about the user, such as Web surfing behavior or user preferences for a specific Web site.
+
+Cookies have six attributes:
+
+ The name of the cookie.
+ The value of the cookie.
+ The expiration date of the cookie - this determines how long the cookie will remain active in your browser.
+ The path the cookie is valid for - this sets the URL path the cookie is valid for. Web pages outside of that path cannot use the cookie – much more on this later.
+ The domain the cookie is valid for. This makes the cookie accessible to pages on any of the servers when a site uses multiple servers in a domain.
+ The need for a secure connection - this indicates that the cookie can only be used under a secure server condition, such as a site using SSL.
+
+Cookies are very useful. In fact, much of the behavior we take for granted on the Web would not be possible without cookies. For example, you can tell your brokerage website what page you want displayed when you first
+
+access your account. Google lets uses specify the number of results they want to see on a page and many websites allow you to specify the “look” of the page. If you go to a shopping site and fill a basket, a cookie stores a session identifier that can be used to retrieve the contents of the basket. (The contents of the basket are usually stored in a database.)
+
+
+The most important use of cookies however, and the most controversial, is to use cookies for tracking where you go and what you do there. These are typically used by advertising sites but you do not visit any of the advertising websites, so how can they get their cookies into your local storage? If you look at the cookies stored on your machine you will probably find cookies from DoubleClick, a site that tracks what ads you look at. This happens because a search engine you used has a relationship with DoubleClick and allows it to set cookies in your local storage. These are called third-part cookies. Another way that you can get third-party cookies on your client is from websites that show content gleaned from other sites. In such situations, the websites that provide the content may be able to set cookies on your machine.
+
+
+Access to Cookies
+
+Access to cookies by unauthorized websites is prevented by the Same Origin Policy [SameOriginPolicy]. This states that scripts running on pages originating from the same site may access each other's methods and properties with no specific restrictions, but prevents access to most methods and properties across pages from different sites.
+
+There is a section of the Web community which claims that this origin-based access-control model is inherently vulnerable to cross-origin security issues because of its reliance on an identity-based, "ambient authority" (cookies) model where, because of the presence of intermediaries, it is impossible to reliably "authenticate" the origin of a request.
+
+
+In addition, the rules for the same-origin policy are not enforced reliably (see the discussion of the 'src' attribute of a <script> tag below and in [SrcTagHack]). In addition, the widespread use of dynamic script tags and use of "iframes" to allow multiple documents from several origins to exist within the same containing document, or JSONP, open further security vulnerabilities based on the origin-based algorithms.
+
+
+The “src” attribute of the Javascript <script> tag is, surprisingly, not constrained by the Same Origin Policy. This means that a script element can be created which can go to any server, fetch a script, and execute it. If the script causes the delivery of JSON-encoded data, then this is a very useful thing. Unfortunately, there is no way to constrain the script or to inspect it before it executes. It runs with the same authority as scripts from the page. So the script can access and use its cookies. It can access the originating server using the user's authorization. It can inspect the DOM and the JavaScript global object, and send any information it finds anywhere it wants to.
+
+Such attacks are examples of the Confused Deputy attack [ConfusedDeputy] where someone you trust and give some kind of authority is fooled by an evildoer to use the authority for nefarious purposes. See also [CrossSiteAttacks].
+
+
+To summarize, cookies enable state on the Web and by doing that, provide very useful functionality. Access to cookies is controlled by the Same Origin Policy which says that cookies can be accessed by the website that set them. But cookies contain valuable information and there is big business in hijacking cookies that you are not authorized to access. This has led to several techniques for getting around the Same Origin Policy as well as for preventing the user from deleting cookies and recreating deleted cookies. We shall discuss this later in more depth but first let us discuss some of the limitations of cookies and the techniques that have been developed to overcome them.
+
+
+Access to Cookies from Multiple Websites
+
+Although access to cookies by third-party Websites is decried and a great deal of ink has been spilled on this problem, there are legitimate situations where Websites need to cooperate to get a job done. Consequently, several approaches have been proposed to allow browsers to safely make requests to multiple server domains.
+
+Historically, Adobe's Flash plugin has supported cross-domain requests by allowing Web sites to publish a file containing a list of origins which are allowed to make requests of that site. The restrictions are maintained by the Flash plugin checking this file.
+
+
+Two recent standards efforts attempt to enable cross-domain requests in different ways. The Cross Origin Resource Sharing (CORS) specification [CORS] allows an origin to explicitly opt-in to a model for sharing access to its resources with a set of other, named, origins - in other words, to intentionally allow cross-origin requests from a named subset of origins. That model may then be used by other specifications in order to expose cross-origin requests via the specified APIs.
+
+
+One API specified which utilizes CORS is specified in XMLHttpRequest2 [XHR2].
+
+
+Microsoft Internet Explorer 8 introduced the XDomainRequest [XDR] object, which similarly allows cross-domain requests, employing the Access-Control-Allow-Origin HTTP header related to CORS, to describe the list of allowed sites.
+
+As discussed above, some claim that the origin-based access-control model, regardless of the security measures implemented in the CORS/XHR2 algorithms, is inherently vulnerable to cross-origin security issues because of its
+
+reliance on an identity-based, "ambient authority" (cookies) model where, because of the presence of intermediaries, it is impossible with this model to reliably "authenticate" the origin of a request.
+
+
+An alternative model, which does not rely on attestations of identity, is proposed in the Uniform Messaging Policy specification. That document proposes an alternative to both CORS (i.e. it proposes that an origin server may "opt-in" to requests from all domains, not a named subset controlled by the client) and XHR2 (UMP proposes a new XHR API that applies the same policy to same-origin requests as to cross-origin requests). UMP does not propose a specific access-control mechanism, but expects that parties involved in a web application will authenticate each other in ways other than by using origin-based access control, such as by the sharing of authorization tokens between the parties. One potential multi-party mechanism is described in [CORSChallenge].
+
+It has been proposed that UMP could form a subset of the CORS specification (using the 'credentials' flag of CORS).We believe that CORS and UMP do not prevent against Confused Deputy attacks.
+
+
+Further Requirements for Client-side Storage
+
+In addition to the requirement that cookies be accessible from more than one website, a few other requirements have emerged for client side storage:
+
+ Off-line access: Client storage should be accessible by a client-side web application even when the client cannot contact the server from which the data was loaded.
+ Information management: It should be possible to manage the information on your site and add and delete and query the stored information.
+ Large amount of data: Cookies provide limited amount of storage; there are requirements to store large amounts of data such as all your email.
+ Controlled transmittal: Unlike cookies, all local storage need not be transmitted to the server on each HTTP request. Instead applications can send *selected* client data to the server under program control.
+
+The Web Applications WG, in response to these requirements, has been working on two specifications. The Programmable HTTP Caching and Serving [HttpCaching] allows modification of the cache under program control (adding/deleting values). It allows the cache to be shared across multiple browser windows and it allows the cache to be used while the user is offline.
+
+
+The second specification, Web Storage [WebStorage], introduces two new mechanisms. The first is Session Storage. Sites can add data to the session storage, and it will be accessible to any page from the same site opened in that window. Cookies don't really handle this case well. For example, a user could be buying plane tickets in two different windows, using the same site. If the site used cookies to keep track of which ticket the user was buying, then as the user clicked from page to page in both windows, the ticket currently being purchased would "leak" from one window to the other, potentially causing the user to buy two tickets for the same flight without really noticing.
+
+
+The second mechanism, called Local Storage, is designed to store data that spans multiple windows, and lasts beyond the current session. In particular, Web applications may wish to store megabytes of user data, such as entire user-authored documents or a user's mailbox, on the client side for performance reasons.
+
+
+Again, cookies do not handle this case well, because they are transmitted with every request.
+
+
+To enable persistent storage the WebApps WG is working on a further two specifications. The Web SQL Database [WebSQLDatabase] provides a SQL-like interface but is based on a proprietary product called SQLite. The future of this specification is unclear. Because it is based on SQLite, it is proving difficult to get independent implementations of the API.
+
+
+The Indexed Database API [IndexedDatabase] is more promising. It provides APIs for a database of records holding simple values and hierarchical objects. Each record consists of a key and a value. The database maintains indexes over records it stores. An application developer directly uses an API to locate records either by their key or by using an index. A query language can be layered on this API. An indexed database can be implemented using a persistent B-tree data structure.
+
+
+Both of these mechanisms are vulnerable to Confused Deputy attacks. Attacks on persistent storage can actually be more damaging because the malware becomes persistent. It is worth noting that even though these specifications are still in draft state, they are being used by implementations. One use is to recreate deleted cookies. See the lawsuit against Ringleader Digital and the discussion of “evercookies” below.
+
+
+In discussing persistent client-side storage it’s important to keep in mind that vendor innovation has already devised a number of mechanisms for persistent client-side storage, some quite ingenious. More on this later.
+
+
+Recreating Deleted Cookies
+
+Users who are nervous about being tracked can user browser controls to delete their cookies. Typically, the controls allow you to delete all your cookies and users worry that they will lose some of the convenience and functionality that cookies enable. But you can, with a bit more effort, delete cookies selectively and if you are paranoid enough you delete all you cookies and live with the consequences.
+
+
+But ad companies don’t want you to delete your cookies and seems to go to abnormal lengths to make sure that cookie information is still available even if you delete them. A lawsuit filed in California [Lawsuit1] claims that Adobe Flash was used to keep copies of a user's browser cookies in order to re-spawn
+
+
+cookies after users clear them. The lawsuit alleges that the companies did not explain to users how they were using Flash and that using the storage capabilities of Flash for this purpose violates federal privacy and computer security laws.
+
+
+Unlike traditional browser cookies, Flash cookies are relatively unknown to web users, and they are not controlled through the cookie privacy controls in a browser. That means even if a user thinks they have cleared their computer of tracking objects, they most likely have not.
+
+
+Browsers now include fine-grained controls to let users decide what cookies to accept and which to get rid of, but Flash cookies are handled differently. These are fixed through a web page on Adobe’s site, where the controls are not easily understood. So, to manage these cookies, the user needs to work with the Adobe site. This is bad enough but the real problem is that she may not know that her cookies are being replicated in this manner.
+
+
+What is needed is an API that lets the user manage all her cookies from the browser. A proposal for an API that clears flash cookies as well as HTTP cookies been made [CookieDeletionProposal], but unfortunately, Julian Reschke says, [Reschke] “*both* UA implementers and plugin implementers are very very very slow in making this happen.” As we will see later, other forms of cookie storage are coming into use.
+
+
+Another lawsuit [Lawsuit2] targets a different mechanism for recreating deleted cookies. The company, Ringleader Digital , uses HTML5’s client-side database-storage capability described above as a substitute for the traditional cookie tracking mechanism employed by all major online ad companies. Mobile Safari users visiting sites with Ringleader ads are assigned a unique ID number which is stored by the browser, and recalled by Ringleader whenever they revisit.
+
+
+But the tracker, labeled RLDGUID, does not go away when one clears cookies from the browser. [ArsTechnica] reports that users savvy enough to find and delete the database have found it returning mysteriously with the same ID number as before — a result the lawyers suing Ringleader say they’ve reproduced.
+
+
+And it gets worse…
+
+
+A new Javascript API called “evercookie” produces extremely durable cookies in a browser. Its goal is to maintain the cookies even after standard cookies, Flash cookies etc. have been removed. This is accomplished this by storing the cookie data in several types of storage mechanisms. Further, if evercookie finds that the user has removed any of the types of cookies in question, it recreates them using each mechanism available. The detailed mechanisms by which evercookie works are described in [evercookie].
+
+
+Specifically, when creating a new cookie, evercookie uses the following storage mechanisms as and when available:
+
+
+- Standard HTTP Cookies
+- Local Shared Objects (Flash Cookies)
+- Storing cookies in RGB values of auto-generated, force-cached >PNGs using HTML5 Canvas tag to read pixels (cookies) back out
+- Storing cookies in and reading out Web History
+- Storing cookies in HTTP ETags
+- Internet Explorer userData storage
+- HTML5 Session Stora
+- HTML5 Local Storage
+- HTML5 Global Storage
+- HTML5 Database Storage via SQLite
+
+
+For example, if the user deletes their standard HTTP cookies, Local Shared Object data, and all HTML5 persistent storage, the PNG cookie and history cookies will still exist. Once either of those are discovered, all of the others will come back. If a user gets cookies from one browser and switches to another browser, as long as they still have the Local Shared Object cookie, the cookie will reproduce in both browsers.
+
+
+
+If the user can delete cookies in ALL forms of permanent storage then she is home free but how many users would know how to do that. And yet newer forms of persistent storage continue to be invented.
+
+
+
+So, what’s the poor, beleaguered user supposed to do? Living without Javascript or cookies leads to an emasculated version of the web that would not be very useful. Security that prevents you from doing what you want to do is not a solution.
+
+
+
+Clearly, it would be desirable to have browser controls to manage the running of scripts and setting of cookies and allow the deletion of all cookies, but as discussed above, progress is slow and the target is moving. Moreover, these controls must be simple to use. There are also third-party add-ons such as noScript [noScript] and Ghostery [Ghostery] that can be used to manage scripts and cookies. These detect websites that attempt to run scripts pr store cookies and allow selective accesss.
+
+
+
+The proliferation of cookie storage mechanisms leads to another question. When a browser or browser-addon promises that it will block the setting of cookies, exactly what kinds of cookies does it block?
+
+
+
+*** Permanent Cookie Contains Sensitive Information ***
+
+Test Guidance:
+1. Authenticate and browse through the application using Burp Suite.
+2. Observe the values for any persistent cookies (i.e., cookies using the Expires or Max-Age attribute).
+3. If the contents of a persistent cookie isn't obvious (e.g., encoded/encrypted), try googling the name of the cookie. There may be documentation 
+   about what it contains, its purpose, how it's created, and/or how it's handled.
+
+What to look for:
+1. Identify persistent cookies: Persistent cookies contain the Expires or Max-Age attribute. These cookies are stored by the browser until 
+   they expire or are manually erased by the user. An example of a persistent cookie is given below (note the use of the Expires attribute):
+
+2. Set-Cookie: id=a3fWa; Expires=Wed, 31 Oct 2021 07:28:00 GMT;
+3. Sensitive data to look for in the cookie include, but not limited to, the following:
+4. Username
+5. Session ID
+6. Internal IP address/hostname
+7. PII/PHI/NPI data
+For more information on what may or may not be sensitive data in certain contexts, see Sensitive Data Definitions: Universal Sensitive Data, 
+US Sensitive Data
+Note that data may sometimes be stored in an encoded format, but can be decoded with the right tools/algorithms. 
+F5 Big-IP Cookie:
+
+Reporting Guidance:
+1. The finding should be reported if the cookie is persistent and contains sensitive information:
+2. For F5 BIG-IP cookies, report as F5 BIG-IP Cookie Information Disclosure
+3. For all other cookies, report as Permanent Cookie Contains Sensitive Information
+
+Do not report the finding, if:
+1. The data in the cookie is not something secret.
+2. The data included within the cookie is not something that would benefit an attacker.
+
+
+
+
+
+
+
 
