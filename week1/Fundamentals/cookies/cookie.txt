@@ -277,8 +277,8 @@ It's important for web developers to set the SameSite attribute appropriately ba
 Here's an example of setting a cookie with the SameSite attribute in a HTTP response header:
 Set-Cookie: key=value; SameSite=Lax; Secure
 
-In this example, the cookie key with the value value is set with a SameSite attribute of Lax, meaning it will be sent along with cross-site requests only 
-if they are safe. Additionally, the Secure attribute ensures that the cookie is only sent over HTTPS connections.
+In this example, the cookie key with the value value is set with a SameSite attribute of Lax, meaning it will be sent along with 
+cross-site requests only if they are safe. Additionally, the Secure attribute ensures that the cookie is only sent over HTTPS connections.
                                
                                    COOKIE VS Session
 
@@ -392,4 +392,16 @@ of banner you want to use, either a modal center placed pop-up or a banner place
 This will be displayed in any country that has a cookie law. In any country that does not have a cookie law, we will display an 
 information-only banner to let the site visitor know cookies are being used and give them the option to look at the list of cookies 
 on the site. Consent is not asked for, the continued use of the website is the implied consent needed.
+
+
+==> however, you can use cookie prefixes to assert specific facts about the cookie. Two prefixes are available:
+__Host-
+If a cookie name has this prefix, it's accepted in a Set-Cookie header only if it's also marked with the Secure attribute, 
+was sent from a secure origin, does not include a Domain attribute, and has the Path attribute set to /. This way, these cookies
+can be seen as "domain-locked".
+
+__Secure-
+If a cookie name has this prefix, it's accepted in a Set-Cookie header only if it's marked with the Secure attribute and was 
+sent from a secure origin. This is weaker than the __Host- prefix.
+
 
