@@ -1,1 +1,176 @@
 
+NPI :- (Non public personal information)
+        Nonpublic personal information (NPI) is displayed in clear text to the end-user. NPI is any nonpublic information that can be 
+        used to identify an individual. The following are examples of NPI:
+         a)  Social Security Number (SSN)
+         b)  Primary Account Number (PAN)
+         c)  Passport number
+        
+        Including unmasked NPI in application responses may result in the exposure of sensitive information and a loss of confidentiality. 
+        NPI included in application responses may be exposed in several ways:
+        
+        a) Shoulder-surfing or other unauthorized access to the client's system while the victim is logged in
+        b) Cached responses on the client's system or on systems that route traffic between the client and server
+        c) Network-based man-in-the-middle attacks
+        
+        The consequence of exposure differs depending on the specific NPI data exposed. An attacker may use a victim's NPI 
+        (such as Social Security Number, Primary Account Number, etc.) to steal the victim's identity or gain unauthorized access to their accounts. 
+        Moreover, this could lead to compliance issues.
+        
+        Remediation
+        General Summary 
+        a) Nonpublic personal information (NPI) should be masked or obfuscated in all application fields when it is displayed to the user, 
+           and not cached on the user's machine. For example, when the application wants to display a user's social security number, the 
+        b) application should mask it by default to only show the last four digits while the first five are represented by a place holder, 
+           such as an asterisk. When there is a valid business justification to show the full unmasked data, the application can allow to 
+           temporarily view the full unmasked data.
+        
+        Primary 
+        In addition, the application must protect all sensitive data from local or network-based attacks by:
+        a) Set the HTTP response header "Cache-Control: no-store" to prevent sensitive data from being stored in a cache
+        b) Enforce the use of HTTPS (with TLS) for secure communication.
+
+PII :- (Personally identifiable information) 
+       Personally identifiable information (PII) is displayed in clear text to the end-user. PII can refer to any data that is considered 
+       sensitive in nature. PII can be used to identify individual users and to distinguish users from one another, depending on the exact 
+       data available.
+       EX:- 
+        a)  Driver's license number
+        b)  Date of birth
+        Some information is classified as PII because certain combinations of that information can be used to identify an individual. 
+        Some examples of such information include:
+        Birthplace
+        Maiden name, mother's maiden name, or alias
+        Username
+        Educational records
+        Employment information
+        CONSEQUENCES ::-
+          Including unmasked PII data in application responses may result in the exposure of sensitive information and a loss of confidentiality. 
+          PII data included in application responses may be exposed in several ways:
+            a) Shoulder-surfing or other unauthorized access to the client's system while the victim is logged in
+            b) Cached responses on the client's system or on systems that route traffic between the client and server
+            c) Network-based man-in-the-middle attacks
+        The consequence of exposure differs depending on the specific PII exposed. An attacker can use a victim's PII (such as driver's license number, 
+        passport number, etc.) to steal the victim's identity or gain unauthorized access to their accounts.
+
+       Remediation
+       General Summary 
+        Personally identifiable information (PII) should be masked or obfuscated in all application fields when it is displayed to the user, 
+        and not cached on the user's machine. When there is a valid business justification to show the full unmasked data, the application can 
+        allow to temporarily view the full unmasked data.
+
+       Primary 
+        The application must also protect all sensitive data from local or network-based attackers by:
+        a) Set the HTTP response header "Cache-Control: no-store" to prevent sensitive data from being stored in a cache
+        b) Enforce the use of HTTPS (with TLS) for secure communication
+
+PHI :- Protected health information :-
+       Protected health information (PHI) is displayed in clear text to the end user. PHI refers to any health-related information that is 
+       considered sensitive in nature. PHI can be used to identify individuals and to distinguish individuals from one another, depending 
+       on the exact data available.
+       The following categories are examples of PHI that may be used to identify an individual:
+        Medical record numbers
+        Health insurance numbers
+        Name, address, and date of birth
+        Phone or fax numbers
+
+        CONSEQUENCES :::---
+         Including unmasked PHI in application responses may result in the exposure of sensitive information and a loss of confidentiality. 
+         PHI included in application responses may be exposed in several ways:
+
+         1. Shoulder-surfing or other unauthorized access to the client's system while the victim is logged in
+         2. Cached responses on the client's system or on systems that route traffic between the client and server
+         3. Network-based man-in-the-middle attacks
+         The consequence of exposure differs depending on the specific PHI exposed. An attacker can use a victim's PHI 
+         (such as medical record number, health codes, sensitive health information, etc.) to steal the victim's identity or gain 
+          unauthorized access to their health information, leading to a loss of confidentiality. An attacker may also attempt to 
+         impersonate a victim using the victim's medical record number, to gain access to prescriptions and/or medical services. 
+         Additionally, this could also lead to compliance issues.
+
+         Remediation
+          General Summary 
+           Protected health information (PHI) should be masked or obfuscated in all application fields when it is displayed to the user, 
+           and not cached on the user's machine.
+
+          Primary 
+           For example, when the application wants to display a user's medical record number, the server should mask the number to only show 
+           the last four digits while the first digits are represented by a place holder, such as an asterisk. In cases where PHI must be displayed 
+           as part of legitimate business functionality, it should be displayed temporarily when explicitly requested, rather than displayed all the 
+           time by default. In addition, this information should only be displayed for one account at a time to limit the exposure of data.
+
+         The application must also protect all sensitive data from local or network-based attackers by:
+          a) Setting the HTTP response header "Cache-Control: no-store" to prevent sensitive data from being stored in a cache
+          b) Enforce the use of HTTPS (with TLS) for secure communication
+
+
+UNMASKED PASSWORD :-
+
+          The application does not mask a password as the user enters the characters in the password field. The application does not define 
+          the field where users input their passwords as a "password" field, but instead as a normal "text" input field. Therefore, the browser
+          displays the password on the page in plain text, which makes it possible to steal the password via a shoulder-surfing attack.
+
+          CONSEQUENCES 
+           An attacker can shoulder surf a victim and capture the victim's password, then use it to authenticate as the victim and execute any 
+           actions the user is entitled to perform.
+
+           Remediation
+           General Summary 
+            The application should mask passwords in the UI when they are entered into the application. To mask the passwords, set the 'type' 
+            attribute to "password" for the input field.
+
+           <input type="password" name="pwd"> 
+            Alternatively, the application may allow the user to make a decision to display the password unmasked (e.g. Show Password" check box). 
+            This allows the user to verify their password if they are in a safe environment where password is not exposed to shoulder surfing attack.
+
+
+WHAT TO LOOK FOR ::-
+Navigate to the functionality where you can enter/view NPI/PII/PHI data to check if they are exposed in plain text on the browser or in the 
+raw response. For example, you can look at the following places:
+
+1. User Profile/My Account pages
+2. Add User Flows
+3. Add Account/Create Profile
+4. Sign Up Pages
+5. Registration functionality
+6. Search fields
+7. Forgot/Reset Password functionality
+8. User Management portal (admin functionality)
+9. Filing claims workflow
+10. Payment functionality
+
+How to test:
+a) Look for any workflow in the application to identify functionalities which handle sensitive data (NPI/PII/PHI)
+b) Enter data in the sensitive fields and observe whether it is masked or not once the field loses focus
+c) Look if the sensitive (NPI/PII/PHI) data displayed by the application is masked or not
+d) Look at the raw responses to identify any unmasked sensitive (NPI/PII/PHI) data (where cache-control header not set appropriately)
+
+Report this finding if:
+1. NPI/PII/PHI by default is displayed in the UI as plain text to the user 
+2. NPI/PII/PHI in the raw response from the application is exposed as plain text and Cache-control header is not set properly
+3. NPI/PII/PHI is present in a PDF which is rendered inside of the application.
+
+Do not report this finding if:
+1. Only last 4-digits of NPI/PII/PHI data is displayed. For example:
+2. SSN= ***-**-1234
+3. account number=********8888
+4. credit card number= ****-****-****-1234 (or) 4400-****-****-1234
+5. License number= ****-**-1234
+6. Date of birth=**-**-1990 (or) 01-01-****
+7. NPI/PII/PHI is masked once the input field loses focus
+8. NPI/PII/PHI is masked in the UI, but is unmasked in the raw response and the following are set properly:
+9. HTTPS is enforced and
+10. Cache-control is set properly (no-store, no-cache)
+   In this instance, the unmasked data is protected from MiTM and local cache attacks on the victim’s machine. Hence, we will not be reporting 
+   this as a finding. NPI/PII/PHI is present in a PDF which is downloaded or opens in a new tab.
+
+API / Web Services
+  Do not report Unmasked NPI/PII/PHI Data findings in API / Web Services (REST & SOAP) assessments as long as the client should be 
+  authorized to access the information and it sent over a secure communication channel. Without testing the client application as well,
+  we cannot know how this data will be treated by clients consuming the API (it may well be masked properly) and it might be a business
+  requirement to provide this data unmasked from the API, especially in machine-to-machine communication.
+
+
+
+
+
+
