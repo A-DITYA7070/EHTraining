@@ -65,3 +65,22 @@ Following are the three blocks of IP address spaces for private networks:
 
 
 
+In addition to the items listed above, make sure to also check the following:
+
+robots.txt file → Report Robots.txt File Web Site Structure Exposure if it exposes sensitive information and adjust severity according to impact
+Directory listing → Check if directory listing is enabled on any folder that may disclose sensitive data / files, report a finding for Directory
+Listing Enabled in addition to any sensitive data finding resulting from this misconfiguration.
+HTML comments → In Burp, you can right-click the server in target site map, then select "Find comments" under "Engagement tools" to view all 
+comments found. Report HTML Comments Sensitive Information Disclosure if it exposes sensitive information and adjust severity according to impact.
+JavaScript source maps → The source code obtained from the source map may reveal sensitive information, see How to Make JavaScript Code 
+Readable#CaptureSourceMaps for more information on using source maps. The following CVDs may be relevant depending on what/how sensitive data is leaked:
+Sensitive Data Exposure 
+Hard-coded Secrets in Client-side Code (Web)
+Information Leakage via Code Comments
+Error messages → Try to provoke error messages by supplying invalid/unexpected data to various functions within the application, sometimes these can reveal sensitive information. Report with the most applicable CVD finding, such as Verbose Error Messages, Verbose Error Messages (with Stack Trace), 
+IIS Detailed Error Information Disclosure, or Database Error Message Disclosure.
+Look for the presence of backup files, version control files, and similar that may expose source code or other types of sensitive data.
+Look for Server Configuration issues that could lead to sensitive data disclosure, including debug endpoints and similar (e.g., /phpinfo.php)
+
+
+
