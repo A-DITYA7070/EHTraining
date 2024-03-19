@@ -1,1 +1,133 @@
+1. EXPOSURE OF SESATIVE INFORMATION IN URLS :::--
+             cvd(coordinated vulnerabality disclosure) :- 66.
+    
+      IF sensative info is sent to server via url query string params. An attacker who gains access to any location where url is stored will
+      be able to see the sensative info.
+    
+    => Data sent as a part of url may be stored or viewed in multiple places during and after a req is made to the server.
+      a) If the url is requested by clicking a link or manually entering the address the query string can be seen in browser address bar.
+      b) URLs are often logged by default in multiple places, including the browser history and web server logs.
+      c) The query string will be sent as part of the URL if the URL is passed to another site via the "Referer" HTTP header.
+      d) URLs sent to the user as part of an HTML page may be cached on disk.
+      e) Data in URLs may be leaked if a user copies the URL of a page in the application and sends the link to another user, stores the page 
+         in a bookmark, or prints out the page.
+    
+    CONSEQUENCES ::-
+    1.Depending on the nature of the information, a malicious user may obtain personally identifiable information (PII), private user data or 
+      information which would allow user impersonation (in the event of credential or session identifier exposure). Potential access vectors may 
+      include but are not limited to:
+    2.Browser history, proxy logs, web server logs, etc.
+    3.Shoulder-surfing the URL in a user's browser address bar
+    4.Utilizing other attacks (such as cross-site scripting) to extract sensitive information from the source of a page containing links to URLs 
+      with sensitive information in the query string
+    
+    REMEDIATION ::-
+    => sensative info should be passed between client and server via a POST req body
+    => only POST req will not help if the data is still passed as query string
+    => data must be passed as a part of req body in POST method.
+    
+    ==> Steps to Reproduce
+        Sensitive Data in Query String Parameter
+    Steps
+    1. Configure your browser to use a local proxy tool such as Burp Suite.
+    2. Log in to the application.
+    3. Follow the functional path:
+       $additional_steps$
+    4. Observe the request in Burp Proxy History.
+    5. Note that the parameter "$parameter_name$" containing $sensitive_data$ is sent in the URL as query string parameter.
+    
+    Captions
+      The application sends sensitive information such as "$sensitive_data$" in the URL.
+      Parameters
+      $parameter_name$
+      Name of the URL parameter containing the sensitive data
+      $sensitive_data$
+      Description of sensitive data being passed in the URL, e.g., "password", "SSN", etc.
+      $additional_steps$
+      Description of any additional steps required to trigger the request sending sensitive data in the URL (remove if not needed)
+    
+    ===> What is sensative data ... ??
+         a) Government and financial numbers
+         b) Credentials
+         c) Other PII and NPI
+    
+     *****WHAT TO LOOK FOR :::---
+    
+     Configure the application to use a proxy tool, and navigate through the application right from Login and explore the various functionalities in scope.
+     For example, you can look at the following functionalities with additional interest:
+    
+      1. Login request/response
+      2. Look at session id or authentication tokens in URLs
+      3. Look out for calls to external domains where the session tokens can be passed in the URL
+      4. Functionalities involving financial transactions like fund transfer, checking balance, viewing account statements
+      5. Payments functionality pertaining to adding credit cards, debit cards
+      6. Profile pages involving user needing to enter PII data like drivers license, passport numbers or SSN numbers.
+      7. Search functionalities using PII data to retrieve user information
+      8. Pay attention to the issues Burp report under the name Base64-encoded data in parameter. Some developers intend to "encrypt"/protect 
+         the sensitive data using base64-encoding, but for obvious reasons this encoding is not a protection for sensitive data.
+    
+    ==== HOW TO TEST ====
+    
+      1. Triage results from Burp's automated scan
+         a) Session token in URL -  Burp Suite passive scanner will report potential instances of access tokens or session tokens that 
+            are passed via URL. Review results to determine what the rule triggered on and if it indeed is some kind of token that identifies 
+            an authenticated session you should report it as Session Identifier Passed In Query String.
+         b) Social security numbers/Credit card numbers disclosed
+         c) Cross-Domain referer leakeage.
+            i) Review whether the parameter could contain sensitive data. In the example below from demo.testfire.net, a bank "account number" 
+               is passed as a URL parameter:
+           ii) The Advisory and Response tabs will highlight which domain that the data could leak to in the referrer header:
+          iii) Report as Query String Parameter in HTTPS Request if sensitive data is passed in the query string. The impact can be lowered from 
+               'High' to 'Low', if the sensitive parameter is exposed in URL when the request does not go to a third-party domain but rather to a 
+               different domain in the same organization.
+    
+       2. Manual review using Burp suite proxy ::-
+          a) Configure the browser with proxy tool such as burp 
+          b) Perform all the functionalities which are in scope for the test.
+          c) Sort the traffic  based on whether parameters are available and also start with GET method.
+          d) Another method to search for sensitive data is by filtering the data that is available using different filter types
+             (includes providing the known account number, PII data in search boxes)
+          e) After looking through the GET requests (which most commonly have parameters in URL), look at other requests such as POST, PUT, 
+             DELETE, etc. which might contain parameters in the URL as well. Though uncommon, this is required to ensure complete coverage and 
+             uncover cases where the application is dealing with parameters via URL instead of the body as is the general case.
+          f) Apart from looking at the parameters, ensure that the URL itself is verified and any sensitive values used in URL is highlighted as well. 
+             It is common to see PUT or DELETE operation being performed on a resource which is directly referenced in the URL with a sensitive value. 
+             For example, a user's SSN can be updated by submitting it as a part of the URL instead of a parameter.
+    
+        3. Using a conventional web browser
+           The main use case of the browser is that caches/history can be viewed to check if any form of sensitive info has been cached.
+           This can help with generating PoC to highlight the fact that sensitive content is cached on disk.
+    
+    ** REPORT FINDING IF ::-
+      1. Sensitive NPI, PII data is being passed via the URL.
+      2. User session or access tokens are passed via the URL.
+      3. User names and any other specific data that is important for a customer business is sent in the URL. 
+    
+    ** DON'T Report If :-
+     1. IDs are not sensitive for the customer (discuss with TO about the risk)
+     2. Known non-sensitive values such as TIN for corporations (for individuals, this is SSN value, so make sure to highlight this in case of reporting it)
+     3. Any internal naming numbering conventions are being used (this is about something internal that can't be abused/exploited if leaked to an external party). 
+        For example, an account number which has no meaning outside the context of the application would be considered non-sensitive.
+     4. Unpredictable per request session ids are sent via the URL.
+     5. Publicly available numbers (Certain countries like Mexico have some ids which are publicly available and these are named like NPI values)
+
+    COCLUSION ::
+    API / Web Services
+    When it comes to API/Web Services, the likelihood of an attacker obtaining sensitive information sent via GET request is often lower as 
+    these API calls are usually consumed via Mobile devices or through other middleware devices. There are a couple of factors that should be 
+    considered before reporting the finding for the API/Web Service.
+    
+    Consider the impact of the following scenarios and rate the risk accordingly to best capture the risk based on the situation at hand:
+      1. Sensitive data is displayed in browser URL bar (only relevant for browser-based client with web app, not for APIs)
+      2. Sensitive data is logged with URL in browser history (only relevant for browser-based client with web app)
+      3. Sensitive data is sent to 3rd party via HTTP referer header (only relevant for browser-based client)
+      4. Sensitive data is stored by default with URL in server logs (client type doesn't matter, usually applicable to both web and API)
+
+
+    
+    
+    
+    
+    
+
 
