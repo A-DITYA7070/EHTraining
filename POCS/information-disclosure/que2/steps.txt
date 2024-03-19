@@ -1,0 +1,13 @@
+
+
+
+                                       LAB #2 Information disclosure on debug page
+
+            Steps to Reproduce ::-
+            1. Configure your browser with a proxy tool such as Burp Suite.
+            2. Make a request to product page and intercept the request.
+            3. Open Burp and go to Target tab and view the Site Map 
+            4. Crawl the site map and observe the file /cgi-bin/phpinfo.php
+            5. Send this to Repeater and make a request.
+            6. In the response search SECRET_KEY 
+            7. Submit the SECRET_KEY.

@@ -1,0 +1,20 @@
+
+
+
+
+                LABS #4 Authentication bypass via information disclosure
+
+            STEPS TO REPRODUCE :-
+            1. Configure your browser with proxy tool such as Burp Suite
+            2. NAvigate to your application and login using normal user credentials 
+            3. intercept the req and make a request to /admin
+            4. send the intercepted req to Repeater 
+            5. Observer the response it's 401 unauthorise
+            6. Change the method from GET to TRACE 
+            7. In the response see that a header X-CUSTOM-IP-AUTHORIZATION it is set to specific ip 
+               due that our req was getting blocked and we were getting 401 error
+            8. go to proxy setting Match and replace rules, in replace rules add X-CUSTOM-IP-AUTHORIZATION:127.0.0.1
+               or add your computer IP address
+            9. send the req again /admin 
+            10 you will see that you are able to access admin panel 
+            11. Delete the user carlos and lab is solved.

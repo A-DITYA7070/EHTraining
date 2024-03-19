@@ -1,0 +1,29 @@
+
+
+
+                                           Lab: SameSite Lax bypass via method override
+        
+    steps to reproduce :-
+
+    1. Configure your browser with a proxy tool such as Burp Suite.
+    2. Login to the application using credentials wiener:peter
+    3. Study the POST /my-account/change-email request and notice that this doesn't contain any unpredictable tokens, 
+       so may be vulnerable to CSRF if you can bypass the SameSite cookie restrictions. 
+    4. Look at the response to your POST /login request. Notice that the website doesn't explicitly specify any SameSite 
+       restrictions when setting session cookies. As a result, the browser will use the default Lax restriction level. 
+    5. Send the POST /my-account/change-email request to Burp Repeater
+    6. In Burp Repeater, right-click on the request and select Change request method. Burp automatically generates an 
+       equivalent GET request.
+    7. Send the request. Observe that the endpoint only allows POST requests. 
+    8. Try overriding the method by adding the _method parameter to the query string:
+       GET /my-account/change-email?email=hacked@gmail.com&_method=POST HTTP/1.1
+    9. Send the request. Observe that this seems to have been accepted by the server. 
+   10. Craft a payload and send it to exploit server 
+
+   payload :-
+   <script>
+     document.location = "https://https://0a5d00de03d5f3128113398e00870088.web-security-academy.net/my-account/
+                          change-email?email=hacked@gmail.com&_method=POST"
+    </script>
+    
+   11. In the browser, go to your account page and confirm that your email address has changed.

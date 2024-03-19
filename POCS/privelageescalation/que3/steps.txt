@@ -5,13 +5,9 @@
 
 
     steps :: --
-               i) go to /admin route in the lab we can see the msg administration page is only avalaible when logged in as admin
-               ii) go to /login page and try to log in with credentials wiener and peter and capture the req in burp
-               iii) in burp we can see that the admin is marked false make it to true and forge the server
-               iv) upon response the admin is marked to false mark it to true
-               v) after that we can see that the admin panel is visible
-               vi) make a req to /admin and intercept the req mark the admin to true
-               vii) after that we can see that the users carlos and wiener is there
-               viii) make a req to delete the carlos user
-               ix) capture the req and make the admin to true
-               x) we can see that the user carlos is deleted and we have solved the lab
+               1. Configure your browser to a proxy tool such as Burp Suite.
+               2. Login to the application with credentials.
+               3. Crawl the application and observe from the Burp History that admin parameter in the cookie is fllaged as false.
+               4. Send the intercepted requst to Repeater and change the "admin" value to "true" and click on send.
+               5. Observe that the normal user "name" can now access the admin pannel.
+               6. Delete the user carlos .

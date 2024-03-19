@@ -1,0 +1,14 @@
+
+
+               
+                    LAB #3 :- SOURCE CODE DISCLOSURE USING VIA BACKUP FILES ::--
+            
+        STEPS TO REPRODUCE :-
+        1. Configure your browser with a proxy tool such as Burp Suite
+        2. Browse to /robots.txt file
+        3. You can see that /backup file is disallowed this give us some hints that there is /backup file
+        4. Browse to /backup 
+        5. You can see that ProductTemplate.java.bak file
+        6. Open the file and you can access the source code 
+        7. Submit the solution with the secret key.
+        

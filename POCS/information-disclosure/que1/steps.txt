@@ -1,0 +1,12 @@
+
+
+      # LAB 1 :- Information disclosure in error messages
+
+      Steps to Reproduce :-
+      1. Configure your browser with a proxy tool such as Burp Suite.
+      2. Navigate to browser and select a page and intercept the request
+      3. go to burp history and send the intercepted request to Repeater
+      4. In Repeater change the productId=1 i.e integer to productId="random" any string value
+      5. Observer the response, the response is flooded with all the Information of the server with version no.
+
+      
