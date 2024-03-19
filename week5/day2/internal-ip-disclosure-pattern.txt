@@ -1,0 +1,86 @@
+
+
+                                               *** Internal Ip disclosure pattern found *** 
+
+              One of the most common forms of information disclosure we see on engagements is the leaking of internal IP addresses and ports by 
+              Application Delivery Controllers (ADCs) or load balancers.  When each client makes a request to the web server, a cookie is set by 
+              load balancers running in persistence mode, where each client is mapped to the optimal node on first request and then continues to 
+              be routed to the same node on all subsequent requests.  To prevent the expensive operation of calculating the optimal node on every 
+              request, the IP address and port are sometimes stored in a cookie and passed back to the server for easy routing.  Of course, the 
+              tradeoff for speed is security, since the server is sending an internal IP address and port to the client, albeit slightly encoded.  
+              The two most common examples of IP addresses leaking through cookies is from F5’s Big-IP and Citrix’s Netscaler load balancers.  
+              Big-IP cookies contain an IP address and port, while Netscaler cookies contain a server name, IP address, and port.
+
+
+Big-IP Cookies
+
+   Start with a Big-IP cookie i.e. 1677787402.36895.0000 which represents [encoded IP].[encoded port].0000.
+   To decode the IP Address:
+1. Convert the number to its hex equivalent: 6401010A
+2. Convert each hex byte to decimal: 100 1 1 10
+3. Reverse the order and join with “.”: 10.1.1.100
+  To decode the port:
+1. Convert the number to its hex equivalent: 901F
+2. Reverse the order of the first half and second half: 1F90
+3. Convert the resulting hex value to decimal: 8080
+
+==> so in microservice artitectures for faster retrival of data generally load balancers are used 
+    so what load balancers does is when first req is made it sets a cookie in the browser running in persistent mode
+    where each client is mapped to the optimal node on first request and then continues to be routed to the same node on all subsequent requests.  
+    To prevent the expensive operation of calculating the optimal node on every request, the IP address and port are sometimes stored in a cookie 
+    and passed back to the server for easy routing.
+
+Test Guidance:
+Triage all instances listed under the Private IP Addresses Disclosed finding in Burp Suite's Target Tab.
+Note: Burp Suite will highlight any sequence of numbers that resembles the IP address format. Sometimes this contains 
+version numbers for JavaScript libraries. 
+Look for common keywords such as clientip in verbose error messages as the application sometimes leaks internal IP addresses there.
+The X-Forwarded-For header is usually used to identify the client IP address. In the case that the request goes through multiple 
+proxies/load balancers before reaching the server, the header will contain multiple IP addresses in the below format: 
+X-Forwarded-For: client-ip, proxy1, proxy2, ...
+For Netscaler Persistence Cookies and F5 BigIP cookies: 
+
+The Cookie Decrypter extension will add issues to the Target tab for every Netscaler Persistence or F5 BigIP cookie observed in
+the server responses. Triage all instances highlighted by the extension. 
+Identify the cookie(s) set by the application. Examine if the cookies meet the format for a Netscaler or F5 BigIP cookie. 
+Netscaler Persistence Cookies usually start with the prefix 'NSC_'.
+BigIP Cookies usually are of the format [encoded IP].[encoded port].0000, for e.g. 1677787402.36895.000.
+
+Examples:
+Burp Suite Target Tab: Private IP Addresses Disclosed
+Cookie Decrypter: Netscaler Persistence Cookie
+BigIP Cookie
+Internal IP Address leaked in Verbose Error Message
+
+
+This finding should be reported if the IP address identified is an internal or private IP address falling in the IP ranges defined in 
+RFC 1918 for internal and/or externally accessible applications. Do not report this finding for instances that list the client IP address 
+as the testing machine's IP address or SIG Anet VPN's IP address or application's IP address matches the IP address identified by burp.  
+
+Following are the three blocks of IP address spaces for private networks: 
+
+10.0.0.0 - 10.255.255.255 (10/8 prefix)
+172.16.0.0 - 172.31.255.255 (172.16/12 prefix)
+192.168.0.0 - 192.168.255.255 (192.168/16 prefix)
+
+
+
+In addition to the items listed above, make sure to also check the following:
+
+robots.txt file → Report Robots.txt File Web Site Structure Exposure if it exposes sensitive information and adjust severity according to impact
+Directory listing → Check if directory listing is enabled on any folder that may disclose sensitive data / files, report a finding for Directory
+Listing Enabled in addition to any sensitive data finding resulting from this misconfiguration.
+HTML comments → In Burp, you can right-click the server in target site map, then select "Find comments" under "Engagement tools" to view all 
+comments found. Report HTML Comments Sensitive Information Disclosure if it exposes sensitive information and adjust severity according to impact.
+JavaScript source maps → The source code obtained from the source map may reveal sensitive information, see How to Make JavaScript Code 
+Readable#CaptureSourceMaps for more information on using source maps. The following CVDs may be relevant depending on what/how sensitive data is leaked:
+Sensitive Data Exposure 
+Hard-coded Secrets in Client-side Code (Web)
+Information Leakage via Code Comments
+Error messages → Try to provoke error messages by supplying invalid/unexpected data to various functions within the application, sometimes these can reveal sensitive information. Report with the most applicable CVD finding, such as Verbose Error Messages, Verbose Error Messages (with Stack Trace), 
+IIS Detailed Error Information Disclosure, or Database Error Message Disclosure.
+Look for the presence of backup files, version control files, and similar that may expose source code or other types of sensitive data.
+Look for Server Configuration issues that could lead to sensitive data disclosure, including debug endpoints and similar (e.g., /phpinfo.php)
+
+
+

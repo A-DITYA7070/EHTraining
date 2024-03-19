@@ -1,0 +1,389 @@
+
+1) PATH Traversal vulnerabality ::---
+A Path Traversal Vulnerability occurs when you are able to access or traverse through files outside of the intended directories, 
+often allowing an attacker to access content outside the web root (www) directory. Any files residing on the local server like passwd, 
+shadow or system configuration files can be accessed (provided the web application is executing with necessarily privileges) which 
+leads to critical information leakage.
+
+ex :- https://test.example.com/filename=gift.png 
+it can be manipulated by the attacker to https://test.example.com/filename=../../../etc/passwd  :- it will display all the contents of the file /etc/passwd
+
+What to look for ::-
+i)   Request parameters with file related operations, interesting variable names, unusual file extensions.
+ii)  Cookies used by the web application for dynamic generation of pages or templates.
+iii) The path in the URL itself, e.g. misconfigured alias in NGINX can lead to path traversal
+EX::-
+http://example.com/getUserProfile.jsp?item=ikki.html
+http://example.com/index.php?file=content
+http://example.com/main.cgi?home=index.htm
+Cookie: ID=d9ccd3f4f9f18cc1:TM=2166255468:LM=1162655568:S=3cFpqbJgMSSPKVMV:TEMPLATE=flower
+Cookie: USER=1826cc8f:PSTYLE=GreenDotRed
+
+
+How to test:
+    Let's take an example scenario:
+    Eg: http://vulnerable_host/vuln_page.php?file=test.php 
+    In this example, the file parameter is taking a file called "test.php" , which is located on the same directory as "vuln_page.php", and executing it.
+    We are assuming that the test.php file is hosted at /var/www/html/test.php
+    Now, we know the directory structure of a regular web server so these files have to be hosted under the www directory.
+    We will now try to put the value of file parameter as ../../../etc/passwd
+    What this does is, the application treats ../ as traversing back to the parent directory. We have ../ three times(you can add more, depending on
+the www directory location) 
+    to make sure we are on the root folder. 
+    Now /etc/passwd takes you to the passwd file and the file parameter will try to read that file and display it on the browser.
+    You are now able to traverse through directories and read internal system files. 
+    The final URL would be something like this: http://vulnerable_host/vuln_page.php?file=/../../../etc/passwd
+
+
+Reporting Guidance:
+This finding should be reported whenever you are able to access files outside of the intended directories (e.g., outside the web directory, or any other files 
+on the system that are not directly accessible from the web application). 
+
+
+2) FILE PATH DISCLOSURE
+
+What to look for:
+    Triage scan results indicating file path disclosure
+    Review application code visible to the client, including html and javascript files.
+    Check if directory browsing is enabled.
+    Review error messages that could reveal detailed information like full path disclosure. Errors associated with file upload functionality are a good place to look.
+    Examples of what file path disclosures might look like:
+    /home/omg/htdocs/file/
+    C:\Users\test\public_html\includes\functions.php
+
+Reporting Guidance:
+The finding should be reported if the application discloses an absolute file path on the server.
+
+Do not report this finding, if:
+    The path being referenced is actually a URL, rather than a file path.
+    The path is a relative path or URL rewriting is used by the server.
+    The path disclosed were from documentation/help pages intended to be used by the user.
+    The path disclosed is actually a local path on your machine (during file upload).
+
+
+File Uploads Testing: Resource Exhaustion
+Do not test for resource exhaustion unless agreed with client
+Do not carry out these tests unless specifically requested by the client. If you think the client may benefit from these tests, 
+propose them and get permission in writing first. You should not attempt any resource exhaustion tests unless explicitly agreed to with the client.
+Test cases that may lead to resource exhaustion are not in scope by default. Our current legal datasheets state the following:
+Unless previously communicated, denial of service testing, particularly excessive CPU or disk consumption, network flooding, and deliberate attempts 
+to exploit known DoS vulnerabilities, is not in scope and will not be tested. 
+Resource exhaustion, sometimes manifested as denial of service or severe degradation of quality of service, occurs when we trick the server into throwing 
+all of its processing power, memory or disk space at our file.
+    Test Cases
+        Are there file size restrictions?
+            Reporting Policy
+        If it is an image, are there restrictions on dimensions?
+            Reporting Policy
+        If it is possible to upload an archive, will the application try to extract it on the server?
+            How to determine impact
+
+Are there file size restrictions?
+ASVS Reference: 12.1.1 Verify that the application will not accept large files that could fill up storage or cause a denial of service attack.
+Review the use case of the file upload functionality, and where files might be stored, to determine reasonable file sizes that should be accepted.
+For example, a profile picture upload should not require files larger than a few megabyte, whereas a video upload service could probably accept much 
+larger files (e.g., Youtube allows several gigabytes). If the application looks like it is expecting small files (kilo or megabytes), but accepts arbitrarily
+large files (gigabytes), you may be able to use up all disk space or drive the cloud infrastructure bill up by uploading large files.
+
+Upload a large file that is over a reasonable threshold to see if it passes. You can generate files of arbitrary size using a tool or script and telling 
+it how many bytes you want. Below are two examples for generating a file of 50Mb:
+Python script to generate a test file of 50Mb
+python -c "print('A'*52428800)" > testfile.tmp
+Using FSUtil to generate test file of 50Mb
+fsutil file createnew testfile.tmp 52428800
+
+Reporting Policy
+Scenario
+The upload of large files succeeds without errors and there is some sort of confirmation the file has been accepted.
+	The file upload results in an error indication violation of maximum request length, file size or similar that indicates size of file uploads are restricted. 
+Guidance
+Report as Resource Exhaustion via File Upload.
+Reduce the impact to 'Low' if there is a file size restriction in place but it's deemed to be larger than necessary for the use case of the file upload.
+	No issue - do not report
+
+If it is an image, are there restrictions on dimensions?
+If the application is doing image processing, image dimensions need to be sanity checked.
+This is because width and height properties in image files do not have to match the actual image data contained in the file.
+
+Let's say your width and height properties are set to 1 000 000 and 2 000 000. However, the bitmap pixel data only contains data for an image with the 
+size of 1 by 2 pixels (2 pixels). When this image gets converted from one format to another or gets resized by the application, it may:
+
+    try to allocate memory based on the width and height properties (memory exhaustion)
+    try to read memory from the bitmap pixel data block based on width and height properties (memory corruption)
+
+How this will manifest itself to you:
+
+    the entire application may become unresponsive (ran out of memory or crashed)
+    the request may return an error or time out (thread crashed or timed out)
+    application may generate a resized/converted image with data that was read from memory of the server process (like Heartbleed)
+
+If you observe this, proceed to determining impact.
+
+You can generate a test file from any JPEG image using this code: lottapixel.c
+
+The resulting image file is not attached to this page because it tends to cause all sorts of issues with image viewers and image processing software.
+Reporting Policy
+Scenario	Application generates a resized or converted image with sensitive data leaked from the server process (encryption keys, passwords, PII, source code).	
+
+The entire application becomes unresponsive.
+
+
+	The request times out and returns an error.
+Guidance	Report as Sensitive Data Expsoure.	Report as Resource Exhaustion via File Upload.	Report as Resource Exhaustion via File Upload.
+NIST	Adjust default impact up or down based on data exposed.	High
+(Likelihood: Medium, Impact: Critical)	Low
+(Likelihood: Medium, Impact: Low)
+CVSSv2	(AV:N/AC:M/Au:S/C:N/I:N/A:C)
+	(AV:N/AC:M/Au:S/C:N/I:N/A:P)
+CVSSv3	AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H	AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:L
+If it is possible to upload an archive, will the application try to extract it on the server?
+
+ASVS Reference: 12.1.2 Verify that compressed files are checked for "zip bombs" - small input files that will decompress into huge files thus exhausting file storage limits.
+
+Although many libraries have fixed this, if the application is attempting to manually traverse recursive ZIP files, it may be vulnerable to ZIP bomb attacks.
+
+A ZIP-bomb, or more generally, compression bomb, exploits the properties of compressed file formats to use up all available disk space and/or memory.
+
+For a simple example, consider this: how would you compress a string of 255 repetitions of character "A"? It would be something like: "A" "times" "255". 
+This compreses 255 bytes of data into just 3 bytes: "A", operation "times" and agument "255".
+
+Next, imagine you can throw nesting into this. Imagine that this string of 255 repetitions of character "A" can be represented with another character, "B". 
+Now, every time we say "B" in the compressed file, it decompresses to 255 "A"s. This, adapted to restrictions of the ZIP format, is how ZIP-bombs came to be.
+
+A popular example, cited on Wikipedia, is a 42-kilobyte ZIP file that decompresses to 4.5 petabytes. In 2019, a recursion-less approach yielded a 46-megabyte 
+file that expands to 4.5 petabytes without using nested archives.
+
+To test for recursive ZIP-bombs:
+
+    Do NOT use the 4.5 petabyte file.
+    Upload synopsys_zbdeep.zip that extracts 2KB to 1GB. This is 10 layers deep and 2 archives wide. This much depth should be rejected by secure ZIP parsing code.
+    If you need to generate test archives with different parameters, get the source code from here: https://github.com/pandasauce/zip-bomb
+    The command used to generate the file in #2 is:
+    python zip-bomb.py nested-depth -D 10 -C 2 out.zip
+
+To test for non-recursive ZIP-bombs:
+
+    Do NOT use the 4.5 petabyte file.
+    Upload synopsys_zbsm.zip that extracts 22KB to 105MB. This file contains overlapping entries and should be rejected by secure ZIP parsing code.
+    If you need to generate bigger test archives or archives containing specific payloads, get the source code from here: https://www.bamsoftware.com/git/zipbomb.git
+    The command used to generate the file in #2 is:
+    python zipbomb --mode=quoted_overlap --num-files=5 --compressed-size=21179 > zbsm.zip
+    To include specific files in the bomb, you will need to apply template_fix.patch and use the --template argument to provide a ZIP file with the specific
+files you want to include. More detailed explanations of arguments are available in the readme.
+
+If these archives are accepted and files are extracted OR the server becomes unresponsive/returns an error, report the resource exhaustion finding.
+How to determine impact
+Scenario	Malicious archives upload successfully. The entire application becomes unresponsive or only returns errors.	
+
+Malicious archives upload successfully. There is indication that they are being processed, e.g. you can access the extracted files, there is a log entry that
+shows files got extracted or a log entry that shows a hanging/timing out extraction process, however, the application remains functional.
+Malicious archives upload successfully. There is no indication that they were getting processed, e.g. files are not extracted, there is no sign of application
+slow-down or there is a log message showing that the file got discarded without processing it.
+Guidance	Report as Resource Exhaustion via File Upload.	Report as Resource Exhaustion via File Upload.	Not an issue - do not report.
+NIST	High
+(Likelihood: Medium, Impact: Critical)	Low
+(Likelihood: Low, Impact: Medium)
+CVSSv2	(AV:N/AC:M/Au:S/C:N/I:N/A:C)	(AV:N/AC:M/Au:S/C:N/I:N/A:P)
+CVSSv3	AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H	AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:L
+
+
+REMOTE CODE EXECUTION ::----
+Remote code execution can be achieved when the uploaded files are interpreted as code.
+Don't leave any shells behind
+If you do succeed with any of the test cases on this page, remember to clean up after yourself! We do not want backdoors from our
+testing to remain on client websites. Confirm that the web shell you uploaded is removed once you've completed your testing, and 
+make sure to inform the client about any potential files left behind after your testing that they may need to clean up and remove.
+
+Do you know where the files end up after being uploaded?
+
+Common destinations are:
+    A folder on the same host
+    A different host, for example, an image file server
+    Cloud storage, for example, an S3 bucket
+If it is in an S3 bucket or a dedicated server configured to serve images, you are unlikely to get code execution, although there can be corner cases.
+If it is on the same host, you should definitely check for code execution possibilities.
+Are you able to request the uploaded file back from the server?
+If you can access the uploaded file, it will either get executed by the server or served to you as a download. Both cases can result in vulnerabilities,
+see File Uploads Testing: Client-side Code Execution for additional info.
+Does the web server support execution of script files?
+
+Does the web server support execution of script files (.php, .py, .aspx, .jsp and so on) by accessing them via a URL? 
+
+If the web server has a CGI handler configured for some extensions, you may be able to upload a web shell. Test this by uploading one of Synopsys-branded
+web shells and accessing the uploaded file in your browser.
+
+Currently available web shells:
+
+    PHP Web Shell
+    ASP.Net Web Shell
+    ASP Classic Web Shell
+    JSP Web Shell
+
+If the file upload is rejected, remember to try the validation bypass tricks mentioned here.
+
+You can also use the Upload Scanner extension in Burp Suite to test for this. See the File Uploads Testing: Tooling page for instructions on how to use it.
+
+If you cannot upload, access or execute the web shell, there is no server-side code execution through file uploads.
+
+If you have successfully uploaded a web shell, find out what privileges you get on the system and proceed to determining impact.
+Reporting policy for web shell uploads
+CVD: Remote Code Execution via File Upload
+Example scenarios
+
+Attacker can successfully upload a web shell or other file that leads to remote code execution on the server.
+A web shell can be uploaded (no error), but cannot be accessed afterwards.
+A web shell can be uploaded (no error), but is served as text/plain or is otherwise not executable.
+The web shell gets root privileges, leading to full compromise of the system.
+High likelihood if the attack does not require authentication (or users can easily self-register accounts to access the vulnerable upload).
+Medium likelihood if the attack requires authentication.
+The web shell gets limited privileges, leading to limited, but substantial compromise of the system.
+High likelihood if the attack does not require authentication.
+Medium likelihood if the attack requires authentication.
+NIST	
+Critical OR High
+(Likelihood: High OR Medium, Impact: Critical)
+High OR Medium
+(Likelihood: High OR Medium, Impact: High)
+	Not an issue - do not report as a finding.
+CVSSv2	
+(AV:N/AC:L/Au:N/C:C/I:C/A:C)
+OR (AV:N/AC:L/Au:S/C:C/I:C/A:C)
+(AV:N/AC:L/Au:N/C:P/I:P/A:P)
+OR (AV:N/AC:L/Au:S/C:P/I:P/A:P)
+	N/A
+CVSSv3	
+AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H
+OR AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H
+AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H
+OR AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H
+	N/A
+Note: CVD default score assumes unauthenticated access with full compromise.
+
+
+FILE UPLOAD TESTING MALWARE :::_---
+
+Even if you can't directly attack the server and can't upload HTML pages, it may still be possible to use the affected server to distribute files to other people. 
+If you can upload a file to a website that users trust, this can be utilized for phishing or distributing malware. The users are more likely to click on a link and 
+download a file if it appears to be from a trusted source.  
+
+    Test Cases
+        Are other users, or unauthenticated users, able to access the file that you have uploaded?
+        Does the web server scan uploaded files for malware?
+            Does the web server scan uploaded PDF files for malware?
+                Limitations to EICAR (Cylance and other non-traditional AV scanners)
+        How to present this in the report
+            Reporting Guidance
+
+Test Cases
+Are other users, or unauthenticated users, able to access the file that you have uploaded?
+Open a new browser window in Incognito mode and try to access the file that you have uploaded without logging in.
+Next, log in as a different user and try this again.
+Does the web server scan uploaded files for malware?
+If:
+    the application accepts executable files, such as .exe, .bat, .com, ELF and other executable or archive formats; and
+    other users can access the files that you uploaded
+
+it can be used to distribute malware. You can try a basic test to see if uploaded files get scanned by an antivirus solution.
+
+EICAR is a standard test file to ensure that an antivirus is working. The only contents of that file should be:
+
+X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*
+
+You can save it with any extension accepted by the application and upload.
+
+You can use the Upload Scanner extension in Burp Suite to upload EICAR files for you. See the [WIP] File Uploads Testing: 
+Tooling page for instructions on how to use it. Note that you still have to manually check if other users can access the uploaded EICAR file, the extension does not do that for you.
+
+If it gets rejected and you have tried bypassing MIME type checks (see Insecure File Uploads Testing Guidance), this is because the antivirus blocked it. 
+All good.
+
+If it passes: see if it is still available on the server after a couple of minutes. It might take the antivirus a moment to react and quarantine the file. 
+If the file is still available after a couple of minutes, that indicates that there is no antivirus scanning of uploaded files in place.
+
+Note that it does not make sense to embed the EICAR file into file types other than archives, as anti-virus solutions are not expected to detect such cases. 
+If the target web page accepts compressed files or archives, see if the necessary compression algorithm or file format is available below, and test using that:
+
+    synopsys_eicar.ar
+    synopsys_eicar.bz2
+    synopsys_eicar.com
+    synopsys_eicar.gz
+    synopsys_eicar.lzip
+    synopsys_eicar.lzma
+    synopsys_eicar.lzop
+    synopsys_eicar.rar
+    synopsys_eicar.rar4
+    synopsys_eicar.tar
+    synopsys_eicar.tar.bz2
+    synopsys_eicar.tar.gz
+    synopsys_eicar.tar.lzip
+    synopsys_eicar.tar.lzma
+    synopsys_eicar.tar.lzop
+    synopsys_eicar.tar.xz
+    synopsys_eicar.zip
+    synopsys_eicar.zstd
+    synopsys_eicar.7z
+
+You can also download all of the files above from this archive: EICAR_samples.zip
+Does the web server scan uploaded PDF files for malware?
+
+    Upload PDF files containing EICAR dropper and see whether any AV will trigger to reject or remove the file on the server before spreading to other users. 
+The aim of this check is not to qualitatively assess the anti-virus, but we only aiming to prove whether or not AV is running and inspecting PDF files.
+        Test file: synopsys_eicar.pdf
+        We no longer report Distribution of PDF Files with Active Content.
+    If the upload is accepted, confirm that another user can download the file and it's not removed by the system after upload.
+    Verify that the downloaded PDF still contains the EICAR dropper, and that an AV products should have picked it up if it was scanned. For example, 
+if we upload the EICAR PDFs in virustotal we see that a large majority will flag it.
+
+Limitations to EICAR (Cylance and other non-traditional AV scanners)
+
+The EICAR test file works by triggering the signature check of AV scanners. Unfortunately this fails when using AV scanners that does not rely on such signatures.
+Currently there are no standard alternatives to EICAR for those ML-based scanners. The only alternative to this is using applications that are recognized as malware 
+because they might be abused as such but are secure in principle. The folks from Cylance also recommend this approach implicitly (source on spiceworks.com).
+
+Obtain client agreement for non-EICAR malware testing
+Unless it was agreed during the scoping process, consult with your TO and CM to check if it's ok to test with alternative files before proceeding with other options outlined below.
+
+One obvious example for this would be netcat which is recognized as unsafe by Cylance:
+
+How to present this in the report
+Steps to reproduce
+    Save the test file (e.g., EICAR) with the necessary extension.
+
+    Calculate the hash of the file:
+    $ sha256sum eicar.exe
+    275a021bbfb6489e54d471899f7db9d1663fc695ec2fe2a2c4538aabf651fd0f *eicar.exe
+
+    Upload this file to the application.
+    Wait a couple of minutes.
+    Download this file from the application as a different user or unauthenticated user.
+    Calculate the hash of the downloaded file.
+    Observe that the file made the round-trip unmodified, indicating lack of antivirus intervention.
+
+
+Reporting Guidance
+Do not include VirusTotal screenshots in reports, as was previously recommended, or reference it as detecting a file. 
+The company's terms of service are sufficiently broad that those uses could be a violation. The service can still be used
+to confirm that public files are malicious, but its results cannot be included in reports.
+Scenario	A user can successfully upload a malicious file (e.g., EICAR test file to simulate malware) that can be downloaded by
+other users, and may thereby spread malware through the system and potentially use it in phishing campaigns.	
+There is evidence of AV scanning file uploads as other EICAR file uploads are blocked, but a user can successfully upload a PDF file 
+with malware (e.g., PDF with EICAR dropper) that can be downloaded by other users, and may thereby spread malware through the system 
+and potentially use it in phishing campaigns.	A user can successfully upload file types that are not required by the application's 
+business purpose, and should have been rejected by server-side validation as a best practice, however there is no evidence of negative
+impact on the system or other users. A user may be able to successfully upload a malicious file (e.g., EICAR test file to simulate malware)
+but there is no evidence that it can be downloaded by other users (at all, or before being removed by AV on the server).
+Reporting guidance	Report as Malware Distribution via File Upload	
+
+Report as Malware Distribution via File Upload with likelihood reduced to Low since successful exploitation would require insecure configuration
+and/or additional user acceptance of security warnings in their PDF reader.
+
+(For CVSS, increase the Attack Complexity to High)
+
+Include a note with the following message (edit as needed):
+
+"The default risk score has been reduced since it was observed that an AV solution blocked the EICAR test file when uploaded directly, and only 
+malicious PDF files containing an EICAR dropper were not blocked." 
+	Not an issue - do not report as a finding.
+
+
+

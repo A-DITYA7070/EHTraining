@@ -1,0 +1,170 @@
+Vulnerable upload functions allow attackers to bypass input controls, upload payloads and potentially perform command execution.
+
+Web application file upload functions that do not have the correct controls in place to ensure user uploaded files are validated or 
+sanitised are potentially vulnerable to unrestricted file upload. This document outlines the testing process for file upload functions 
+while performing a penetration test. This document contains various techniques to bypass File Upload Black List filtering and concludes 
+with a helpful check list.
+
+
+Identify File Upload Functions
+File upload functions are both easy to identify and easy to exploit. Typical places are profile image avatars, document upload functions 
+and file import functions. Burp passive scanner will identify file upload entry points when you’re at the discovery and application mapping phase.
+
+Using Burp Intruder to Test for Unrestricted File Upload
+Web applications often use black listing for file input validation or sanitisation which is normally insufficient. If a file extension is missed 
+from the blacklist an attacker can bypassed filtering. The preferred mechanism for input validation is input white listing, which uses a denyall 
+approach and only allows input that is required.
+
+Burp Testing File Upload Extensions
+Manually upload a file that will likely fail the upload validation or sanitisation test, find a response that can be used to identify the 
+web application is rejecting the file extension.
+Send the upload request to Burp intruder
+Clear the default insertion points
+Select the file extension point as the insert location
+Select a payload containing various extensions php.jpg, asp.jpg etc
+In options configure grep within response to contain the failed response string identified at step 1
+Start intruder, any responses unticked for the grep string are likely vulnerable are require further inspection and Confirm any findings.
+
+
+Test for File Upload Content-Type change with Burp
+Identify accepted file upload Content-Type’s accepted by the target.
+Establish a baseline – use a known accepted Content-Type and monitor the applications response, repeat with a content type that is likely not accepted, 
+use the failed response at step 6
+Send the upload request to Burp intruder
+Clear the default insertion points
+Select the “Content-Type:” header as the insert location
+Select a payload list containing Content-Types
+In options configure grep within response to contain the failed response string identified at step 1
+Start intruder, any responses unticked for the grep string are likely vulnerable are require further inspection
+Confirm any findings
+
+
+File Name and Extension Fuzzing
+The file name and extension should be tested for input validation, what happens if the file name is an XSS, SQLi, LDAP or a Command Injection payload?
+Manually upload a file that will likely fail the upload sanitisation or validation test, find a response that can be used to identify the web application 
+is rejecting the file extension
+Send the upload request to Burp intruder
+Clear the default insertion points
+Select the file extension or file name point as the insert location
+Select a payload containing various injection [js, XSS, CMD, LDAP, Xpath, SQL etc [ payloads
+In options configure grep within response to contain the failed response string identified at step 1
+Start intruder, any responses unticked for the grep string are likely vulnerable
+Confirm findings
+
+
+File Upload Black List Bypass Techniques
+Windows IIS Server Black List File Upload Bypass:
+Upload a file with the semi colon after the black listed extension, such as: shell.asp;.jpg
+Upload a directory with the .asp extension, then name the script within the directory with a permitted file extension, example: folder.asp\file.txt
+When serving PHP via IIS < > and . get converted back to ? * .
+Use characters that can replace files, example >> can replace web.config
+Try using spaces or dots after characters, example: foo.asp..... .. . . .
+file.asax:.jpg
+Attempt to disclose information in an error message by uploading a file with forbidden characters within the filename such as: | %< * ? "
+
+
+Apache Windows Black List Bypass:
+Windows 8.3 feature allows short names to replace existing files, example: web.config could be replaced by web~config.con or .htaccess could be replaced by HTACCE~1
+Attempt to upload a . file, if the upload function root is /www/uploads/ it will create a file called uploads in the directory above.
+
+
+General Black List Bypass:
+Identify what characters are being filtered – use burp intruder to assess the insert points with a meta character list
+Ensure your list contains uncommon file extension types such as .php5,.php3,.phtml
+Test for flaws in the protection mechanism, if it’s stripping file names can this be abused? Example: shell.p.phpp if the app strips .php it could rename the extension back to .php
+Try a null byte %00 at various places within the file name, example: shell.php%00.jpg, shell.php%0delete0.jpg – observe how the application responds
+Double extensions: if the application is stripping or renaming the extension – What happens if you give it two extensions? Example: shell.php.php or 4 shell.txt.jpg.png.asp
+Try long file names, example supermassivelongfileeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeename.php apply other filter bypass techniques used in conjunction with long file names
+Try test.asp\, test.asp.\
+Can you upload the flash XSS payload, that is named as a .jpg
+Try the previous technique but use PDF or Silverlight instead
+Same again but attempt to abuse crossdomain.xml or clientaccesspolicy.xml files
+Try using encoding to bypass blacklist filters, try URL, HTML, Unicode and double encoding
+Combine all of the above bypass techniques
+Try using an alternative HTTP Verb, try using POST instead of PUT or GET (or vice versa), you can enumerate the options using Burp Intruder and the HTTP Verbs payload list
+Additionally, ensure all input points are fuzzed for various input validation failures such as, XSS, Command Injection, XPath, SQLi, LDAPi, SSJI
+Bypassing File Upload White Listing
+Enumerate whitelist and test for any permitted file extensions that can be abused
+Test files contents are being validated
+Test that extension renaming techniques such as shell.php.png are not possible
+Bypass File Size Upload Mechanisms
+Malicious File Contents
+Assess any file upload contents is correctly sanitised by the application. For example, can you inject XSS into an Excel, CSV or txt files that will later 
+be rendered by the application? Use Burp repeater and intruder to attempt injecting various payloads within file import and upload functionality, assess the applications response.
+
+EXIF Image Data
+Can a reverse shell be injected within image EXIF data ?
+
+Install on Kali:
+
+apt-get install exiftool
+After injecting the code within the image file, simply upload the file and verify the file is the same using a checksum (details below).
+
+Looking for a manual consultant lead mobile application security test? See our mobile application penetration testing services page for more details
+
+Injecting into the request with Burp
+This is a similar technique to the EXIF method above, however you paste the code directly into the burp request.
+
+Upload a legitimate image using burp and verify upload is successful
+Send the previous request to burp repeater
+After the legitimate image data in the request, attempt to inject payloads (injection payloads or a reverse shell)
+Submit the request
+Download the uploaded file from the target server, verify it has the contained payload within, can you leverage this to execute a payload on the target server?
+burp php shell injection in an image
+
+
+
+CSV Macro Injection
+If the application has an export function assess if it’s possible to injection macros within the web application that could be executed client side by another user.
+
+Example:
+
+Attacker injects malicious payload within the web application
+Administrator logs in and exports the web application data to CSV
+Attackers injected payload is then executed client side by the victims Excel, it’s likely even if excel prompts or warns the victim will proceed as 
+the exported data is from a site they trust.
+
+
+Large File Upload
+Upload a large file and assess if the application allows the upload.
+If shell access is available on the test, it’s easier to perform a server side assessment checking for LimitRequestBody within the Apache config and MAX_FILE_SIZE within php.ini
+Test for Server Side Antivirus Scanning
+Use an EICAR file, a benign test file for testing AV detection and verify it gets detected by AV scanners on VirusTotal.
+
+Checksum the EICAR file
+Perform a normal file upload
+Download the EICAR file
+Checksum the EICAR file and validate it’s the same file
+Repeat the same test 24 hours later and assess if any daily antivirus filtering is taking place.
+
+
+
+Testing for DoS Condition Disk Filling
+If within testing scope, assess if DoS is possible via file upload or disk filling from a single session. Use a low number (~100) 
+of jpg files and use Burp intruder Number payload option to increment the payload names, e.g. image1.jpg, image2.jg, image4.jpg etc.
+
+
+
+Unauthenticated File Upload Testing
+Unauthenticated file upload, allows an attacker to DoS a target by fill disk space on target machine.
+Testing for Arbitrary File Upload using Burp:
+Identify file upload function
+Perform a normal file upload using an authenticated user (if possible)
+Send the request to burp comparer
+Remove the cookie or session identifier from the request
+View the response to assess if file upload is possible without authentication
+
+
+
+Techniques for Server Side Command Execution
+If it’s possible to successfully upload a shell to the target web application you can attempt some of the following techniques to execute the uploaded shell.
+
+Has your organisation performed an External Pen Test recently? See our Network Penetration Testing services page for more details
+
+Apache MIME Types: Attempt to upload a renamed file e.g. shell.php.jpg or shell.asp;.jpg and assess if the web server process the file by exploiting weak Apache MIME types
+Null Byte: Try a null byte %00 at the end of the file name or within such as: shell.php%0delete0.jpg– observe how the application responds
+Can you upload dot files, if so can you upload a .htaccess file an abuse AddType: AddType application/x-httpd-php .foo
+Be mindful of any processing to upload files – Example: Could command injection be used within a file name that will later be processed by a backend backup script?
+Be mindful of any server side processing to upload files – If compressed files are permitted, does the application extract them or vice versa?
+Does the server Anti Virus process uploaded files? – Try uploading a compressed file type such as .zip, .rar etc if the server side AV is vulnerable, 
+it’s possible to exploit and gain command execution.
