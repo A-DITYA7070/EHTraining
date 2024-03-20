@@ -565,7 +565,86 @@ of the techniques fail to detect and prevent this kind of attacks.
 The XSS attacks that rely on server side embedding of user data are categorized into “non-persistent” (or “reflected”) and “persistent” (or “stored”). 
 It is thus suggested that the third kind of XSS, the one that does not rely on server side embedding, be named “DOM Based XSS”.
 Here is a comparison between standard XSS and DOM Based XSS:
-	
 
 
 
+DOM-based XSS and open redirect are the result of user-controlled input (source) being used insecurely on a web page, however
+unlike the traditional versions, the insertion happens solely within the client-side and exploits are made possible by existing
+(and vulnerable) scripts on a page.
+
+Note that in some cases, the payload may come from the server. For example, user input may be reflected in a JSON response, which 
+later gets unsafely inserted into the page using JavaScript. These instances can be considered DOM-based as well, since client-side 
+code is primarily responsible for introducing the issue
+
+
+Common Sources
+In plain words, a source is anything the user has control over, this is where malicious input may originate from. When we talk
+about web browsers these sources are usually:
+    location
+    event.data
+    document.cookie
+    document.referrer
+    window.name
+    localStorage
+    sessionStorage
+
+
+Common Sinks
+In plain words, a sink is that point of code where the attack can be executed. In web browsers, sinks can be of different
+types depending on which type of security issue they enable, e.g eval() introduces dynamic evaluation of JS code, document.write 
+enables HTML5/JS injection whereas location.assign() also introduces open redirect issues:
+    document.write 
+    document.writeln
+    setTimeout 
+    setInterval 
+    execScript
+    eval 
+    location
+    location.assign
+    location.href
+    innerHTML 
+
+
+DOM-based Open Redirect
+
+When an application allows for page navigation though window.location https://developer.mozilla.org/en-US/docs/Web/API/Window/location 
+its important to note that if user-input controls the initial path, then the application can be used either execute JavaScript 
+(when using location, location.assign or location.href) or be used for Open Redirection. Here are the following locations which
+open-redirection can occur:
+
+    location 
+    location.assign
+    location.href
+    location.host
+
+var url = document.location.hash.substring(1);
+if (url) {
+   location.href = url;
+}
+
+
+Testing Guidance
+What to look for:
+
+    Use of client-side JavaScript code which either evaluates or interprets user-input as code e.g eval(), setTimeout(). 
+    Use of client-side JavaScript code which inserts user-input directly into the Document Object Model (DOM) e.g innerHTML.
+    Using components of open-source client-side third-party libraries and frameworks which evaluates or interprets user-input as code, 
+    see Libraries and Frameworks
+    Using components of open-source client-side third-party libraries and frameworks which inserts user-input directly into the DOM,
+    see Libraries and Frameworks. 
+
+Before Testing, Things To Take Into Consideration:
+
+    Being able to understand the dataflow of an application is extremely important when identifying DOM XSS, otherwise issues can be easily missed.
+    Payloads used inside inline JavaScript must be not break the overall syntax, otherwise JavaScript may not execute/run. Make sure to check
+    the console for any errors thrown when you attempt various payloads to detect if any syntax errors are thrown.   
+    Some payloads are browser specific, for example Internet Explorer will render location.hash as the defined value, all other browsers will 
+    URL encode HTML special characters, thereby preventing some execution contexts.
+
+
+Report as DOM-Based Cross-Site Scripting.
+In general, this finding should be reported if the remediation would involve modifications to client-side, rather than server-side, code.
+Report with Low likelihood if the payload must be manually entered on the page by the user to exploit the vulnerability.
+For example:
+    If the payload is part of the URL and causes DOM-based XSS by a user navigating to the URL, report with normal likelihood.
+    If the payload is part of a form and must be entered by the user, report with Low likelihood.
