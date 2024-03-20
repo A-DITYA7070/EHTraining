@@ -1,0 +1,15 @@
+
+
+                               LAB #1.  Remote code execution via web shell upload
+
+
+     STEPS TO REPRODUCE ::-
+     1. Configure your browser with a proxy tool like Burp Suite.
+     2. Login to the application using the credentials wiener:peter
+     3. Upload a file containing basic web shell and upload it using upload functionality.
+     4. Intercept the req and in burp change the extension of the file to .php
+     5. Make another GET req to the sever but this time change the file path to /files/avatars/index.php 
+     6. We can see that the q req is made to the uploaded file and the code is executed.
+     7. In response see there is a secret returned.
+     8. Submit the secret in the application,and the lab is solved.
+     

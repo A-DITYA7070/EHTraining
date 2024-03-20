@@ -1,0 +1,18 @@
+
+
+
+                          LAB #2 Web shell upload via Content-Type restriction bypass
+
+                    STEPS TO REPRODUCE :-
+                    1. Configure your browser with a proxy tool like Burp Suite
+                    2. Log into the application with any non-admin user like wiener
+                    Turn on the Burp Intercept.
+                    3. Try to upload a malicious file that contains a web shell scripts having extension .php
+                    4. Send the intercepted reuest to Burp Repeater. 
+                    5. Observe In the response that the server is blocking the file type .php  
+                    6. Since the application whitelisted image/jpeg, change the Content-type to image/jpeg.
+                    7. In the respose observe that the file is being uploaded successfully
+                    make a request to the server with the below path:
+                    /files/avatars/index.php
+                    9. Observe that in the response application responds with a secret key.
+                    10. Copy the secret and submit it in the application.fit 

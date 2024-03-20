@@ -1,0 +1,22 @@
+
+
+                   LAB #3 Web shell upload via path traversal..
+                STEPS TO REPRODUCE
+                1. Configure your browser with a proxy tool like Burp Suite.
+                2. Login to the application using  your credentials.
+                3. Turn on the intercept of the Burp suite.
+                4. Upload a malicious file through upload functionality in the browser.
+                5. Send the intercepted request to the Burp Repeater.
+                6. In the Burp Repeater response observe that the file has successfully being uploaded.
+                7. Make a GET request using Burp Repeater to files/avatars/index.php
+                8. Observe that the instead of executing the script server responded with the script 
+                9. In the Burp Repeater go to the tab POST /my-account/avatar request and change the 
+                   Content-Disposition: form-data; name="avatar"; filename="../exploit.php"
+                10. Observe the response that the file have been successfully uploaded This suggests 
+                    that the server is stripping the directory traversal sequence from the file name. 
+                11. Obfuscate the directory traversal sequence by URL encoding the forward slash (/) character
+                    resulting in filename="..%2findex.php"
+                12. Send the request and Observe that the message now says the files/avatars/../index.php has been uploaded
+                13. From Burp Proxy history find the GET files/avatars/index.php request and send it to Burp Repeater
+                    change the request to files/avatars/../index.php and send the request.
+                14. In the response Observe that server responded with carlos Secret submit it to solve the lab.
