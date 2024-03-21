@@ -1,0 +1,16 @@
+
+
+                        LAB #4 SQL injection UNION attack, finding a column containing text
+
+                    STEPS TO REPRODUCE :-
+                    1. Configure browser with a proxy tool like Burp Suite
+                    2. Turn on the Intercept in the Burp Suite
+                    3. Make a request to filter products 
+                    4. Send the Intercepted request to Burp Repeater.
+                    5. Change the category=' and Observe the response it's Internal server error 
+                       hence it suggest that there can be sql injection vulnerability.
+                    6. Change the payload category=' to category='UNION+SELECT+NULL,NULL,NULL --  and observe the 
+                       response it's 200 OK which suggest that there is total 3 columns in the database.
+                    7. Replace the first NULL to 'vibLRK' and observe the resonse it's still internal server error 
+                    8. Now replace the second NULL to 'vibLRK' i.e category='UNION+SELECT+NULL,'vibLRK',NULL -- 
+                       observe the response we have successfully retrived the text 'vibLRK' 

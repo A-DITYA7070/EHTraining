@@ -1,0 +1,22 @@
+
+
+
+
+
+
+
+
+
+                
+                        LAB #7  SQL injection UNION attack, retrieve data from other table.
+
+                        1. Configure your browser with proxy tool such as Burp Suite
+                        2. Turn on the intercept in Burp Suite
+                        3. In the Browser click on corporate gifts 
+                        4. Send the intercepted request to Repeater
+                        5. In the request change the category=' and observe the response 
+                           it's 500 Internal server error, it suggest that there is sql injection vulnerability.
+                        6. Now change the payload to category='+UNION+SELECT+username+password+FROM+users--
+                        7. Observe the response the database responded with administrator username and password
+                        8. Now in the application navigate to login page and login with retrived administrator username and password
+                      

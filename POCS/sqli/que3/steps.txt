@@ -1,0 +1,37 @@
+                          
+
+
+                          LAB #3 SQL injection UNION attack, determining the number of columns returned by the query.
+
+                    STEPS TO REPRODUCE :-
+                    1. Configure your browser with a proxy tool such as Burp Repeater.
+                    2. Trun on the intercept in the Burp Repeater 
+                    3. Make a request in the browser to filter products 
+                    4. Send the intercepted request to the Burp Repeater
+                    5. In the Repeater Request change the category=' 
+                       and observe the response which is internal server error this suggest 
+                       that there can be sql injection possible
+                    6. In the category=' change the payload to '+UNION+SELECT+NULL -- 
+                       observe the response it still says internal server error.
+                    7. Change the payload to category='+UNION+SELECT+NULL,NULL,NULL-- and observe the 
+                       response which is 200 OK which suggest that there is 3 columns in the db.
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+NOTES :-
+ This lab contains a SQL injection vulnerability in the product category filter. The results from the query are 
+ returned in the application's response, so you can use a UNION attack to retrieve data from other tables. The 
+ first step of such an attack is to determine the number of columns that are being returned by the query. You will
+ then use this technique in subsequent labs to construct the full attack.
+ To solve the lab, determine the number of columns returned by the query by performing a SQL injection UNION attack
+ that returns an additional row containing null values. 

