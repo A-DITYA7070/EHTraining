@@ -169,4 +169,8 @@ of TLS that is compatible with your systems and applications to ensure the highe
                                 and steal data.
 
 3) Poodle attack :- Padding oracle downgraded legacy encryption :
-=> it exploits a vulnerabality in ssl3.0
+=> it exploits a vulnerabality in ssl3.0 this vulnerabality lets an attacker eavesdrop 
+on communication encrypted using sslv3.
+Impact :-
+a) attacker can steal confidential data (password,session cookie) attacker can also 
+   impersonate the user.
