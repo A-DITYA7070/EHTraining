@@ -1,1 +1,11 @@
 
+
+1. Weak Encryption Algorithm :- Some older encryption algorithms such as SSL 2.0 and 3.0 and TLS 1.0 and 1.1 are no longer considered secure 
+                                and can be vulnerable to attacks. It’s important to use the most up-to-date encryption protocols to ensure 
+                                security.
+
+2. Certificate validation issues: Web applications can be vulnerable if the SSL/TLS certificate validation is not performed properly.
+                                Attackers can exploit this by using a fake certificate, man-in-the-middle attacks, or other techniques to intercept 
+                                and steal data.
+
+3) Poodle attack :- 
