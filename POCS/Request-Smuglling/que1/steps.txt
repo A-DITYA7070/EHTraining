@@ -1,0 +1,16 @@
+
+
+
+
+                                    Lab #1 : HTTP request smuggling, basic CL.TE vulnerability.
+                                STEPS TO REPRODUCE :-
+
+                        1. Configure your browser with a proxy tool such as Burp Suite.
+                        2. Turn on the intercept of the Burp and in the application refresh the page
+                        3. Turn the intercept off and go to HTTP History page and observe the / request 
+                        4. Send this request to Burp Repeater.
+                        5. In the Request attribute change the protocol from HTTP/2.0 to HTTP/1.1.
+                        6. Right click on the request in Burp Repeater and change the request method from GET to POST.
+                        7. Click on send and Observe the response it says 200 Ok
+                        8. Again click on send and issue the same request 
+                        9. Observe the response it says unrecognised method GPOST and the lab is solved.

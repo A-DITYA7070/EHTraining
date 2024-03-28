@@ -9,7 +9,7 @@ iii) No unpredictable req params..
 
 
 
-Testing csrf token :- 
+Testing csrf token :-   
 1) Remove the csrf token and see if the app accepts it.. (yes hence its vulnerable )
 2) test req method from post  to get
 3) see if csrf token is tied to users session or not
@@ -28,4 +28,10 @@ In order to exploit this vulnerability we need to perform 2 things
 2) send a csrf attack to the victim with a known csrf token
 
 
+if crud operation is performed using put method ? csrf is not possible why ??.
 
+
+IF using json ===>> format.
+
+content-type not validated by server attack is possible.
+    

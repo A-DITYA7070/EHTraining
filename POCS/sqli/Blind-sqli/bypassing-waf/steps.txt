@@ -1,0 +1,24 @@
+
+
+
+                  LAB #  SQL injection with filter bypass via XML encoding
+                
+                STEPS TO REPRODUCE :-
+                1. Configure your browser with a proxy tool such as Burp Suite.
+                2. Turn on the intercept of the Burp Suite.
+                3. In the application click on check stocks.
+                4. Send the intercepted request to Burp Repeater.
+                5. In the Repeater observe that the productId and storeId is sent to the server in xml format.
+                6. In the storeId enter "'" instead of 1 and click on send.
+                7. Observe the response which says "attack detected", this suggest that the web application firewall 
+                   is checking syntax which can be used to exploit sql injection vulnerabalities.
+                8. Hence we will use an extension called Hackvertor to bypass this waf.
+                9. Go to BAAP store in Burp suite and search extension named "Hackvertor" and install it.
+               10. Click on Hackvertor and use the payload 1 Union select username || '~' || password from users
+                   and click on hex_entities.
+               11. copy the payload and paste it in storeId field in the Burp Repeater request.
+               12. click on send.
+               13. Observe the response administrator username and password can be seen use it and login to the application and 
+                   lab is solved.
+
+                

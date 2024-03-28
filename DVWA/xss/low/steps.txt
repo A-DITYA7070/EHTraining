@@ -1,0 +1,14 @@
+
+
+
+
+                      STEPS TO REPRODUCE ::--
+
+                    1. Cofigure your browser with proxy tool such as Burp Suite 
+                    2. Login to the DVWA application using your credentials.
+                    3. Navigate to Reflected xss and in the input field search for a text "adi"
+                    4. Send the Intercepted request to Repeater and click on send.
+                    5. In the response search for adi and in observe the response
+                    6. In the search field search for <script>alert(1)</script>
+                    7. In the reponse observe that the <script>alert(1)</script> is reflected back in the response.
+                    

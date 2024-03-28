@@ -1,0 +1,15 @@
+
+
+
+                   
+                       STEPS TO REPRODUCE
+                    1. Configure your browser with a proxy tool such as Burp Suite
+                    2. Turn on the intercept in the Burp suite.
+                    3. Login to the application using your credentials
+                    4. In the input field enter a text to search like "adi"
+                    5. Send the intercepted request to Repeater and click on send.
+                    6. Observe the response and see where the text is getting inserted.
+                    7. In the request change the payload to <script>alert(1)</script> and observe the response 
+                    8. Observe that the <script> is blacklisted 
+                    9. Change the payload to <Script>alert(1)</script>
+                   10. Observe the response that the <script>alert(1)</script> is embedded in the response.

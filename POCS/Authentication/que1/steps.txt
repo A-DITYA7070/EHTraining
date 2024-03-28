@@ -1,0 +1,21 @@
+
+
+
+
+                    LAB #1 Username enumeration via different responses
+
+         STEPS TO REPRODUCE :-
+         1. Configure your browser with a proxy tool such as Burp Suite.
+         2. Turn on the Burp proxy and in the application navigate to login page.
+         3. In the login page enter any random credentials and intercept the request.
+         4. Send the intercepted request to Burp Intruder.
+         5. In positions add username as positin and click on payloads tab.
+         6. From the lab copy username section and paste it to payloads in the Intruder.
+         7. Click on start attack and observe the content-length and look for different content-length
+         8. Notice the changed content-length and click on that request, observe the response it's saying incorrect password
+            rather than incorrect username, means we have successfully found our username.
+         9. Note down the username and add it in username field, in the password field add it in scope and click on payload tab
+         10. copy the password payload and add paste it.
+         11. click on start attack, and observe the statuscode and look for 302 redirection code.
+         12. Once found note down the password .
+         13. In the application navigate to login page and fill username and password and click on login.
