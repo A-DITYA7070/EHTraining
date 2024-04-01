@@ -184,3 +184,10 @@ website or if the website seems suspicious. Users should be wary of clicking on 
 website or application,as they may actually be part of a clickjacking attack.
 
 
+FRAME BUSTING :-
+
+if (window !== window.top) {
+    // If the current window is not the top-level window (i.e., it is being loaded within a frame)
+    window.top.location = window.location; // Break out of the frame and redirect to the top-level page
+}
+
