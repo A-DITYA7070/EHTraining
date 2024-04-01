@@ -1,0 +1,24 @@
+
+
+                                    LAB # Reflected XSS into HTML context with most tags and attributes blocked
+                            STEPS TO REPRODUCE :-
+                            1. Configure your browser with a proxy tool such as Burp Suite.
+                            2. Turn on the intercept of the Burp Suite and in the application search for some random text in search field
+                            3. In the Burp send this intercepted request to Burp Repeater and turn the intercept off.
+                            4. In the Burp Repeater click on send and Observe the response, the output is returned in <h1> tag.
+                            5. Try to break the tag by entering this payload </h1><script>alert(1)</script> 
+                            6. Observe the response it says tag is not allowed.
+                            7. Send this request to Burp Intruder and in the payload tab copy all the payloads (tags) from Portswigger.
+                            8. Add scope in place of tag and click on start attack.
+                            9. Wait for the attack to complete and Observe the status code having 200 ok.
+                           10. Note down the tag in which response is 200 ok.
+                           11. Observe that <body> tag has 200 ok response.
+                           12. Finally use this payload 
+                            <iframe src="https://APP-ID.web-security-academy.net/?search=%22%3E%3Cbody%20onresize=print()%3E" onload=this.style.width='100px'>
+                               and deliver this to victim.
+
+                         
+                          REMEDIATION :-
+                          1. Output encoding 
+                          2. Input sanitisation.
+            

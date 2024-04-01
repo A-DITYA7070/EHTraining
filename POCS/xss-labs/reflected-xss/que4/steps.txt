@@ -1,0 +1,27 @@
+
+
+
+
+                           Lab: # Reflected XSS with event handlers and href attributes blocked
+                    
+                    STEPS TO REPRODUCE :-
+                    1. Configure your browser with proxy tool such as Burp Suite.
+                    2. Turn on the intercept of the Burp suite and search for some random value in the input field.
+                    3. Send the intercepted request to Burp Repeater.
+                    4. In the Repeater click on send and Observe the response.
+                    5. The text we searched is reflected back in <h1> tag.
+                    6. Try to break the tag with </h1><script>alert(1)</scritp> but we can see that the tag is not allowed.
+                    7. send this request to intruder and add tag in scope and copy the tags from Portswigger and start the attack.
+                    8. Observe the statuscode and see if there is 200 ok reposne Observetgat there is 200 ok for svg tag.
+                    9. Also most of the event handlers are blocked but we can confirm that animate is not blocked.
+                   10. Hence we can craft out payload using there tags and eventhandlers.
+                   11. Finally use this payload := "%3Csvg%3E%3Ca%3E%3Canimate+attributeName%3Dhref+values%3Djavascript%3Aalert(1)
+                                                   +%2F%3E%3Ctext+x%3D20+y%3D20%3EClick%20me%3C%2Ftext%3E%3C%2Fa%3E"
+                       and click on send.
+                   12. Observe the response it's 200 ok 
+                   13. Deliver this payload to victim and the lab is solved.
+                
+                Remediation :-
+                1. Input sanitisation.
+                2. Output encoding.
+                3. Csp headers.

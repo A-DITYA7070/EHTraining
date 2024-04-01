@@ -1,0 +1,25 @@
+
+
+
+                 LAB  #  Reflected XSS into HTML context with all tags blocked except custom ones.
+
+            STEPS TO REPRODUCE :-
+            1. Configure your browser with a proxy tool such as Burp Suite.
+            2. Turn on the intercept of Burp suite and from the application input search for random text.
+            3. Observe that the output is reflected back in <h1> tag.
+            4. Use this payload </h1><scrit>alert(1)</script> and try to break the tag.
+            5. Observe that the tag is not allowed response is recieved from the server.
+            6. Send this request to Burp Intruder.
+            7. Add the tag part in scope and copy all tags from the Portswigger website and paste it to the payload section.
+            8. Click on start attack.
+            9. Observe the response having 200 ok note the tag which are allowed.
+           10. Notice that the all tags are blocked hence we will have to use event-handlers to perform the attack.
+           11. Use this payload %3Cxss+id%3Dx+onfocus%3Dalert%28document.cookie%29%20tabindex=1%3E in the search part 
+               and click on send.
+           12. Observe the response its 200 ok hence our payload has been accepted by the server.
+           13. Finally deliver this exploit to victim to solve the lab.
+        
+        Remediation
+        1. CSP header :- to prevent running scripts from different origin.
+        2. Input sanitisation.
+        3. Output encoding.

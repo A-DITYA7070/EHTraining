@@ -1,0 +1,16 @@
+
+
+
+                                LAB # Lab: Reflected XSS in canonical link tag
+                     STEPS TO REPRODUCE :-
+
+                    1. Configure your browser with proxy tool such as Burp Suite.
+                    2. Turn on the intercept and in the application refresh the page.
+                    3. Send the intercept request to Burp Repeater.
+                    4. There is no input field except url hence we will use url to exploit.
+                    5. Use this payload /?accesskey='x'onclick='alert(1) and click on send 
+                    6. When the user will click on ctrl+shift+x the alert function will be triggered.
+                    
+            REMEDIATION :-
+            1. Url sanitisation.
+        

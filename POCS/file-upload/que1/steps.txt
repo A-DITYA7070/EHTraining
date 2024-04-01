@@ -1,0 +1,16 @@
+
+
+
+                          LAB # File path traversal, validation of file extension with null byte bypass.
+
+                    1. Configure your browser with a proxy tool such as Burp Suite.
+                    2. Turn on the intercept of the Burp Suite.
+                    3. In the application click on view details of any product.
+                    4. In the Burp go to Intercept tab and then history tab.
+                    5. Send the request having file as image to Burp Repeater.
+                    6. In the Repeater reqeust insert this payload  filename=../../../etc/passwd%00.jpg. in the parameter filename.
+                    7. Observe the response the server responded with sensative information of /etc/passwd file.
+
+        REMEDIATION :-
+        1. Input sanitisation.
+        2. escaping.

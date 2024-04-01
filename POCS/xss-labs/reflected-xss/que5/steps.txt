@@ -1,0 +1,20 @@
+
+
+
+              
+                                 LAB #  Reflected XSS into attribute with angle brackets HTML-encoded
+                            
+                        STEPS TO REPRODUCE :-
+                    
+                    1. Configure your browser with proxy tool such as Burp Suite.
+                    2. Turn on the intercept of the Burp Suite and search for random text in application search bar.
+                    3. Send the intercepted request to Burp Repeater.
+                    4. Click on send and Observe the response angle brackets are encoded, hence we can not use any payload 
+                       that has angle brackets.
+                    5. Hence we will have to use event handlers for this so use this payload 
+                       "autofocus onfocus='alert(1)' x=" and click on search.
+                    
+            
+            REMEDIATION :-
+            1. Output encoding whole output not just angle brackets.
+            2. Input sanitisation.

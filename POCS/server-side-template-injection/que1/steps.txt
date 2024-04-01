@@ -1,0 +1,19 @@
+
+
+
+
+                    LAB # Basic server-side template injection
+                   STEPS TO REPRODUCE :-
+                1. Cofigure your browser with proxy tool such as Burp Suite.
+                2. Turn on the intercept in your Burp proxy.
+                3. In the application click on view details of any product.
+                4. In the Burp send this intercepted request to Burp Repeater.
+                5. In the Repeater request modify the message value to <%25%3d+7*7+%25>
+                6. Observe the response 49 is refelected in the response.
+                7. Use this payload to delete user carlos from the database message=<%25+system("rm+/home/carlos/morale.txt")+%25>
+            
+
+            REMEDIATION :-
+            1. Input sanitisation.
+            2. Sandboxing: Provide a closed environment where risky modules and features are disabled.
+            3. Logic-less template: Use a logic-less engine template that separates visual rendering and code interpretation.

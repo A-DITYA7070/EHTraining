@@ -1,0 +1,7 @@
+
+
+
+
+
+
+                             LAB # Reflected XSS in a JavaScript URL with some characters blocked (try-except-throw)

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>
+        hello
+    </h1>
+    <h1 id="heading">
+
+    </h1>
+    <script>
+        const data = await fetch("http://localhost:4500/hack");
+        const id = document.getElementById('heading');
+        var newDiv = document.createElement('div');
+
+// Set attributes for the new <div> element
+        newDiv.id = 'myDiv';
+        newDiv.className = 'someClass';
+
+        // Create and set text content for the new <div> element
+        var divContent = data;
+        newDiv.appendChild(divContent);
+
+        // Append the new <div> element to the document body
+        document.body.appendChild(newDiv);
+    </script>
+</body>
+</html>

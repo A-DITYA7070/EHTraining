@@ -1,0 +1,11 @@
+
+
+
+                  
+                                LAB #3 HTTP request smuggling, obfuscating the TE header
+                            
+                            STEPS TO REPRODUCE :-
+
+                        1. Configure your browser with a proxy tool such as Burp Suite.
+                        2. Turn on the intercept in the Burp Suite.
+                        
