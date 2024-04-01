@@ -2,3 +2,81 @@
 
 SSRF ::- Server-side Request Forgery (SSRF) is a web application vulnerability, where an attacker will be able to make a 
          request to an unintended application or service from the target application.
+
+IMPACT ::-
+
+==> An attacker can make malicious intended request to the other third-party systems, which will appear to originate from the organization hosting the 
+    vulnerable application.
+==> An effective SSRF attack, can leads to unauthorized actions or access to data within the organization, either in the vulnerable application itself 
+    or on other back-end systems that the application can communicate with.
+==> An SSRF can be chained with Remote Code execution to compromise system or even the whole infrastructure.
+
+WORKING ::-
+Let us take an application, which shows the best offers for online e-commerce applications like Amazon.
+Now let us take the application as http://target.com. Assume this application having an endpoint /amazon, 
+which will fetch the offers for various categories from the another application http://target-amazon.com
+without validating the url .
+
+So the HTTP request will be like
+POST /amazon HTTP/1.0
+ Content-Type: application/x-www-form-urlencoded
+ Content-Length: 56
+ source=http://target-amazon.com/getallcategories
+
+
+Here this source will be sent to server and server will make request to this site http://target-amazon.com/getallcategories and fetch the details.
+Here instead of http://target-amazon.com/getallcategories in source, we can place any other site. If we do so, the target server will send the 
+request to the url we placed and send back the response. An attacker with malicious intent can place a malicious payload to work the 
+server for me.
+
+
+Prevention :-
+==> We can black list the sensitive endpoints like /admin
+==> We can allow only list of IPs. Against these IPs we can allow the request.
+==> Try to block the special characters.
+
+
+Ways to attack the defense set for SSRF attacks
+Black-list based input filter
+
+Some applications block input containing host-names like 127.0.0.1 and localhost, or sensitive URLs like /admin.
+
+In this situation, we can often bypass the filter using various techniques:
+
+i) Using an alternative IP representation of 127.0.0.1, such as 2130706433, 017700000001, or 127.1.
+ii) Registering your own domain name that resolves to 127.0.0.1.
+iii) Obfuscating blocked strings using URL encoding or case variation.
+iv) Providing a URL that you control, which subsequently redirects to the target URL. Try using different redirect codes, as well as different
+    protocols for the target URL. For example, switching from an http: to https: URL during the redirect has been shown to bypass some anti-SSRF filters.
+v) White-list based input filter
+
+==> Some applications only allow input that matches, begins with, or contains, a whitelist of permitted values. In this situation, we can sometimes bypass
+    the filter by exploiting inconsistencies in URL parsing.
+
+The URL specification contains a number of features that are liable to be overlooked when implementing ad hoc parsing and validation of URLs:
+
+i) We can embed credentials in a URL before the host-name, using the @ character. For example: https://expected-host:fakepassword@evil-host
+ii) We can use the # character to indicate a URL fragment. For example: https://evil-host#expected-host
+iii) We can leverage the DNS naming hierarchy to place required input into a fully-qualified DNS name that you control. 
+     For example: https://expected-host.evil-host
+iv) We can URL-encode characters to confuse the URL-parsing code. This is particularly useful if the code that implements the filter handles URL-encoded 
+   characters differently than the code that performs the back-end HTTP request. Note that we can also try double-encoding characters; some servers recursively
+   URL-decode the input they receive, which can lead to further discrepancies.
+v) Chain an Open-redirect
+
+If the target is managing the strict filters against SSRF, then we can find an open-redirect and using that we can successfully leverage SSRF
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
