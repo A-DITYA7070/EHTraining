@@ -4,7 +4,7 @@ It is an XML-based open-standard for transferring identity data between two part
 Identity Provider — Performs authentication and passes the user's identity and authorization level to the service provider.
 Service Provider — Trusts the identity provider and authorizes the given user to access the requested resource.
 
-he identity provider would be the IdP that Wizova uses, Auth0. The service provider would be Salesforce
+The identity provider would be the IdP that Wizova uses, Auth0. The service provider would be Salesforce
 
 The Wizova employee signs into the Wizova dashboard with Auth0. They click on the Salesforce icon, and 
 Salesforce recognizes that the user wants to log in via SAML. Salesforce sends the employee back to Auth0 
