@@ -153,7 +153,8 @@ of known URLs, a token representing the URL should be passed to the client and t
 the initial redirect request rather than passing the entire URL from the client.
 
 If building a complete list of valid URLs is infeasible, the application should maintain an allow-list of safe domains and only accept relative 
-paths to pages or resources which it then appends to the domain. For example, an application may only want to redirect users within the domain "http://myhost.com". To prevent the redirect URL from exposing users to potentially unsafe sites, the application should only accept relative 
+paths to pages or resources which it then appends to the domain. For example, an application may only want to redirect users within the domain 
+"http://myhost.com". To prevent the redirect URL from exposing users to potentially unsafe sites, the application should only accept relative 
 paths (e.g. "/app1/index.jsp") from the user. The application logic should then be responsible for validating the data and constructing the 
 redirect URL by combining the allow-listed domain with the user-provided path.
 
