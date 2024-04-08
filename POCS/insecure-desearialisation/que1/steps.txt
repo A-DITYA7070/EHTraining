@@ -1,0 +1,21 @@
+
+
+
+
+
+                       LAB # 1  Modifying serialized objects
+                    
+                    STEPS TO REPRODUCE :-
+
+                1. Configure your browser with proxy tool such as Burp Suite.
+                2. Turn on the intercept of Burp Suite.
+                3. In the application login in using your credentials.
+                4. Send the intercepted request to Burp Repeater.
+                5. In the Repeater select the cookie and observe the inspector panel of Burp Repeater.
+                6. Obseve the the application is using serialization in PHP and admin is marked to 0.
+                7. Set the admin value to 1 and click on apply changes.
+                8. Click on send and observe the repsonse.
+                9. The server responded with Admin-panel
+                10. Delete the user carlos.
+
+                
