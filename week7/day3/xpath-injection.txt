@@ -1,1 +1,59 @@
+What is XPath?
+The data stored in XML can be queried via XPath which is similar to SQL conceptually. It is also a query language and is used to locate 
+specific elements in a XML document. There are no access level permissions and it is possible to refer almost any part of an XML document 
+unlike SQL which allows restrictions on databases, tables or columns.
 
+What is XPath Injection?
+The issues that may occur while storing data using XML, are also similar to the problems faced in SQL. XPath injection is a type of attack 
+where a malicious input can lead to un-authorised access or exposure of sensitive information such as structure and content of XML document. 
+It occurs when user’s input is used in the construction of the query string. A large number of techniques that can be used in a SQL Injection 
+attack, depend on the characteristics of the SQL dialect used by the target database whereas XPath injection attacks can be much more 
+adaptable and ubiquitous.
+
+Consider the following scenario:
+A website uses XML for storing users credentials and other information. The XML document is as follows:
+
+<?xml version=”1.0" encoding="utf-8"?>
+<Employees>
+ <Employee ID="1">
+ <Name>Sam</Name>
+ <UserName>Johns</UserName>
+ <Password>This is Secret</Password>
+ </Employee>
+ <Employee ID="2">
+ <Name>Peter</Name>
+ <UserName>Pan</UserName>
+ <Password>Ssssshh</Password>
+ </Employee>
+</Employees>
+For logging into the website, the user enters the username and password. Therefore, the XPath query generated for querying the data
+would be as follows:
+
+"//Employee[UserName/text()='" & Request("UserName") & "' And Password/text()='" & Request("Password") & "']"
+If we insert a malicious payload as user name, the XPath query generated would be as follows:
+
+Username : test' or 1=1 or 'a'='a 
+Password : test
+XPath Query: 
+//Employee[UserName/text()='test' or 1=1 or 'a'='a' And Password/text()='test']
+This is equivalent to:
+//Employee[(UserName/text()='test' or 1=1) or ('a'='a' And Password/text()='test')]
+Thus, the first part of the query becomes true and the second part is neglected. The password becomes irrelevant and the attacker gets
+unauthorised access to the website.
+
+In addition to the above example, it is also possible to retrieve the entire XML document by Boolenization and XMLCrawling which is generally
+called as Blind XPath Injection. The server returns True if the attacker successfully logs into the website and False in case of failure. 
+It is possible to detect the number of nodes, identifying the data in the XML document using various XPath sub functions. Some of the sub
+functions are as follows:
+
+Returns the number of nodes:
+count(//user/child::node()
+Checks if the password node has 6 characters
+string-length(//user[position()=1]/child::node()[position()=3])=6
+How to prevent it?
+
+The user input needs to be sanitized such as quote(‘) can be replaced with “&apos;”. The validation has to be added both in client and server side.
+We can use parametrized queries (like Prepared Statements in SQL) in which queries are precompiled and user input is passed as parameters 
+rather than expressions.
+"//users[LoginID/text()= $LoginID and passwd/text()= $password]"
+Proper error pages have to used that do not disclose any information in the time of an error that could benefit the attacker.
