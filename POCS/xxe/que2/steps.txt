@@ -1,0 +1,17 @@
+
+
+
+
+                          LAB #2  Exploiting XXE to perform SSRF attacks
+                    
+                    STEPS TO REPRODUCE :-
+                    1. Configure your browser with a proxy tool such as Burp Suite.
+                    2. Turn on the intercept of the proxy tool.
+                    3. In the application click on a product details and check for stocks.
+                    4. Send the intercepted request to Burp Repeater.
+                    5. In the Repeater insert the DTD payload <!DOCTYPE test [ <!ENTITY xxe SYSTEM "http://169.254.169.254/"> ]>
+                    6. In the productId field update the productId with &xxe; and click on send.
+                    7. Observe the response its invalid productId but also it revelead some details.
+                    8. update the url in DTD payload to /latest/meta-data/iam/security-credentials/admin and click on send.
+                    9. Observe the response server responded with admin SECRET_ACCESS_KEY with other details.
+                    

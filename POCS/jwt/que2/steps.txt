@@ -1,0 +1,27 @@
+
+
+
+
+
+
+                       LAB # JWT authentication bypass via flawed signature verification.
+
+                STEPS TO REPRODUCE :-
+                1. Cofigure your browser with a proxy tool such as Burp Suite.
+                2. Turn on the intercept of the Burp Suite.
+                3. Login to the application using your credentials.
+                4. In the Burp intercept History tab Observe the /my-account request.
+                5. Select this request and send to Burp Repeater.
+                6. In the request header select JWT payload part and in the Burp Inspector change sub to administrator.
+                7. In the request header select JWT Header part and change alg parameter to "none".
+                8. In the request header select signature of jwt and remove it remember to add "." after payload
+                9. Click on send and Observe the response.
+                10. Server responded with admin-panel
+                11. Delete the user carlos.
+
+            Remediation :-
+            1. Implement secure signature verification.
+            2. validate jwt claims.
+            3. Use strong cryptographic Algorithm.
+
+                

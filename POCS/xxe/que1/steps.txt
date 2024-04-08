@@ -1,0 +1,13 @@
+
+
+
+                                  LAB #1 Exploiting XXE using external entities to retrieve files
+                            
+                        STEPS TO REPRODUCE :-
+                        1. Configure your browser with proxy tool such as Burp Suite.
+                        2. Turn on the intercept in the Burp suite.
+                        3. In the application check for stocks.
+                        4. Send the intercepted request to Burp Repeater.
+                        5. In the Repeater add this payload "<!DOCTYPE test [ <!ENTITY xxe SYSTEM "file:///etc/passwd"> ]>"
+                        6. In storeId field Replace the text with &xxe; and click on send.
+                        7. Observe the response the server responded with /etc/passwd contents.

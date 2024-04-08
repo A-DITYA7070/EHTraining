@@ -2,4 +2,17 @@
 
 
 
-          LAB #1. 
+                LAB #1. JWT authentication bypass via unverified signature
+         
+          STEPS TO REPRODUCE :-
+          1. Configure your browser with a proxy tool such as Burp Suite.
+          2. Turn on the intercept and login to the application.
+          3. Send the intercepted request to Burp Repeater.
+          4. In the Repeater request select payload of JWT.
+          5. In the sub field change it from "wiener" to "administrator".
+          6. Click on send and observe the response.
+          7. The server responded with admin-panel 
+
+        Remediation :-
+        1. Validate jwt claims properly.
+        2. Implement secure jwt verification.
