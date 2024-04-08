@@ -1,1 +1,24 @@
 
+The "billion laughs attack" refers to a type of computer security vulnerability or attack known as a "billion laughs" or "XML bomb." 
+This attack exploits the way XML (Extensible Markup Language) parsers handle recursive entity expansion to consume excessive amounts of memory,
+potentially leading to denial-of-service (DoS) or resource exhaustion.
+
+Here's how the attack works:
+
+1. XML allows the use of entities, which are placeholders that can be defined and referenced within XML documents. Entities can be expanded 
+recursively, meaning an entity can reference itself or other entities repeatedly.
+
+2. In a billion laughs attack, the attacker constructs an XML document containing a recursive entity declaration that expands exponentially. 
+For example, the XML document may define an entity that contains references to itself multiple times, leading to exponential growth in the
+size of the document when parsed.
+
+3. When an XML parser attempts to parse the malicious XML document, it recursively expands the entity references, resulting in a massive 
+expansion of memory usage. This can overwhelm the parser and consume all available system resources, leading to a denial-of-service condition.
+
+The term "billion laughs" refers to the exponential growth in memory consumption that occurs as the entity references are recursively expanded.
+Even though the attack is named "billion laughs," it doesn't necessarily require billions of iterations to be effective; a relatively small
+number of iterations can be sufficient to exhaust system resources.
+
+To defend against billion laughs attacks and similar vulnerabilities, XML parsers should implement measures to limit entity expansion depth
+and prevent excessive memory consumption. Additionally, web developers should validate and sanitize input data to prevent malicious XML
+documents from being processed by vulnerable parsers.
