@@ -231,3 +231,34 @@ The first ENTITY, local_dtd, contains the contents of the external DTD file that
 The second ENTITY, ISOamso, already exists in the external DTD and its being redefined to contain the same exploit as from the above
 method (XXE via Error Parsing). It will trigger an error, which will hopefully cause the error message to reveal the contents of /etc/passwd.
 local_dtd is then called so that the external DTD is interpreted, including its newly redefined ISOamso value.
+
+
+External DTD :-
+<?xml version="1.0"?>
+<!DOCTYPE employee SYSTEM "employee.dtd">
+<employee>
+    <name>Aditya Raj</name>
+    <Language>C++,JAVA,Python</Language>
+    <Experience>Backend-dev,Pentester</Experience>
+</employee>
+
+=> Note here employee.dtd has following contents :-
+<!ELEMENT employee (name,Language,Experience)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT Language (#PCDATA)>
+<!ELEMENT Experience (#PCDATA)>
+
+
+Internal DTD :-
+<?xml version="1.0"?>
+<!DOCTYPE employee [
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT Language (#PCDATA)>
+<!ELEMENT Experience (#PCDATA)>
+]>
+<employee>
+   <name>Aditya Raj</name>
+   <Language>C++,Java,Python</Language>
+   <Experience>Backend dev</Experience>
+</employee>
+
