@@ -1,1 +1,15 @@
+What is Mass Assignment?
+OWASP attributes the API mass assignment vulnerability as an input validation flaw that allows hackers to 
+perform advanced attacks by manipulating payload data.
+The threat arises when the API endpoints save a request body as it is instead of extracting request parameters one by one.
 
+Impact:
+
+The main impact of a Mass Assignment vulnerability is linked to modifying or creating variables. Depending on the variables or objects affected, 
+the impact can be more or less significant, ranging from the simple modification of a value with no impact to a privilege escalation
+
+How To Prevent
+a) If possible, avoid using functions that automatically bind a client’s input into code variables or internal objects.
+b) Whitelist only the properties that should be updated by the client.
+c) Use built-in features to blacklist properties that should not be accessed by clients.
+d) If applicable, explicitly define and enforce schemas for the input data payloads.
