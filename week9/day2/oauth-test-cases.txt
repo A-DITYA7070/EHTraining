@@ -263,6 +263,13 @@ iii) Once it has received the data, the client application uses it in place of a
 
 
 
+OUTH TEST CASES :::--
+
+i)  AUTHENTICATION BYPASS VIA OAUTH IMPLICIT FLOW.
+ii) FORCED OAUTH PROFILE LINKING.
+iii) OAUTH ACCOUNT HIJACKING VIA REDIRECT URL.
+iv) Stealing OAuth access tokens via an open redirect.
+v) Stealing OAuth access tokens via a proxy page
 
 
 
