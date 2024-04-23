@@ -1,1 +1,3 @@
+The Metasploit framework is a set of open-source tools used for network enumeration, identifying vulnerabilities, developing payloads and executing 
+exploit code against remote target machines.
 
