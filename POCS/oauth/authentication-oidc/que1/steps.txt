@@ -1,0 +1,17 @@
+
+
+
+
+
+                                      LAB # 1 Authentication bypass via OAuth implicit flow
+                                
+                            STEPS TO REPROUCE :-
+                        1. Configure your browser with proxy tool such as Burp Suite.
+                        2. Turn on the Intercept and try to access my account section, observe that the request is redirected to login
+                           using social media account.
+                        3. Login using your credentials.
+                        4. Forward the intercepted request and intercept the response too.
+                        5. See the response the application is sending email,username and token field in the response.
+                        6. Change the email from wiener@gmail.com to carlos@gmail.com and in the username field also 
+                           change the username to carlos and click on send.
+                        7. Observe the repsonse its 302 found.

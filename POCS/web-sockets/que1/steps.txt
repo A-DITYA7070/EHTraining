@@ -1,0 +1,12 @@
+
+
+\\sigc-share.cigital.com\sdc-sig-share01
+
+                          LAB # 1 Manipulating WebSocket messages to exploit vulnerabilities
+
+            1. Configure your browser with proxy tool such as Burp Suite.
+            2. Turn on the intercept and send <script>alert(1)</script> in the chat 
+            3. In the intercepted request observe that the special characters are encoded.
+            4. Change it to <img src=1 onerror='alert(1)'> 
+            5. Forward the request and observe the response.
+            6. The Lab is solved.

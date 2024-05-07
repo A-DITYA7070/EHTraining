@@ -1,0 +1,29 @@
+
+
+
+        
+                            LAB # 3 Exploiting a mass assignment vulnerability
+
+                        STEPS TO REPRODUCE :-
+                    
+                    1. Configure your Browser with proxy tool such as Burp Suite.
+                    2. Turn on the intercept of Burp Suite.
+                    3. Login to the application and turn off the intercept of Burp Suite.
+                    4. Go to Burp history and click on request having endpoint /api/checkout 
+                    5. Send it to Burp Repeater, and click on send.
+                    6. Observe the response and change the request method from GET to POST and click on send.
+                    7. Observe that there is no difference in response.
+                    8. Add request body 
+                              {
+                                "chosen_discount":{
+                                    "percentage":0
+                                },
+                                "chosen_products":[
+                                    {
+                                        "product_id":"1",
+                                        "quantity":1
+                                    }
+                                ]
+                            }
+                    9. Click on send Observe the request its 302 found 
+                   10. In the request method change the percentage from 0 to 100 and click on send.

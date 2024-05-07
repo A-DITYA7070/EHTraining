@@ -1,0 +1,19 @@
+
+
+
+
+
+
+                         LAB #1  Exploiting an API endpoint using documentation
+                        
+                    STEPS TO REPRODUCE :-
+                    1. Configure your browser with proxy tool such as Burp Suite.
+                    2. Login to the application.
+                    3. Turn on the intercept of Burp Suite.
+                    4. Refresh the home page of the application.
+                    5. Send the intercepted request to Burp Repeater.
+                    6. In the request add path /api and click on send.
+                    7. Observe the response it's 302 found.
+                    8. In the browser add path /api and enter observe that api documentation is reflected and it's interactive.
+                    9. Enter user name carlos and click on delete.
+                    

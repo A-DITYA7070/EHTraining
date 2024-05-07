@@ -1,0 +1,31 @@
+
+
+
+
+
+
+                        LAB #2 Finding and exploiting an unused API endpoint
+
+                    STEPS TO REPRODUCE :-
+            
+          1.  Configure your Browser with proxy tool such as Burp Suite.
+          2.  In Burp's browser, access the lab and click on a product.
+          3.  In Proxy > HTTP history, notice the API request for the product. For example, /api/products/3/price.
+          4.  Right-click the API request and select Send to Repeater.
+          5.  In the Repeater tab, change the HTTP method for the API request from GET to OPTIONS, then send the request.
+              Notice that the response specifies that the GET and PATCH methods are allowed.
+          6.  Change the method for the API request from GET to PATCH, then send the request. Notice that you receive an 
+              Unauthorized message. This may indicate that you need to be authenticated to update the order.
+          7.  In Burp's browser, log in to the application using the credentials wiener:peter.
+          8.  Click on the Lightweight "l33t" Leather Jacket product.
+          9.  In Proxy > HTTP history, right-click the API/products/1/price request for the leather jacket and select Send to Repeater.
+          10  In the Repeater tab, change the method for the API request from GET to PATCH, then send the request. Notice that this causes 
+              an error due to an incorrect Content-Type. The error message specifies that the Content-Type should be application/json.
+          11.  Add a Content-Type header and set the value to application/json.
+          12.  Add an empty JSON object {} as the request body, then send the request. Notice that this causes an error due to the 
+               request body missing a price parameter.
+          13. Add a price parameter with a value of 0 to the JSON object {"price":0}. Send the request.
+          14. In Burp's browser, reload the leather jacket product page. Notice that the price of the leather jacket is now $0.00.
+          15. Add the leather jacket to your basket.
+          16. Go to your basket and click Place order to solve the lab.
+
