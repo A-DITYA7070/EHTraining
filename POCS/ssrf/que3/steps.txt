@@ -1,0 +1,18 @@
+
+
+
+
+
+                                LAB #3 SSRF with blacklist-based input filter
+                        
+                        STEPS TO REPRODUCE :-
+
+                    1. Configure your browser with proxy tool such as Burp Suite.
+                    2. Turn on the intercept and click on check stock.
+                    3. In the Burp send the intercept request to Burp Repeater.
+                    4. In the stockApi update the payload to http://127.1/admin and click on send.
+                    5. Observe the response it's rejected.
+                    6. In the request again obfuscate the admin's a part and update it to %2561 and click on send 
+                    7. Observe the response its 200 ok.
+                    8. Now again update the url to delete the user carlos i.e http://127.1%2561dmin/delete?username=carlos
+                    9. click on send and the user carlos is deleted and lab is solved.

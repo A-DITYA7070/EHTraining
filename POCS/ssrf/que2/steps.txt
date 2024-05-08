@@ -1,0 +1,18 @@
+
+
+
+
+
+
+                                        LAB #2 Basic SSRF against another back-end system.
+
+                    
+                    STEPS TO REPRODUCE :-
+                1. Configure your browser with a proxy tool such as Burp Suite.
+                2. In the application click on product details and then check stock.
+                3. In Burp go to proxy history tab and click on /product/stock request and send it to Intruder.
+                4. In Intruder define payload position and add the fourth octet of the request in stockApi in scope.
+                5. In Intruder payload tab, set the payload to numbers from 1 to 255 and step 1.
+                6. Click on start attack and observe the response with status code 200 
+                7. Send this request to Burp Repeater and update the url to http://192.168.0.132/admin/delete?username=carlos
+                8. click on send and the user carlos is deleted.

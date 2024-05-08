@@ -1,0 +1,15 @@
+
+
+
+                                                  LAB #1 Basic SSRF against the local server
+                                
+                        STEPS TO REPRODUCE :-
+                    
+                    1. Configure your browser with a proxy tool like Burp Suite.
+                    2. Turn on the intercept in Burp suite and in the browser click on any product.
+                    3. Turn off the intercept and go to proxy history tab.
+                    4. Click on a request having /product/stock and send it to Burp Repeater.
+                    5. In the Repeater update the stockApi to http://localhost/admin and click on send.
+                    6. Observe the response its 200 ok means the request is accepted.
+                    7. Update the stockApi to http://localhost/admin/delete?username=carlos and click on send 
+                    
