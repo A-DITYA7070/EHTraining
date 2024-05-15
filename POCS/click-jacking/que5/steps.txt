@@ -1,0 +1,16 @@
+
+
+
+
+
+
+                        LAB #5 
+
+                STEPS TO REPRODUCE :-
+
+            1. In the application login with your credentials.
+            2. Navigate to exploit-server page.
+            3. Enter the payload and click on view exploit.
+            4. Adjust the click-first-button and click-second-button accordingly.
+            5. After successull adjustment, click on store.
+            6. Deliver the exploit to victim.
