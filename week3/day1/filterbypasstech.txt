@@ -1,4 +1,4 @@
-
+ji
 
 
 Reflected Cross-site Scripting (XSS) occur when an attacker injects browser executable code within a single HTTP response. 
@@ -165,7 +165,7 @@ This test delivers a 'polyglot test XSS payload' that executes in multiple conte
 
 
 
-
+7R__jHB6x3W!Y9HEKocBb-&n8*2F{2Ty
 
 
 
